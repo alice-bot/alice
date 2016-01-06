@@ -1,6 +1,8 @@
 require IEx
 
 defmodule Alice.Router do
+  @route_handlers []
+
   @doc false
   defmacro __using__(_opts) do
     quote do
@@ -11,32 +13,29 @@ defmodule Alice.Router do
       @routes []
 
       @before_compile Alice.Router
+
+      defp reply(conn = %{message: %{channel: channel}, slack: slack}, response) do
+        # send_message(response, channel, slack)
+        IO.puts response
+        conn
+      end
     end
   end
 
-  defmacro match(pattern, do: block) do
-    function_name = String.to_atom("match" <> pattern)
+  defmacro route(pattern, name) do
     quote do
-      @routes [unquote(function_name)|@routes]
-      def unquote(function_name)(message, slack) do
-        unquote(pattern)
-        |> Regex.compile!("i")
-        |> Regex.match?(message.text)
-        |> case do
-          true -> unquote(block)
-          false -> IO.puts("no match for #{message.text}")
-        end
-      end
+      @routes [{unquote(pattern), unquote(name)}|@routes]
     end
   end
 
   @doc false
   defmacro __before_compile__(_env) do
     quote do
-      def route(message, slack) do
-        Enum.each @routes, fn name ->
-          IO.puts "Routing #{name}"
-          apply(__MODULE__, name, [message, slack])
+      def match_routes(message, slack, state \\ []) do
+        Enum.each @routes, fn {pattern, name} ->
+          if Regex.match?(pattern, message.text) do
+            apply(__MODULE__, name, [%{message: message, slack: slack, state: state}])
+          end
         end
       end
     end
@@ -46,10 +45,9 @@ end
 defmodule Alice.Routes.Random do
   use Alice.Router
 
-  match "dark ?souls?" do
-    # send_message("http://i.imgur.com/JVwRUtw.gif", message.channel, slack)
-    # IEx.pry
-    IO.puts "OMG #{message.text}"
-  end
+  route ~r/dark ?souls?/i, :dark_souls
 
+  def dark_souls(conn) do
+    reply(conn, "http://i.imgur.com/JVwRUtw.gif")
+  end
 end
