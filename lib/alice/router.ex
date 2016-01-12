@@ -41,8 +41,7 @@ defmodule Alice.Router do
   defmacro __using__(_opts) do
     quote do
       import Alice.Router
-      import Slack
-      import Slack.Handlers
+      import Slack, only: [send_message: 3]
 
       @routes []
       @before_compile Alice.Router
@@ -62,7 +61,7 @@ defmodule Alice.Router do
         @routes
         |> Enum.reduce(conn, fn({pattern, name}, conn) ->
           if Regex.match?(pattern, message.text) do
-            apply(__MODULE__, name, [conn])
+            __MODULE__.handle(conn, name)
           end
           conn
         end)
