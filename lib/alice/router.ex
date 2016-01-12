@@ -14,6 +14,22 @@ defmodule Alice.Router do
 
   def random_reply(list, conn), do: list |> Enum.random |> reply(conn)
 
+  @doc """
+  Reply with random chance.
+
+  Examples
+
+      > chance_reply(0.5, "this will be sent half the time, otherwise nothing will be sent")
+      > chance_reply(0.25, "this will be sent 25% of the time", "sent 75% of the time")
+  """
+  def chance_reply(chance, positive, negative \\ :noreply, conn=%Alice.Conn{}) do
+    case {:random.uniform > chance, negative} do
+      {true,  _}        -> reply(positive, conn)
+      {false, :noreply} -> conn
+      {false, negative} -> reply(negative, conn)
+    end
+  end
+
   @doc false
   defmacro __using__(_opts) do
     quote do
