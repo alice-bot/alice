@@ -6,6 +6,9 @@ defmodule Alice do
   def start(_type, _args) do
     import Supervisor.Spec, warn: false
 
+    # Seed the random number generator
+    :random.seed(:erlang.now)
+
     children = [
       # Define workers and child supervisors to be supervised
       worker(Alice.Bot, [%{}]),
