@@ -3,15 +3,22 @@ defmodule Alice.Router do
     Alice.Handlers.Random
   ]
 
+  @doc "Used internally to match route handlers"
   def match_routes(conn) do
     Enum.each(@handlers, &(apply(&1, :match_routes, [conn])))
   end
 
+  @doc """
+  Reply to a message in a handler.
+
+  Sends `response` back to the channel that triggered the handler.
+  """
   def reply(response, conn = %{message: %{channel: channel}, slack: slack}) do
     Slack.send_message(response, channel, slack)
     conn
   end
 
+  @doc "Replies with a random element of the `list` provided."
   def random_reply(list, conn), do: list |> Enum.random |> reply(conn)
 
   @doc """
