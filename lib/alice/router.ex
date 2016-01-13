@@ -30,7 +30,7 @@ defmodule Alice.Router do
       > chance_reply(0.25, "this will be sent 25% of the time", "sent 75% of the time")
   """
   def chance_reply(chance, positive, negative \\ :noreply, conn=%Alice.Conn{}) do
-    case {:random.uniform > chance, negative} do
+    case {:rand.uniform > chance, negative} do
       {true,  _}        -> reply(positive, conn)
       {false, :noreply} -> conn
       {false, negative} -> reply(negative, conn)
