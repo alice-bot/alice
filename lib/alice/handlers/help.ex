@@ -8,11 +8,9 @@ defmodule Alice.Handlers.Help do
       [name(handler) | routes(handler)] |> Enum.join("\n")
     end)
     |> Enum.join("\n\n")
-    |> format_help_text
+    |> format_code
     |> reply(conn)
   end
-
-  defp format_help_text(help), do: "```#{help}```"
 
   defp name(handler) do
     "Elixir." <> name = to_string(handler)
