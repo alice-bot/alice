@@ -6,11 +6,17 @@ defmodule Alice do
   """
   def handlers do
     [
-      HelpHandler,
+      Alice.Handlers.Help,
+      Alice.Handlers.Utils,
       Alice.Handlers.Random
     ]
   end
 
+  @doc """
+  Starts the application and all subprocesses
+
+  *Note:* does not start children in :test env
+  """
   def start(_type, _args) do
     Mix.env
     |> children

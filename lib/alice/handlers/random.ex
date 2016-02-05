@@ -19,7 +19,6 @@ defmodule Alice.Handlers.Random do
 
   route ~r/mic ?drop|drop( ?the)? ?mic/,                   :mic_drop
   route ~r/\bcach(e|ing) ?bug\??\b/,                       :cache_bug
-  route ~r/\bping\b/i,                                     :ping
   route ~r/\b(dis|this)( is)? gon(na)? be? g(u|oo)d\b/,    :dis_gon_b_gud
   route ~r/\b(wub ?(wub)?|dub(step)?|d+rop.*bas(s|e))\b/i, :ddddddrop_the_bass
   route ~r/\b(mad|angry|rage)\b/i,                         :u_mad_bro
@@ -60,10 +59,6 @@ defmodule Alice.Handlers.Random do
     ~w[http://i.imgur.com/mus48mo.jpg
       http://i.imgur.com/Mt669js.png
       http://i.imgur.com/OzI9RZq.jpg]
-    |> random_reply(conn)
-  end
-  def handle(conn, :ping) do
-    ["PONG!", "Can I help you?", "Yes...I'm still here.", "I'm alive!"]
     |> random_reply(conn)
   end
   def handle(conn, :dis_gon_b_gud) do
