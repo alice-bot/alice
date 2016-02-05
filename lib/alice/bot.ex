@@ -10,10 +10,16 @@ defmodule Alice.Bot do
     start_link(Application.get_env(:alice, :api_key), initial_state)
   end
 
-  @doc "Ignore my own messages"
-  def handle_message(%{user: id}, %{me: %{id: id}}, state), do: {:ok, state}
+  def handle_connect(_slack, state) do
+    IO.puts "Connected to Slack"
+    {:ok, state}
+  end
 
-  @doc "Handle messages from subscribed channels"
+  # require IEx
+  # @doc "Ignore my own messages"
+  # def handle_message(%{user: id}, %{me: %{id: id}}, state), do: {:ok, state}
+
+  # Handle messages from subscribed channels
   def handle_message(message = %{type: "message"}, slack, state) do
     conn = {message, slack, state}
            |> Alice.Conn.make
@@ -21,6 +27,7 @@ defmodule Alice.Bot do
     {:ok, conn.state}
   end
 
-  @doc "Ignore all others"
+  # Ignore all others
   def handle_message(_message, _slack, state), do: {:ok, state}
 end
+

@@ -1,71 +1,82 @@
 defmodule Alice.Router do
-  @handlers [
-    Alice.Handlers.Random
-  ]
+  use GenServer
 
-  @doc "Used internally to match route handlers"
+  defmodule State do
+    defstruct handlers: MapSet.new
+  end
+
+  # Client
+
+  @doc """
+  Starts a Alice.Router process linked to the current process.
+
+  Note that a process started with `start_link/2` is linked to the parent process
+  and will exit in case of crashes.
+
+  ## Options
+
+  You can pass in a list of handlers to be registered immediately upon starting
+  the Router process.
+
+  For other options, see `GenServer.start_link/3`. Default is to register the
+  process with the name `Alice.Router`.
+
+  ## Return values
+
+  If the router is successfully created and initialized, the function returns
+  `{:ok, pid}`, where `pid` is the pid of the router.
+  """
+  def start_link(handlers \\ [], opts \\ [name: Alice.Router]) do
+    {:ok, pid} = GenServer.start_link(__MODULE__, %State{}, opts)
+    for handler <- handlers, do: register_handler(pid, handler)
+    {:ok, pid}
+  end
+
+  @doc """
+  Returns a list of the currently registered handlers.
+
+  If you started the router with default options, then you don't have to pass in a
+  pid. (It will use the default registered name `Alice.Router`.
+  """
+  def handlers(pid \\ Alice.Router) do
+    GenServer.call(pid, :get_handlers)
+  end
+
+  @doc """
+  Registers a handler. Returns `:ok`
+  """
+  def register_handler(pid \\ Alice.Router, handler) do
+    GenServer.cast(pid, {:register_handler, handler})
+  end
+
+  @doc """
+  Used internally to match route handlers
+  """
   def match_routes(conn) do
-    Enum.each(@handlers, &(apply(&1, :match_routes, [conn])))
+    Enum.each(handlers, &(apply(&1, :match_routes, [conn])))
   end
 
-  @doc """
-  Reply to a message in a handler.
+  # GenServer API
 
-  Sends `response` back to the channel that triggered the handler.
-  """
-  def reply(response, conn = %{message: %{channel: channel}, slack: slack}) do
-    Slack.send_message(response, channel, slack)
-    conn
+  @doc false
+  def handle_call(:get_handlers, _from, state) do
+    {:reply, MapSet.to_list(state.handlers), state}
   end
 
-  @doc "Replies with a random element of the `list` provided."
-  def random_reply(list, conn), do: list |> Enum.random |> reply(conn)
-
-  @doc """
-  Reply with random chance.
-
-  Examples
-
-      > chance_reply(0.5, "this will be sent half the time, otherwise nothing will be sent")
-      > chance_reply(0.25, "this will be sent 25% of the time", "sent 75% of the time")
-  """
-  def chance_reply(chance, positive, negative \\ :noreply, conn=%Alice.Conn{}) do
-    case {:rand.uniform > chance, negative} do
-      {true,  _}        -> reply(positive, conn)
-      {false, :noreply} -> conn
-      {false, negative} -> reply(negative, conn)
-    end
+  @doc false
+  def handle_cast({:register_handler, handler}, state) do
+    {:noreply, %{state | handlers: MapSet.put(state.handlers, handler)}}
   end
+
+  # Macros
 
   @doc false
   defmacro __using__(_opts) do
     quote do
-      import Alice.Router
-      import Slack, only: [send_message: 3]
+      import Alice.Router.Helpers
 
       @routes []
-      @before_compile Alice.Router
-    end
-  end
-
-  @doc "Adds a route to the handler"
-  defmacro route(pattern, name) do
-    quote do
-      @routes [{unquote(pattern), unquote(name)}|@routes]
-    end
-  end
-
-  defmacro __before_compile__(_env) do
-    quote do
-      def match_routes(conn=%Alice.Conn{message: message}) do
-        @routes
-        |> Enum.reduce(conn, fn({pattern, name}, conn) ->
-          if Regex.match?(pattern, message.text) do
-            __MODULE__.handle(conn, name)
-          end
-          conn
-        end)
-      end
+      @before_compile Alice.Router.Helpers
     end
   end
 end
