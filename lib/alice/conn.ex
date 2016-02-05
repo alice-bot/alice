@@ -1,5 +1,5 @@
 defmodule Alice.Conn do
-  defstruct message: "", slack: %{}, state: %{}
+  defstruct([:message, :slack, :state])
 
   def make(message, slack, state \\ []) do
     make({message, slack, state})
