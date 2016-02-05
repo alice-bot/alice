@@ -1,6 +1,14 @@
 defmodule Alice.Conn do
-  defstruct message: "", slack: %{}, state: []
+  defstruct message: "", slack: %{}, state: %{}
 
-  def make(m, sl, st \\ []), do: make({m, sl, st})
-  def make({m, sl, st}), do: %__MODULE__{message: m, slack: sl, state: st}
+  def make(message, slack, state \\ []) do
+    make({message, slack, state})
+  end
+  def make({message, slack, state}) do
+    %__MODULE__{message: message, slack: slack, state: state}
+  end
+
+  def user(conn = %Alice.Conn{}) do
+    conn.slack.users[conn.message.user].name
+  end
 end
