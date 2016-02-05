@@ -10,7 +10,7 @@ use Mix.Config
 
 # You can configure for your application as:
 #
-config :alice, api_key: "xoxb-16970170740-Tx0xvUH4O2fyo4EPqqK44jGa"
+config :alice, api_key: System.get_env("AWESOME_SLACK_KEY")
 #
 # And access this configuration in your application as:
 #
