@@ -1,15 +1,6 @@
 defmodule Alice.Bot do
   use Slack
 
-  def init(initial_state, _slack) do
-    # pull state out of persistence layer
-    {:ok, initial_state}
-  end
-
-  def start_link(initial_state) do
-    start_link(Application.get_env(:alice, :api_key), initial_state)
-  end
-
   def handle_connect(_slack, state) do
     IO.puts "Connected to Slack"
     {:ok, state}
@@ -29,4 +20,3 @@ defmodule Alice.Bot do
   # Ignore all others
   def handle_message(_message, _slack, state), do: {:ok, state}
 end
-
