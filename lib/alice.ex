@@ -6,10 +6,14 @@ defmodule Alice do
   def start(_type, _args) do
     import Supervisor.Spec, warn: false
 
-    children = [
-      # Define workers and child supervisors to be supervised
-      worker(Alice.Bot, [%{}]),
-    ]
+    children = []
+    unless Mix.env == :test do
+      children = [
+        # Define workers and child supervisors to be supervised
+        worker(Alice.Router, [[HelpHandler, Alice.Handlers.Random]]),
+        worker(Alice.Bot, [%{}]),
+      ]
+    end
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
     # for other strategies and supported options
