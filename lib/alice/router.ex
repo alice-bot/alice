@@ -52,8 +52,8 @@ defmodule Alice.Router do
   @doc """
   Used internally to match route handlers
   """
-  def match_routes(conn) do
-    Enum.each(handlers, &(apply(&1, :match_routes, [conn])))
+  def match_routes(connection) do
+    Enum.reduce(handlers, connection, &(&1.match_routes(&2)))
   end
 
   # GenServer API
