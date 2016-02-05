@@ -8,10 +8,11 @@ defmodule Alice do
 
     children = []
     unless Mix.env == :test do
+      token = Application.get_env(:alice, :api_key)
       children = [
         # Define workers and child supervisors to be supervised
         worker(Alice.Router, [[HelpHandler, Alice.Handlers.Random]]),
-        worker(Alice.Bot, [%{}]),
+        worker(Alice.Bot, [token, %{}]),
       ]
     end
 
