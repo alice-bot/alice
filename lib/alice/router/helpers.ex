@@ -50,12 +50,12 @@ defmodule Alice.Router.Helpers do
 
       def routes, do: @routes
 
-      def match_routes(conn=%Alice.Conn{message: message}) do
-        IO.puts "matching routes on #{__MODULE__}"
+      def match_routes(connection=%Alice.Conn{message: message}) do
         routes
-        |> Enum.reduce(conn, fn({pattern, name}, conn) ->
+        |> Enum.reduce(connection, fn({pattern, name}, conn) ->
           if Regex.match?(pattern, message.text) do
-            __MODULE__.handle(conn, name)
+            Logger.info("#{__MODULE__} is responding to #{Alice.Conn.user(conn)} with #{name}")
+            conn = __MODULE__.handle(conn, name)
           end
           conn
         end)
