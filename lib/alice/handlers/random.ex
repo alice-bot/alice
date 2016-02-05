@@ -38,7 +38,7 @@ defmodule Alice.Handlers.Random do
   def handle(conn, :devops),            do: "http://i.imgur.com/Ujxb5gn.png" |> reply(conn)
   def handle(conn, :it_is_decided),     do: "http://i.imgur.com/80PQSCo.gif" |> reply(conn)
   def handle(conn, :mind_blown),        do: "http://i.imgur.com/lr4KJPQ.gif" |> reply(conn)
-  def handle(conn, :the_game),          do: "http://i.imgur.com/Z8awIpt.png" |> chance_reply(0.5)
+  def handle(conn, :the_game),          do: chance_reply(0.5, "http://i.imgur.com/Z8awIpt.png", conn)
 
   # Random Choice
 
