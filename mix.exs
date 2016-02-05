@@ -28,7 +28,7 @@ defmodule Alice.Mixfile do
   #
   # Type "mix help deps" for more examples and options
   defp deps do
-    [{:slack, "~> 0.3.0"},
+    [{:slack, "~> 0.4.1"},
      {:websocket_client, git: "https://github.com/jeremyong/websocket_client"}]
   end
 end
