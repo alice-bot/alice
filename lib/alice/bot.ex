@@ -12,8 +12,8 @@ defmodule Alice.Bot do
   #   {:ok, state}
   # end
 
-  # @doc "Ignore my own messages"
-  # def handle_message(%{user: id}, %{me: %{id: id}}, state), do: {:ok, state}
+  @doc "Ignore my own messages"
+  def handle_message(%{user: id}, %{me: %{id: id}}, state), do: {:ok, state}
 
   # Handle messages from subscribed channels
   def handle_message(message = %{type: "message"}, slack, state) do
