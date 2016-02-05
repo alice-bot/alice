@@ -6,6 +6,12 @@ defmodule Alice.Bot do
     {:ok, state}
   end
 
+  # working sample
+  # def handle_message(message = %{type: "message"}, slack, state) do
+  #   send_message("http://i.imgur.com/7PAYDm3.gif", message.channel, slack)
+  #   {:ok, state}
+  # end
+
   # @doc "Ignore my own messages"
   # def handle_message(%{user: id}, %{me: %{id: id}}, state), do: {:ok, state}
 
