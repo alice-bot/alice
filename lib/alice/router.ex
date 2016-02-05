@@ -75,8 +75,7 @@ defmodule Alice.Router do
     quote do
       import Alice.Router.Helpers
       require Logger
-
-      @routes []
+      Module.register_attribute __MODULE__, :routes, accumulate: true
       @before_compile Alice.Router.Helpers
     end
   end
