@@ -8,6 +8,7 @@ defmodule Alice.Mixfile do
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      description: "A Slack bot",
+     escript: escript,
      package: package,
      deps: deps]
   end
@@ -16,7 +17,7 @@ defmodule Alice.Mixfile do
   #
   # Type "mix help compile.app" for more information
   def application do
-    [applications: [:logger, :slack],
+    [applications: [:logger, :slack, :mix],
      mod: {Alice, []}]
   end
 
@@ -32,6 +33,12 @@ defmodule Alice.Mixfile do
   defp deps do
     [{:slack, "~> 0.4.1"},
      {:websocket_client, github: "jeremyong/websocket_client"}]
+  end
+
+  defp escript do
+    [
+      main_module: Alice.Cli
+    ]
   end
 
   defp package do
