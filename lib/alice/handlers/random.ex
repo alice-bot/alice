@@ -22,7 +22,7 @@ defmodule Alice.Handlers.Random do
   route ~r/\bno+pe+\b/i,                                   :nope_nope_nope
   route ~r/\bgooo+d\b/i,                                   :goooood
 
-  route ~r/\b(ha(ha)+|lol)\b/i,                            :haha
+  # route ~r/\b(ha(ha)+|lol)\b/i,                            :haha
   route ~r/\bto+t(ally|es)\b/i,                            :toooootally
   route ~r/\boh? (yo)?u so\b/i,                            :oh_you_so
 
@@ -103,23 +103,23 @@ defmodule Alice.Handlers.Random do
                  "to#{String.duplicate("o", Enum.random(0..9))}tally",
                  conn
   end
-  def handle(conn, name=:haha) do
-    path = state_path(name, :count)
-    (get_in(conn, path) || 0)
-    |> case do
-      93 ->
-        "https://s3.amazonaws.com/giphymedia/media/Ic97mPViHEG5O/giphy.gif"
-        |> reply(put_in(conn, path, 0))
-        count -> put_in(conn, path, count + 1)
-    end
-  end
+  # def handle(conn, name=:haha) do
+  #   path = state_path(name, :count)
+  #   (get_in(conn, path) || 0)
+  #   |> case do
+  #     93 ->
+  #       "https://s3.amazonaws.com/giphymedia/media/Ic97mPViHEG5O/giphy.gif"
+  #       |> reply(put_in(conn, path, 0))
+  #       count -> put_in(conn, path, count + 1)
+  #   end
+  # end
   def handle(conn, :oh_you_so) do
     "oh you so #{Enum.random(~w[special clever crazy silly])}"
     |> reply(conn)
   end
 
-  defp state_path(name, keys) when is_list(keys) do
-    [:state, __MODULE__, name] ++ keys
-  end
-  defp state_path(name, key), do: state_path(name, [key])
+  # defp state_path(name, keys) when is_list(keys) do
+  #   [:state, __MODULE__, name] ++ keys
+  # end
+  # defp state_path(name, key), do: state_path(name, [key])
 end
