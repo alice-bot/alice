@@ -15,7 +15,6 @@ defmodule Alice.Bot do
     {:ok, state}
   end
 
-  # require IEx
   # @doc "Ignore my own messages"
   # def handle_message(%{user: id}, %{me: %{id: id}}, state), do: {:ok, state}
 
