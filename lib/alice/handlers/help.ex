@@ -1,4 +1,4 @@
-defmodule HelpHandler do
+defmodule Alice.Handlers.Help do
   use Alice.Router
 
   route ~r/alice help/, :help
