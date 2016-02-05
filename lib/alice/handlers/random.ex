@@ -12,6 +12,7 @@ defmodule Alice.Handlers.Random do
   route ~r/\bdevops\b/i,                                   :devops
   route ~r/\bIT IS DECIDED\!?\b/,                          :it_is_decided
   route ~r/\bmind blown\b/i,                               :mind_blown
+  route ~r/\bthe game\b/i,                                 :the_game
 
   route ~r/mic ?drop|drop( ?the)? ?mic/,                   :mic_drop
   route ~r/\bcach(e|ing) ?bug\??\b/,                       :cache_bug
@@ -36,7 +37,8 @@ defmodule Alice.Handlers.Random do
   def handle(conn, :busted),            do: "http://i.imgur.com/MasM57I.png" |> reply(conn)
   def handle(conn, :devops),            do: "http://i.imgur.com/Ujxb5gn.png" |> reply(conn)
   def handle(conn, :it_is_decided),     do: "http://i.imgur.com/80PQSCo.gif" |> reply(conn)
-  def handle(conn, :mind_blown),        do: "http://www.ripcitybadboys.com/wp-content/uploads/2014/02/mind-blown-2.gif" |> reply(conn)
+  def handle(conn, :mind_blown),        do: "http://i.imgur.com/lr4KJPQ.gif" |> reply(conn)
+  def handle(conn, :the_game),          do: "http://i.imgur.com/Z8awIpt.png" |> chance_reply(0.5)
 
   # Random Choice
 
