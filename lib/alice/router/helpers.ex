@@ -23,8 +23,8 @@ defmodule Alice.Router.Helpers do
 
   Examples
 
-  > chance_reply(0.5, "this will be sent half the time, otherwise nothing will be sent")
-  > chance_reply(0.25, "this will be sent 25% of the time", "sent 75% of the time")
+      > chance_reply(0.5, "this will be sent half the time, otherwise nothing will be sent")
+      > chance_reply(0.25, "this will be sent 25% of the time", "sent 75% of the time")
   """
   def chance_reply(chance, positive, negative \\ :noreply, conn=%Alice.Conn{}) do
     case {:rand.uniform <= chance, negative} do
