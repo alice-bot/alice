@@ -34,6 +34,17 @@ defmodule Alice.Router.Helpers do
     end
   end
 
+  @doc """
+  Formats code for Slack
+  """
+  def format_code(code) do
+    """
+    ```
+    #{code}
+    ```
+    """
+  end
+
   @doc "Adds a route to the handler"
   defmacro route(pattern, name) do
     quote do
