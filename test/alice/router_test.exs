@@ -1,5 +1,9 @@
 defmodule TestHandler do
+  use Alice.Router
+
   def match_routes(_conn), do: send(self, :received)
+
+  route ~r/pattern/, :my_route
 end
 
 defmodule Alice.RouterTest do
@@ -9,6 +13,10 @@ defmodule Alice.RouterTest do
   setup do
     Router.start_link([TestHandler])
     :ok
+  end
+
+  test "it remembers routes" do
+    assert TestHandler.routes == [{~r/pattern/, :my_route}]
   end
 
   test "starting the router with an array of handlers registers them immediately" do

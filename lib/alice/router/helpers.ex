@@ -37,7 +37,7 @@ defmodule Alice.Router.Helpers do
   @doc "Adds a route to the handler"
   defmacro route(pattern, name) do
     quote do
-      @routes [{unquote(pattern), unquote(name)} | @routes]
+      @routes {unquote(pattern), unquote(name)}
     end
   end
 
