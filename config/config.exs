@@ -9,17 +9,21 @@ use Mix.Config
 # 3rd-party users, it should be done in your "mix.exs" file.
 
 # You can configure for your application as:
-#
-config :alice, api_key: System.get_env("AWESOME_SLACK_KEY")
-#
+
+config :alice, api_key: System.get_env("LAASY_SLACK_KEY")
+
 # And access this configuration in your application as:
 #
 #     Application.get_env(:alice, :api_key)
 #
 # Or configure a 3rd-party app:
-#
-#     config :logger, level: :info
-#
+
+case Mix.env do
+  :prod -> config :logger, level: :info, truncate: 512
+  :dev  -> config :logger, level: :info, truncate: 16_384
+  _env  -> config :logger, level: :info
+end
+
 
 # It is also possible to import configuration files, relative to this
 # directory. For example, you can emulate configuration per environment
