@@ -100,7 +100,7 @@ defmodule Alice.Handlers.Random do
   def handle(conn, :toooootally) do
     chance_reply 0.2,
                  "http://i.imgur.com/XuTdELg.jpg",
-                 "to#{String.duplicate("o", Enum.random(0..9))}ally",
+                 "to#{String.duplicate("o", Enum.random(0..9))}tally",
                  conn
   end
   def handle(conn, name=:haha) do
