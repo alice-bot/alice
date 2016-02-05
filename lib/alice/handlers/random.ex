@@ -13,6 +13,7 @@ defmodule Alice.Handlers.Random do
   route ~r/\bIT IS DECIDED\!?\b/,                          :it_is_decided
   route ~r/\bmind blown\b/i,                               :mind_blown
   route ~r/\bthe game\b/i,                                 :the_game
+  route ~r/\bgames?\b/i,                                   :the_game
   route ~r/\bthanks,? alice\b/i,                           :thanks
   route ~r/\bI love you,? alice\b/i,                       :alice_love
 
@@ -40,7 +41,7 @@ defmodule Alice.Handlers.Random do
   def handle(conn, :devops),            do: "http://i.imgur.com/Ujxb5gn.png" |> reply(conn)
   def handle(conn, :it_is_decided),     do: "http://i.imgur.com/80PQSCo.gif" |> reply(conn)
   def handle(conn, :mind_blown),        do: "http://i.imgur.com/lr4KJPQ.gif" |> reply(conn)
-  def handle(conn, :the_game),          do: chance_reply(0.5, "http://i.imgur.com/Z8awIpt.png", conn)
+  def handle(conn, :the_game),          do: chance_reply(0.25, "http://i.imgur.com/Z8awIpt.png", "I lost the game", conn)
   def handle(conn, :thanks),            do: "no prob, bob" |> reply(conn)
   def handle(conn, :alice_love),        do: "aww, I love you too :wink:" |> reply(conn)
 
