@@ -74,6 +74,7 @@ defmodule Alice.Router do
   defmacro __using__(_opts) do
     quote do
       import Alice.Router.Helpers
+      require Logger
 
       @routes []
       @before_compile Alice.Router.Helpers

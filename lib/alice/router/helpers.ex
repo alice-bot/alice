@@ -43,6 +43,11 @@ defmodule Alice.Router.Helpers do
 
   defmacro __before_compile__(_env) do
     quote do
+      def handle(conn, name) do
+        Logger.warn("#{__MODULE__}.handle(conn, :#{name}) is not defined")
+        conn
+      end
+
       def routes, do: @routes
 
       def match_routes(conn=%Alice.Conn{message: message}) do
