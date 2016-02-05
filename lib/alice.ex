@@ -1,26 +1,32 @@
 defmodule Alice do
   use Application
 
-  # See http://elixir-lang.org/docs/stable/elixir/Application.html
-  # for more information on OTP Applications
+  @doc """
+  List of Alice route handlers to register upon startup
+  """
+  def handlers do
+    [
+      HelpHandler,
+      Alice.Handlers.Random
+    ]
+  end
+
   def start(_type, _args) do
+    Mix.env
+    |> children
+    |> Supervisor.start_link(strategy: :one_for_one, name: Alice.Supervisor)
+  end
+
+  defp children(:test), do: []
+  defp children(_env) do
     import Supervisor.Spec, warn: false
+    [
+      worker(Alice.Router, [handlers]),
+      worker(Alice.Bot, [slack_token, %{}])
+    ]
+  end
 
-    children = []
-    unless Mix.env == :test do
-      token = Application.get_env(:alice, :api_key)
-      children = [
-        # Define workers and child supervisors to be supervised
-        worker(Alice.Router, [[HelpHandler, Alice.Handlers.Random]]),
-        worker(Alice.Bot, [token, %{}]),
-      ]
-    end
-
-    Logger.configure(truncate: 16_384)
-
-    # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
-    # for other strategies and supported options
-    opts = [strategy: :one_for_one, name: Alice.Supervisor]
-    Supervisor.start_link(children, opts)
+  defp slack_token do
+    Application.get_env(:alice, :api_key)
   end
 end
