@@ -34,21 +34,17 @@ defmodule Alice.Router.Helpers do
     end
   end
 
-  @doc """
-  Formats code for Slack
-  """
-  def format_code(code) do
-    """
-    ```
-    #{code}
-    ```
-    """
-  end
-
   @doc "Adds a route to the handler"
   defmacro route(pattern, name) do
     quote do
       @routes {unquote(pattern), unquote(name)}
+    end
+  end
+
+  @doc "Adds a command to the handler"
+  defmacro command(pattern, name) do
+    quote do
+      @commands {unquote(pattern), unquote(name)}
     end
   end
 
@@ -60,9 +56,13 @@ defmodule Alice.Router.Helpers do
       end
 
       def routes, do: @routes
+      def commands, do: @commands
 
-      def match_routes(connection=%Alice.Conn{message: message}) do
-        routes
+      def match_routes(conn),   do: match(routes, conn)
+      def match_commands(conn), do: match(commands, conn)
+
+      def match(patterns, connection=%Alice.Conn{message: message}) do
+        patterns
         |> Enum.reduce(connection, fn({pattern, name}, conn) ->
           if Regex.match?(pattern, message.text) do
             Logger.info("#{__MODULE__} is responding to #{Alice.Conn.user(conn)} with #{name}")
@@ -74,5 +74,3 @@ defmodule Alice.Router.Helpers do
     end
   end
 end
-
-

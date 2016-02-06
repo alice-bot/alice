@@ -1,7 +1,7 @@
 defmodule TestHandler do
   use Alice.Router
 
-  def match_routes(_conn), do: send(self, :received)
+  def match(_routes, _conn), do: send(self, :received)
 
   route ~r/pattern/, :my_route
 end
