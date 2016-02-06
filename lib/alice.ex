@@ -26,11 +26,7 @@ defmodule Alice do
     import Supervisor.Spec, warn: false
     [
       worker(Alice.Router, [handlers(extras)]),
-      worker(Alice.Bot, [slack_token, %{}])
+      worker(Alice.Bot, [])
     ]
-  end
-
-  defp slack_token do
-    Application.get_env(:alice, :api_key)
   end
 end

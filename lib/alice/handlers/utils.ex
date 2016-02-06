@@ -8,11 +8,22 @@ defmodule Alice.Handlers.Utils do
     |> random_reply(conn)
   end
 
-  route ~r/\Aalice debug state\z/i, :debug_state
-  route ~r/\Aalice debug slack\z/i, :debug_slack
-  route ~r/\Aalice debug conn\z/i, :debug_conn
+  command ~r/\bdebug state\z/i, :debug_state
+  command ~r/\bdebug slack\z/i, :debug_slack
+  command ~r/\bdebug conn\z/i, :debug_conn
 
   def handle(conn, :debug_state), do: inspect(conn.state)|> format_code |> reply(conn)
   def handle(conn, :debug_slack), do: inspect(conn.slack)|> format_code |> reply(conn)
   def handle(conn, :debug_conn),  do: inspect(conn)|> format_code |> reply(conn)
+
+  @doc """
+  Formats code for Slack
+  """
+  defp format_code(code) do
+    """
+    ```
+    #{code}
+    ```
+    """
+  end
 end
