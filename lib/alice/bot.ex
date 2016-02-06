@@ -1,6 +1,10 @@
 defmodule Alice.Bot do
   use Slack
 
+  @token Application.get_env(:alice, :api_key)
+
+  def start_link, do: start_link(@token, %{})
+
   def handle_connect(_slack, state) do
     IO.puts "Connected to Slack"
     {:ok, state}
