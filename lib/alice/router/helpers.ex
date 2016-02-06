@@ -9,8 +9,24 @@ defmodule Alice.Router.Helpers do
   Sends `response` back to the channel that triggered the handler.
   """
   def reply(response, conn = %{message: %{channel: channel}, slack: slack}) do
-    Slack.send_message(response, channel, slack)
+    response
+    |> uncache_images
+    |> Slack.send_message(channel, slack)
     conn
+  end
+
+  defp uncache_images(potential_image) do
+    ~w[gif png jpg jpeg]
+    |> Enum.any?(&(potential_image |> String.downcase |> String.ends_with?(&1)))
+    |> case do
+      true -> "#{potential_image}?#{random_tag}"
+      _    -> potential_image
+    end
+  end
+
+  defp random_tag do
+    "0." <> tag = to_string(:rand.uniform)
+    tag
   end
 
   @doc """
