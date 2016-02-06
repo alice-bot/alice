@@ -20,7 +20,7 @@ config :alice, api_key: System.get_env("AWESOME_SLACK_KEY")
 
 case Mix.env do
   :prod -> config :logger, level: :info, truncate: 512
-  :dev  -> config :logger, level: :info, truncate: 16_384
+  :dev  -> config :logger, level: :info, truncate: 32_768
   _env  -> config :logger, level: :info
 end
 

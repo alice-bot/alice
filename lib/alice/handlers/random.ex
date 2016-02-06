@@ -3,42 +3,39 @@ defmodule Alice.Handlers.Random do
 
   # Routes
 
-  route ~r/\bhow( shit)? works\b/,                         :how_shit_works
-  route ~r/\bbig ?data\b/,                                 :big_data
-  route ~r/\bcocaine\b/,                                   :cocaine
+  route ~r/\bbig ?data\b/i,                                :big_data
+  route ~r/\bcocaine\b/i,                                  :cocaine
   route ~r/\bdemeter\b/i,                                  :say_demeter_again
   route ~r/\bgrapes\b/i,                                   :fuck_yo_grapes
   route ~r/\bbusted\b/i,                                   :busted
-  route ~r/\bdevops\b/i,                                   :devops
+  route ~r/\bdev[- ]?ops\b/i,                              :devops
   route ~r/\bIT IS DECIDED\!?\b/,                          :it_is_decided
   route ~r/\bmind blown\b/i,                               :mind_blown
-  route ~r/\bthe game\b/i,                                 :the_game
   route ~r/\bgames?\b/i,                                   :the_game
   route ~r/\bthanks,? alice\b/i,                           :thanks
   route ~r/\bI love you,? alice\b/i,                       :alice_love
+  route ~r/\balice,? I love you\b/i,                       :alice_love
 
-  route ~r/mic ?drop|drop( ?the)? ?mic/,                   :mic_drop
-  route ~r/\bcach(e|ing) ?bug\??\b/,                       :cache_bug
-  route ~r/\bping\b/i,                                     :ping
-  route ~r/\b(dis|this)( is)? gon(na)? be? g(u|oo)d\b/,    :dis_gon_b_gud
-  route ~r/\b(wub ?(wub)?|dub(step)?|d+rop.*bas(s|e))\b/i, :ddddddrop_the_bass
+  route ~r/\bmic ?drop\b/i,                                :mic_drop
+  route ~r/\bdrop( ?the)? ?mic\b/i,                        :mic_drop
+  route ~r/\bcach(e|ing) ?bug\??\b/i,                      :cache_bug
+  route ~r/\b(dis|this)( is)? gon(na)? be? g(u|oo)d\b/i,   :dis_gon_b_gud
+  route ~r/\b(wub ?(wub)?|dub(step)?|d+rop.*bas(s|e))\b/i, :dddddrop_the_bass
   route ~r/\b(mad|angry|rage)\b/i,                         :u_mad_bro
   route ~r/\bno+pe+\b/i,                                   :nope_nope_nope
   route ~r/\bgooo+d\b/i,                                   :goooood
 
   # route ~r/\b(ha(ha)+|lol)\b/i,                            :haha
   route ~r/\bto+t(ally|es)\b/i,                            :toooootally
-  route ~r/\boh? (yo)?u so\b/i,                            :oh_you_so
 
   # One Liners
 
-  def handle(conn, :how_shit_works),    do: "http://i.imgur.com/RwxNVbV.png" |> reply(conn)
   def handle(conn, :big_data),          do: "http://i.imgur.com/U6m4s4o.jpg" |> reply(conn)
   def handle(conn, :cocaine),           do: "http://i.imgur.com/A3QICEQ.gif" |> reply(conn)
   def handle(conn, :say_demeter_again), do: "http://i.imgur.com/Z0jvLNm.jpg" |> reply(conn)
   def handle(conn, :fuck_yo_grapes),    do: "http://i.imgur.com/v4y3BLl.gif" |> reply(conn)
   def handle(conn, :busted),            do: "http://i.imgur.com/MasM57I.png" |> reply(conn)
-  def handle(conn, :devops),            do: "http://i.imgur.com/Ujxb5gn.png" |> reply(conn)
+  def handle(conn, :devops),            do: "http://i.imgur.com/6sNQ3yt.jpg" |> reply(conn)
   def handle(conn, :it_is_decided),     do: "http://i.imgur.com/80PQSCo.gif" |> reply(conn)
   def handle(conn, :mind_blown),        do: "http://i.imgur.com/lr4KJPQ.gif" |> reply(conn)
   def handle(conn, :the_game),          do: chance_reply(0.25, "http://i.imgur.com/Z8awIpt.png", "I lost the game", conn)
@@ -60,10 +57,6 @@ defmodule Alice.Handlers.Random do
     ~w[http://i.imgur.com/mus48mo.jpg
       http://i.imgur.com/Mt669js.png
       http://i.imgur.com/OzI9RZq.jpg]
-    |> random_reply(conn)
-  end
-  def handle(conn, :ping) do
-    ["PONG!", "Can I help you?", "Yes...I'm still here.", "I'm alive!"]
     |> random_reply(conn)
   end
   def handle(conn, :dis_gon_b_gud) do
@@ -120,10 +113,6 @@ defmodule Alice.Handlers.Random do
   #       count -> put_in(conn, path, count + 1)
   #   end
   # end
-  def handle(conn, :oh_you_so) do
-    "oh you so #{Enum.random(~w[special clever crazy silly])}"
-    |> reply(conn)
-  end
 
   # defp state_path(name, keys) when is_list(keys) do
   #   [:state, __MODULE__, name] ++ keys
