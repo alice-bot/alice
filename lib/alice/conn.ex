@@ -8,6 +8,10 @@ defmodule Alice.Conn do
     %__MODULE__{message: message, slack: slack, state: state}
   end
 
+  def command?(conn = %Alice.Conn{}) do
+    String.contains?(conn.message.text, "<@#{conn.slack.me.id}>")
+  end
+
   def user(conn = %Alice.Conn{}) do
     conn.slack.users[conn.message.user].name
   end
