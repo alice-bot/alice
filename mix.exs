@@ -3,12 +3,12 @@ defmodule Alice.Mixfile do
 
   def project do
     [app: :alice,
-     version: "0.0.1",
+     version: "0.0.2",
      elixir: "~> 1.1",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      description: "A Slack bot",
-     escript: escript,
+     # escript: [main_module: Alice.Cli],
      package: package,
      deps: deps]
   end
@@ -18,7 +18,7 @@ defmodule Alice.Mixfile do
   # Type "mix help compile.app" for more information
   def application do
     [applications: [:logger, :slack, :mix],
-     mod: {Alice, []}]
+     mod: {Alice, [Alice.Handlers.Random, Alice.Handlers.OhYouSo]}]
   end
 
   # Dependencies can be Hex packages:
@@ -33,12 +33,6 @@ defmodule Alice.Mixfile do
   defp deps do
     [{:slack, "~> 0.4.1"},
      {:websocket_client, github: "jeremyong/websocket_client"}]
-  end
-
-  defp escript do
-    [
-      main_module: Alice.Cli
-    ]
   end
 
   defp package do
