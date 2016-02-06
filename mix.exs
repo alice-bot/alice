@@ -8,7 +8,7 @@ defmodule Alice.Mixfile do
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      description: "A Slack bot",
-     escript: escript,
+     # escript: [main_module: Alice.Cli],
      package: package,
      deps: deps]
   end
@@ -33,12 +33,6 @@ defmodule Alice.Mixfile do
   defp deps do
     [{:slack, "~> 0.4.1"},
      {:websocket_client, github: "jeremyong/websocket_client"}]
-  end
-
-  defp escript do
-    [
-      main_module: Alice.Cli
-    ]
   end
 
   defp package do
