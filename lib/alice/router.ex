@@ -52,8 +52,15 @@ defmodule Alice.Router do
   @doc """
   Used internally to match route handlers
   """
-  def match_routes(connection) do
-    Enum.reduce(handlers, connection, &(&1.match_routes(&2)))
+  def match_routes(conn) do
+    Enum.reduce(handlers, conn, &(&1.match_routes(&2)))
+  end
+
+  @doc """
+  Used internally to match command handlers
+  """
+  def match_commands(conn) do
+    Enum.reduce(handlers, conn, &(&1.match_commands(&2)))
   end
 
   # GenServer API
@@ -76,6 +83,7 @@ defmodule Alice.Router do
       import Alice.Router.Helpers
       require Logger
       Module.register_attribute __MODULE__, :routes, accumulate: true
+      Module.register_attribute __MODULE__, :commands, accumulate: true
       @before_compile Alice.Router.Helpers
     end
   end

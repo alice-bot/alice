@@ -18,9 +18,11 @@ defmodule Alice.Bot do
 
   # Handle messages from subscribed channels
   def handle_message(message = %{type: "message"}, slack, state) do
-    conn = {message, slack, state}
-           |> Alice.Conn.make
-           |> Alice.Router.match_routes
+    conn = {message, slack, state} |> Alice.Conn.make
+    cond do
+      Alice.Conn.command?(conn) -> Alice.Router.match_commands(conn)
+      :else                     -> Alice.Router.match_routes(conn)
+    end
     {:ok, conn.state}
   end
 
