@@ -4,12 +4,10 @@ defmodule Alice do
   @doc """
   List of Alice route handlers to register upon startup
   """
-  def handlers do
-    [
-      Alice.Handlers.Help,
-      Alice.Handlers.Utils,
-      Alice.Handlers.Random
-    ]
+  def handlers(extras) do
+    [ Alice.Handlers.Help,
+      Alice.Handlers.Utils
+    ] ++ extras
   end
 
   @doc """
@@ -17,17 +15,17 @@ defmodule Alice do
 
   *Note:* does not start children in :test env
   """
-  def start(_type, _args) do
+  def start(_type, extras) do
     Mix.env
-    |> children
+    |> children(extras)
     |> Supervisor.start_link(strategy: :one_for_one, name: Alice.Supervisor)
   end
 
-  defp children(:test), do: []
-  defp children(_env) do
+  defp children(:test, _), do: []
+  defp children(_env, extras) do
     import Supervisor.Spec, warn: false
     [
-      worker(Alice.Router, [handlers]),
+      worker(Alice.Router, [handlers(extras)]),
       worker(Alice.Bot, [slack_token, %{}])
     ]
   end
