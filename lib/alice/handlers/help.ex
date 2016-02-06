@@ -4,22 +4,20 @@ defmodule Alice.Handlers.Help do
   command ~r/help/i, :help
 
   def handle(conn, :help) do
-    Enum.map(Alice.Router.handlers, fn(handler) ->
+    conn = reply("_Sure thing! Here are all the routes I know about…_", conn)
+
+    Enum.reduce(Alice.Router.handlers, conn, fn(handler, conn) ->
       """
-      *#{handler_name(handler)}*
+      *#{name(handler)}*
       #{routes(handler.routes)}
       #{commands(handler.commands)}
       """
+      |> reply(conn)
     end)
-    |> Enum.join
-    |> format_response
-    |> reply(conn)
   end
 
-  defp handler_name(handler) do
-    "Elixir." <> name = to_string(handler)
-    name
-  end
+  defp name(handler) when is_atom(handler), do: handler |> to_string |> name
+  defp name("Elixir." <> name), do: name
 
   defp routes([]), do: ""
   defp routes(routes) do
@@ -38,14 +36,6 @@ defmodule Alice.Handlers.Help do
     ```
     #{Enum.join(format_routes(commands), "\n")}
     ```
-    """
-  end
-
-  defp format_response(help_text) do
-    """
-    _Sure thing! Here are all the routes I know about…_
-
-    #{help_text}
     """
   end
 
