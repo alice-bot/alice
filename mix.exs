@@ -18,7 +18,7 @@ defmodule Alice.Mixfile do
   # Type "mix help compile.app" for more information
   def application do
     [applications: [:logger, :slack, :mix],
-     mod: {Alice, []}]
+     mod: {Alice, [Alice.Handlers.Random, Alice.Handlers.OhYouSo]}]
   end
 
   # Dependencies can be Hex packages:
