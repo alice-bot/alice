@@ -1,19 +1,34 @@
+![](http://i.imgur.com/UndMkm3.png)
+
 # Alice
 
-**TODO: Add description**
+A Lita-inspired Slack bot written in Elixir.
 
-## Installation
+Very much a work in progress, it works well, but there are some major architectural changes coming.
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed as:
+## Writing Route Handlers
 
-  1. Add alice to your list of dependencies in `mix.exs`:
+### Example
 
-        def deps do
-          [{:alice, "~> 0.0.1"}]
-        end
+```elixir
+defmodule Alice.Handlers.Hello do
+  use Alice.Router
 
-  2. Ensure alice is started before your application:
+  route ~r/\Ahello\z/i, :hello
+  route ~r/\Agoodbye\z/i, :goodbye
 
-        def application do
-          [applications: [:alice]]
-        end
+  def handle(conn, :hello),   do: "Hello, there!" |> reply(conn)
+  def handle(conn, :goodbye), do: "Goodbye!" |> reply(conn)
+end
+```
+
+### Registering Handlers
+
+In `mix.exs`, add your handler to the list of handlers to register on start
+
+```elixir
+def application do
+  [applications: [:mix, :logger, :slack],
+   mod: {Alice, [Alice.Handlers.Random, Alice.Handlers.Hello]}]
+end
+```
