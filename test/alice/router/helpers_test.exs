@@ -5,7 +5,7 @@ defmodule Slack do
 end
 
 defmodule Alice.Router.HelpersTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
   import Alice.Router.Helpers
 
   def conn do
