@@ -82,7 +82,9 @@ defmodule Alice.Router.Helpers do
         |> Enum.reduce(connection, fn({pattern, name}, conn) ->
           if Regex.match?(pattern, message.text) do
             Logger.info("#{__MODULE__} is responding to #{Alice.Conn.user(conn)} with #{name}")
-            conn = __MODULE__.handle(conn, name)
+            conn = conn
+                   |> Alice.Conn.add_captures(pattern)
+                   |> __MODULE__.handle(name)
           end
           conn
         end)

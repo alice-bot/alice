@@ -12,6 +12,10 @@ use Mix.Config
 
 config :alice, api_key: System.get_env("AWESOME_SLACK_KEY")
 
+config :alice, :google_images_cse_id, System.get_env("GOOGLE_CSE_ID")
+config :alice, :google_images_cse_token, System.get_env("GOOGLE_CSE_TOKEN")
+config :alice, :google_images_safe_search_level, :medium
+
 # And access this configuration in your application as:
 #
 #     Application.get_env(:alice, :api_key)
