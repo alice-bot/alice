@@ -2,6 +2,7 @@ defmodule Alice.Handlers.Utils do
   use Alice.Router
 
   route ~r/\Aping\z/i, :ping
+  command ~r/\bping\z/i, :ping
 
   def handle(conn, :ping) do
     ["PONG!", "Can I help you?", "Yes...I'm still here.", "I'm alive!"]
