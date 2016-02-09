@@ -4,9 +4,9 @@ defmodule Alice.Handlers.GoogleImages do
   @url "https://www.googleapis.com/customsearch/v1"
   @valid_safe_values [:high, :medium, :off]
 
-  @cse_id     Application.get_env(:alice, :google_images_cse_id)
-  @cse_token  Application.get_env(:alice, :google_images_cse_token)
-  @safe_value Application.get_env(:alice, :google_images_safe_search_level, :high)
+  def cse_id,     do: Application.get_env(:alice, :google_images_cse_id)
+  def cse_token,  do: Application.get_env(:alice, :google_images_cse_token)
+  def safe_value, do: Application.get_env(:alice, :google_images_safe_search_level, :high)
 
   route ~r/(image|img)(\s+me)? (?<term>.+)/i, :fetch
   command ~r/(image|img)(\s+me)? (?<term>.+)/i, :fetch
@@ -45,11 +45,11 @@ defmodule Alice.Handlers.GoogleImages do
       v: "1.0",
       searchType: "image",
       q: term,
-      safe: @safe_value,
+      safe: safe_value,
       fields: "items(link)",
       rsz: 8,
-      cx: @cse_id,
-      key: @cse_token
+      cx: cse_id,
+      key: cse_token
     ]
   end
 
