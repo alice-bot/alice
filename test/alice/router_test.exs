@@ -7,7 +7,7 @@ defmodule TestHandler do
 end
 
 defmodule Alice.RouterTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
   alias Alice.Router
 
   setup do
