@@ -18,8 +18,8 @@ defmodule Alice.Handlers.Random do
   route ~r/\balice,? I love you\b/i,                       :alice_love
 
   route ~r/\bmic ?drop\b/i,                                :mic_drop
-  route ~r/\bdrop( ?the)? ?mic\b/i,                        :mic_drop
-  route ~r/\bcach(e|ing) ?bug\??\b/i,                      :cache_bug
+  route ~r/\bdrop ?(the)? ?mic\b/i,                        :mic_drop
+  route ~r/\bclear ?(your)? ?cache\??\b/i,                 :cache_bug
   route ~r/\b(dis|this)( is)? gon(na)? be? g(u|oo)d\b/i,   :dis_gon_b_gud
   route ~r/\b(wub ?(wub)?|dub(step)?|d+rop.*bas(s|e))\b/i, :dddddrop_the_bass
   route ~r/\b(mad|angry|rage)\b/i,                         :u_mad_bro
