@@ -1,7 +1,7 @@
-defmodule HTTPoison do
+defmodule FakeHTTPoison do
   def get(url, headers \\ [], opts \\ []) do
     return = {:ok, %HTTPoison.Response{status_code: 200}}
-    Mock.setup({HTTPoison, :get}, {url, headers, opts}, default_return: return)
+    Mock.setup({FakeHTTPoison, :get}, {url, headers, opts}, default_return: return)
   end
 end
 
@@ -30,20 +30,20 @@ defmodule Alice.Handlers.GoogleImagesTest do
   end
 
   test "get_images returns the response" do
-    Mock.setup_return({HTTPoison, :get}, {:ok, response(:body)})
-    assert {:ok, :body} = GI.get_images("stuff")
+    Mock.setup_return({FakeHTTPoison, :get}, {:ok, response(:body)})
+    assert {:ok, :body} = GI.get_images("stuff", FakeHTTPoison)
   end
 
   test "get_images returns an error when there is an error" do
-    Mock.setup_return({HTTPoison, :get}, {:error, %HTTPoison.Error{reason: :reason}})
-    assert {:error, :reason} = GI.get_images("stuff")
+    Mock.setup_return({FakeHTTPoison, :get}, {:error, %HTTPoison.Error{reason: :reason}})
+    assert {:error, :reason} = GI.get_images("stuff", FakeHTTPoison)
   end
 
   test "get_images calls HTTPoison get with the correct options" do
     url = "https://www.googleapis.com/customsearch/v1"
-    GI.get_images("stuff")
+    GI.get_images("stuff", FakeHTTPoison)
 
-    assert_received {{HTTPoison, :get}, {^url, _headers, opts}}
+    assert_received {{FakeHTTPoison, :get}, {^url, _headers, opts}}
     assert "stuff" = opts[:params][:q]
   end
 end

@@ -25,8 +25,8 @@ defmodule Alice.Handlers.GoogleImages do
     |> hd
   end
 
-  def get_images(term) do
-    case HTTPoison.get(@url, [], params: query_params(term)) do
+  def get_images(term, http \\ HTTPoison) do
+    case http.get(@url, [], params: query_params(term)) do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
         {:ok, body}
       {:ok, response} ->
