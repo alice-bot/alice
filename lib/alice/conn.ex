@@ -13,8 +13,17 @@ defmodule Alice.Conn do
   end
 
   def user(conn=%__MODULE__{}) do
-    conn.slack.users[conn.message.user].name
+    user_data(conn).name
   end
+
+  def at_reply_user(conn=%__MODULE__{}) do
+    "<@#{user_data(conn).id}>"
+  end
+
+  defp user_data(conn=%__MODULE__{message: %{user: user_id}, slack: %{users: users}}) do
+    users[user_id]
+  end
+
 
   def add_captures(conn=%__MODULE__{}, pattern) do
     conn.message
