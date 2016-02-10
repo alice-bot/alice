@@ -45,16 +45,15 @@ defmodule Alice.Handlers.GoogleImages do
   end
 
   def query_params(term) do
-    [
-      v: "1.0",
+    [ v: "1.0",
       searchType: "image",
       q: term,
       safe: safe_value,
       fields: "items(link)",
       rsz: 8,
       cx: cse_id,
-      key: cse_token
-    ]
+      key: cse_token ]
+  end
   end
 
   defp select_image({:error, reason}), do: "Error: #{reason}"
