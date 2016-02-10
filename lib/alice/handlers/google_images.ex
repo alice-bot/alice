@@ -2,11 +2,15 @@ defmodule Alice.Handlers.GoogleImages do
   use Alice.Router
 
   @url "https://www.googleapis.com/customsearch/v1"
-  @valid_safe_values [:high, :medium, :off]
 
   def cse_id,     do: Application.get_env(:alice, :google_images_cse_id)
   def cse_token,  do: Application.get_env(:alice, :google_images_cse_token)
-  def safe_value, do: Application.get_env(:alice, :google_images_safe_search_level, :high)
+  def safe_value do
+    case Application.get_env(:alice, :google_images_safe_search_level) do
+      level when level in [:high, :medium, :off] -> level
+      _ -> :high
+    end
+  end
 
   route ~r/(image|img)(\s+me)? (?<term>.+)/i, :fetch
   command ~r/(image|img)(\s+me)? (?<term>.+)/i, :fetch
