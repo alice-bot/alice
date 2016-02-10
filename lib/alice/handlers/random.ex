@@ -14,8 +14,9 @@ defmodule Alice.Handlers.Random do
   route ~r/\bmind blown\b/i,                               :mind_blown
   route ~r/\bgames?\b/i,                                   :the_game
   route ~r/\bthanks,? alice\b/i,                           :thanks
-  route ~r/\bI love you,? alice\b/i,                       :alice_love
-  route ~r/\balice,? I love you\b/i,                       :alice_love
+  route ~r/\bI (love|:heart:) you,? alice\b/i,             :alice_love
+  route ~r/\balice,? I (love|:heart:) you\b/i,             :alice_love
+  command ~r/\bI (love|:heart:) you\b/i,                   :alice_love
 
   route ~r/\bmic ?drop\b/i,                                :mic_drop
   route ~r/\bdrop ?(the)? ?mic\b/i,                        :mic_drop
@@ -29,7 +30,7 @@ defmodule Alice.Handlers.Random do
   # route ~r/\b(ha(ha)+|lol)\b/i,                            :haha
   route ~r/\bto+t(ally|es)\b/i,                            :toooootally
 
-  # One Liners
+  # Handlers
 
   def handle(conn, :big_data),          do: "http://i.imgur.com/U6m4s4o.jpg" |> reply(conn)
   def handle(conn, :cocaine),           do: "http://i.imgur.com/A3QICEQ.gif" |> reply(conn)
@@ -42,10 +43,12 @@ defmodule Alice.Handlers.Random do
   def handle(conn, :this_is_sparta),    do: "http://i.imgur.com/ydJ3Vcr.jpg" |> reply(conn)
   def handle(conn, :the_game),          do: chance_reply(0.25, "http://i.imgur.com/Z8awIpt.png", "I lost the game", conn)
   def handle(conn, :thanks),            do: "no prob, bob" |> reply(conn)
-  def handle(conn, :alice_love),        do: "aww, I love you too :wink:" |> reply(conn)
 
-  # Random Choice
-
+  def handle(conn, :alice_love) do
+    [love|_rest] = conn.message.captures |> Enum.reverse
+    emoji = Enum.random(~w[:wink: :heart_eyes: :kissing_heart: :hugging_face:])
+    "aww, I #{love} you too, #{Alice.Conn.at_reply_user(conn)}! #{emoji}" |> reply(conn)
+  end
   def handle(conn, :mic_drop) do
     ~w[http://i.imgur.com/MpEqxwM.gif
       http://i.imgur.com/YANYG8d.gif
@@ -96,8 +99,6 @@ defmodule Alice.Handlers.Random do
       http://i.imgur.com/nmC7Hnb.jpg]
     |> random_reply(conn)
   end
-
-  # More Complex
 
   def handle(conn, :toooootally) do
     chance_reply 0.2,
