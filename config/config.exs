@@ -10,7 +10,11 @@ use Mix.Config
 
 # You can configure for your application as:
 
-config :alice, api_key: System.get_env("AWESOME_SLACK_KEY")
+case Mix.env do
+ :prod -> config :alice, api_key: System.get_env("AWESOME_SLACK_KEY")
+ :dev  -> config :alice, api_key: System.get_env("LAASY_SLACK_KEY")
+ _env  -> config :alice, api_key: ""
+end
 
 config :alice, :google_images_cse_id, System.get_env("GOOGLE_CSE_ID")
 config :alice, :google_images_cse_token, System.get_env("GOOGLE_CSE_TOKEN")
