@@ -34,10 +34,9 @@ defmodule Alice.Handlers.GoogleImages do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
         {:ok, body}
       {:ok, response} ->
-        Logger.warn("Google Images: Something went wrong")
-        IO.inspect response
-        IO.inspect query_params(term)
-        {:error, nil}
+        reason = parse_error(response)
+        Logger.warn("Google Images: Something went wrong, #{reason}")
+        {:error, reason}
       {:error, %HTTPoison.Error{reason: reason}} ->
         Logger.warn("Couldn't get image from Google: #{reason}")
         {:error, reason}
@@ -54,6 +53,15 @@ defmodule Alice.Handlers.GoogleImages do
       cx: cse_id,
       key: cse_token ]
   end
+
+  defp parse_error(response) do
+    response.body
+    |> Poison.decode!
+    |> get_in(["error", "errors"])
+    |> case do
+      [error|_] -> Map.get(error, "reason", "unknown")
+      _         -> "unknown"
+    end
   end
 
   defp select_image({:error, reason}), do: "Error: #{reason}"
