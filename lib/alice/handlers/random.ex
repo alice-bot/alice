@@ -15,6 +15,7 @@ defmodule Alice.Handlers.Random do
   route ~r/\bmind blown\b/i,                               :mind_blown
   route ~r/\bgames?\b/i,                                   :the_game
   route ~r/\bthanks,? alice\b/i,                           :thanks
+  route ~r/\b(a+w+ ?y+i+s+|bread ?crumbs)!*\b/i,           :aww_yiss
   route ~r/\bI (love|:heart:) you,? alice\b/i,             :alice_love
   route ~r/\balice,? I (love|:heart:) you\b/i,             :alice_love
   command ~r/\bI (love|:heart:) you\b/i,                   :alice_love
@@ -45,6 +46,7 @@ defmodule Alice.Handlers.Random do
   def handle(conn, :wat),               do: "http://i.imgur.com/IppKJ.jpg"   |> reply(conn)
   def handle(conn, :the_game),          do: chance_reply(0.25, "http://i.imgur.com/Z8awIpt.png", "I lost the game", conn)
   def handle(conn, :thanks),            do: "no prob, bob" |> reply(conn)
+  def handle(conn, :aww_yiss),          do: "http://i.imgur.com/SEQTUr3.jpg" |> reply(conn)
 
   def handle(conn, :alice_love) do
     [love|_rest] = conn.message.captures |> Enum.reverse
