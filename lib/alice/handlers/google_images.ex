@@ -12,8 +12,8 @@ defmodule Alice.Handlers.GoogleImages do
     end
   end
 
-  route ~r/(image|img)(\s+me)? (?<term>.+)/i, :fetch
-  command ~r/(image|img)(\s+me)? (?<term>.+)/i, :fetch
+  route ~r/(image|img)\s+me (?<term>.+)/i, :fetch
+  command ~r/(image|img)\s+me (?<term>.+)/i, :fetch
 
   def handle(conn, :fetch) do
     conn
