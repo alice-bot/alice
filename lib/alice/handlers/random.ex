@@ -11,7 +11,7 @@ defmodule Alice.Handlers.Random do
   route ~r/\bdev[- ]?ops\b/i,                              :devops
   route ~r/\bIT IS DECIDED\!?\b/,                          :it_is_decided
   route ~r/\bmadness\b/i,                                  :this_is_sparta
-  route ~r/\bWAT\b/i,                                      :wat
+  route ~r/\bwat\b/i,                                      :wat
   route ~r/\bmind blown\b/i,                               :mind_blown
   route ~r/\bgames?\b/i,                                   :the_game
   route ~r/\bthanks,? alice\b/i,                           :thanks
@@ -95,7 +95,6 @@ defmodule Alice.Handlers.Random do
   end
   def handle(conn, :goooood) do
     ~w[http://i.imgur.com/1jtr4HM.png
-      http://torwars.com/wp-content/uploads/2011/10/darth-sidious.jpg
       http://i.imgur.com/j83QRp7.png
       http://i.imgur.com/rm8NcQC.jpg
       http://i.imgur.com/nmC7Hnb.jpg]
