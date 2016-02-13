@@ -24,10 +24,18 @@ defmodule Alice.Conn do
     users[user_id]
   end
 
-
   def add_captures(conn=%__MODULE__{}, pattern) do
     conn.message
     |> Map.put(:captures, Regex.run(pattern, conn.message.text))
     |> make(conn.slack, conn.state)
+  end
+
+  def get_state_for(conn=%__MODULE__{}, namespace, default \\ nil) do
+    Map.get(conn.state, namespace, default)
+  end
+
+  def put_state_for(conn=%__MODULE__{}, namespace, value) do
+    new_state = Map.put(conn.state, namespace, value)
+    make(conn.message, conn.slack, new_state)
   end
 end
