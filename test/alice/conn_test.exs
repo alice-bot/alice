@@ -39,7 +39,31 @@ defmodule Alice.ConnTest do
   end
 
   test "add_captures adds regex captures to the conn" do
-    conn = Alice.Conn.add_captures(conn_with_text("hello test world"), ~r/(?:hello) (test) (?<term>.*)/)
+    conn = Conn.add_captures(conn_with_text("hello test world"), ~r/(?:hello) (test) (?<term>.*)/)
     assert conn.message.captures == ["hello test world", "test", "world"]
+  end
+
+  test "get_state_for returns the state for a given namespace" do
+    state = %{{:some, :namespace} => :value}
+    conn = Conn.make(:msg, :slk, state)
+    assert Conn.get_state_for(conn, {:some, :namespace}) == :value
+  end
+
+  test "get_state_for returns optional default if key isn't found" do
+    conn = Conn.make(:msg, :slk)
+    assert Conn.get_state_for(conn, :namespace, :default) == :default
+  end
+
+  test "put_state_for replaces the state for a given namespace" do
+    state = %{:namespace => :value}
+    conn = Conn.make(:msg, :slk, state)
+    conn = Conn.put_state_for(conn, :namespace, :new_value)
+    assert Conn.get_state_for(conn, :namespace) == :new_value
+  end
+
+  test "put_state_for preserves the rest of the conn" do
+    conn = Conn.make(:msg, :slk, %{other: :other})
+    conn = Conn.put_state_for(conn, :namespace, :value)
+    assert {:msg, :slk, :other} = {conn.message, conn.slack, conn.state.other}
   end
 end
