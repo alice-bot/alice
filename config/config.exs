@@ -9,34 +9,11 @@ use Mix.Config
 # 3rd-party users, it should be done in your "mix.exs" file.
 
 # You can configure for your application as:
-
-case Mix.env do
- :prod -> config :alice, api_key: System.get_env("AWESOME_SLACK_KEY")
- :dev  -> config :alice, api_key: System.get_env("LAASY_SLACK_KEY")
- _env  -> config :alice, api_key: ""
-end
-
 config :alice, :google_images_cse_id, System.get_env("GOOGLE_CSE_ID")
 config :alice, :google_images_cse_token, System.get_env("GOOGLE_CSE_TOKEN")
 config :alice, :google_images_safe_search_level, :medium
 
-# And access this configuration in your application as:
-#
-#     Application.get_env(:alice, :api_key)
-#
-# Or configure a 3rd-party app:
-
 case Mix.env do
-  :prod -> config :logger, level: :info, truncate: 512
-  :dev  -> config :logger, level: :info, truncate: 32_768
-  _env  -> config :logger, level: :info
+  env when env in [:prod, :dev] -> import_config "#{env}.exs"
+  _other                        -> import_config "other.exs"
 end
-
-
-# It is also possible to import configuration files, relative to this
-# directory. For example, you can emulate configuration per environment
-# by uncommenting the line below and defining dev.exs, test.exs and such.
-# Configuration from the imported file will override the ones defined
-# here (which is why it is important to import them last).
-#
-#     import_config "#{Mix.env}.exs"
