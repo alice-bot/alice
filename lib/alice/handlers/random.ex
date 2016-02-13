@@ -29,7 +29,7 @@ defmodule Alice.Handlers.Random do
   route ~r/\bno+pe+\b/i,                                   :nope_nope_nope
   route ~r/\bgooo+d\b/i,                                   :goooood
 
-  # route ~r/\b(ha(ha)+|lol)\b/i,                            :haha
+  route ~r/\b(ha(ha)+|lol)\b/i,                            :haha
   route ~r/\bto+t(ally|es)\b/i,                            :toooootally
 
   # Handlers
@@ -109,19 +109,14 @@ defmodule Alice.Handlers.Random do
                  "to#{String.duplicate("o", Enum.random(0..9))}tally",
                  conn
   end
-  # def handle(conn, name=:haha) do
-  #   path = state_path(name, :count)
-  #   (get_in(conn, path) || 0)
-  #   |> case do
-  #     93 ->
-  #       "https://s3.amazonaws.com/giphymedia/media/Ic97mPViHEG5O/giphy.gif"
-  #       |> reply(put_in(conn, path, 0))
-  #       count -> put_in(conn, path, count + 1)
-  #   end
-  # end
-
-  # defp state_path(name, keys) when is_list(keys) do
-  #   [:state, __MODULE__, name] ++ keys
-  # end
-  # defp state_path(name, key), do: state_path(name, [key])
+  def handle(conn, :haha) do
+    conn
+    |> Alice.Conn.get_state_for({__MODULE__, :haha}, 0)
+    |> case do
+      93 ->
+        "https://s3.amazonaws.com/giphymedia/media/Ic97mPViHEG5O/giphy.gif"
+        |> reply(Alice.Conn.put_state_for(conn, {__MODULE__, :haha}, 0))
+      count -> Alice.Conn.put_state_for(conn, {__MODULE__, :haha}, count + 1)
+    end
+  end
 end
