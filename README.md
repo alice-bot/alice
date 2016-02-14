@@ -4,31 +4,70 @@
 
 A Lita-inspired Slack bot written in Elixir.
 
-Very much a work in progress, it works well, but there are some major architectural changes coming.
+Very much a work in progress, but it works well enough.
 
-## Writing Route Handlers
+For an example bot, see the [awesome_friendz_alice](https://github.com/adamzaninovich/awesome_friendz_alice) bot.
+For an example handler, see [alice_google_images](https://github.com/adamzaninovich/alice_google_images).
 
-### Example
+# Creating a Route Handler Plugin
+
+## First Steps
+
+```sh
+mix new alice_google_images
+cd alice_google_images
+rm lib/alice_google_images.ex
+mkdir -p lib/alice/handlers
+touch lib/alice/handlers/google_images.ex
+```
+
+## Configuring the App
+
+In `mix.exs`, update `application` and `deps` to look like the following:
 
 ```elixir
-defmodule Alice.Handlers.Hello do
-  use Alice.Router
+def application do
+  [applications: []]
+end
 
-  route ~r/\Ahello\z/i, :hello
-  route ~r/\Agoodbye\z/i, :goodbye
-
-  def handle(conn, :hello),   do: "Hello, there!" |> reply(conn)
-  def handle(conn, :goodbye), do: "Goodbye!" |> reply(conn)
+defp deps do
+  [
+    {:websocket_client, github: "jeremyong/websocket_client"},
+    {:alice, "~> 0.1.0"}
+  ]
 end
 ```
 
-### Registering Handlers
+## Writing Route Handlers
 
-In `mix.exs`, add your handler to the list of handlers to register on start
+In `lib/alice/handlers/google_images.ex`:
+
+```elixir
+defmodule Alice.Handlers.GoogleImages do
+  use Alice.Router
+
+  command ~r/(image|img)\s+me (?<term>.+)/i, :fetch
+  route   ~r/(image|img)\s+me (?<term>.+)/i, :fetch
+
+  def handle(conn, :fetch) do
+    conn
+    |> extract_term
+    |> get_images
+    |> select_image
+    |> reply(conn)
+  end
+
+  #...
+end
+```
+
+## Registering Handlers
+
+In the `mix.exs` file of your bot, add your handler to the list of handlers to register on start
 
 ```elixir
 def application do
   [applications: [:alice],
-   mod: {Alice, [Alice.Handlers.Random, Alice.Handlers.Hello]}]
+   mod: {Alice, [Alice.Handlers.GoogleImages, ...]}]
 end
 ```
