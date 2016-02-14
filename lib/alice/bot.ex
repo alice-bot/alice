@@ -3,7 +3,14 @@ defmodule Alice.Bot do
 
   @token Application.get_env(:alice, :api_key)
 
-  def start_link, do: start_link(@token, %{})
+  def start_link, do: start_link(@token, init_state)
+
+  defp init_state do
+    case Application.get_env(:alice, :state_backend) do
+      :redis -> Alice.StateBackends.Redis.get_state
+      _else -> %{}
+    end
+  end
 
   def handle_connect(_slack, state) do
     IO.puts "Connected to Slack"
