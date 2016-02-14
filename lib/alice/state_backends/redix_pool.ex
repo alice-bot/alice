@@ -1,8 +1,6 @@
 defmodule Alice.StateBackends.RedixPool do
   use Supervisor
 
-  @redis_connection_params Application.get_env(:alice, :redis)
-
   def start_link do
     Supervisor.start_link(__MODULE__, [])
   end
@@ -15,8 +13,10 @@ defmodule Alice.StateBackends.RedixPool do
       max_overflow: 5,
     ]
 
+    redis_connection_params = Application.get_env(:alice, :redis)
+
     children = [
-      :poolboy.child_spec(:redix_poolboy, pool_opts, @redis_connection_params)
+      :poolboy.child_spec(:redix_poolboy, pool_opts, redis_connection_params)
     ]
 
     supervise(children, strategy: :one_for_one, name: __MODULE__)
