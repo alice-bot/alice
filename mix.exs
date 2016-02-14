@@ -3,41 +3,27 @@ defmodule Alice.Mixfile do
 
   def project do
     [app: :alice,
-     version: "0.0.4",
+     version: "0.1.0",
      elixir: "~> 1.2",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      description: "A Slack bot",
-     # escript: [main_module: Alice.Cli],
      package: package,
      deps: deps]
   end
 
-  # Configuration for the OTP application
-  #
-  # Type "mix help compile.app" for more information
   def application do
-    [applications: [:logger, :slack, :mix],
-     mod: {Alice, [Alice.Handlers.Random,
-                   Alice.Handlers.OhYouSo,
-                   Alice.Handlers.GoogleImages]}]
+    [applications: [:logger, :slack, :mix]]
   end
 
-  # Dependencies can be Hex packages:
-  #
-  #   {:mydep, "~> 0.3.0"}
-  #
-  # Or git/path repositories:
-  #
-  #   {:mydep, git: "https://github.com/elixir-lang/mydep.git", tag: "0.1.0"}
-  #
-  # Type "mix help deps" for more examples and options
   defp deps do
-    [{:poison, "~> 2.0.0"},
-     {:slack, "~> 0.4.0"},
-     {:redix, "~> 0.3.0"},
-     {:poolboy, "~> 1.5.0"},
-     {:websocket_client, github: "jeremyong/websocket_client"}]
+    [
+      {:websocket_client, github: "jeremyong/websocket_client"},
+      {:slack, "~> 0.4.0"},
+      {:poison, "~> 2.0.0"},
+      {:poolboy, "~> 1.5.0"},
+      {:redix, "~> 0.3.0"}
+    ]
   end
 
   defp package do

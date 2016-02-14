@@ -1,4 +1,5 @@
-%{"certifi": {:hex, :certifi, "0.3.0"},
+%{"alice": {:hex, :alice, "0.0.4"},
+  "certifi": {:hex, :certifi, "0.3.0"},
   "connection": {:hex, :connection, "1.0.2"},
   "exjsx": {:hex, :exjsx, "3.1.0"},
   "hackney": {:hex, :hackney, "1.4.8"},

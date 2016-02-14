@@ -28,7 +28,7 @@ In `mix.exs`, add your handler to the list of handlers to register on start
 
 ```elixir
 def application do
-  [applications: [:mix, :logger, :slack],
+  [applications: [:alice],
    mod: {Alice, [Alice.Handlers.Random, Alice.Handlers.Hello]}]
 end
 ```
