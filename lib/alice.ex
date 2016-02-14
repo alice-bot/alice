@@ -24,9 +24,16 @@ defmodule Alice do
   defp children(:test, _), do: []
   defp children(_env, extras) do
     import Supervisor.Spec, warn: false
-    [
+    state_backend_children ++ [
       worker(Alice.Router, [handlers(extras)]),
       worker(Alice.Bot, [])
     ]
+  end
+
+  defp state_backend_children do
+    case Application.get_env(:alice, :state_backend) do
+      :redis -> [Supervisor.Spec.supervisor(Alice.StateBackends.RedixPool, [])]
+      _other -> []
+    end
   end
 end

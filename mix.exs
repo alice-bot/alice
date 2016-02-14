@@ -3,7 +3,7 @@ defmodule Alice.Mixfile do
 
   def project do
     [app: :alice,
-     version: "0.0.3",
+     version: "0.0.4",
      elixir: "~> 1.2",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
@@ -33,8 +33,10 @@ defmodule Alice.Mixfile do
   #
   # Type "mix help deps" for more examples and options
   defp deps do
-    [{:poison, "~> 2.0"},
-     {:slack, "~> 0.4"},
+    [{:poison, "~> 2.0.0"},
+     {:slack, "~> 0.4.0"},
+     {:redix, "~> 0.3.0"},
+     {:poolboy, "~> 1.5.0"},
      {:websocket_client, github: "jeremyong/websocket_client"}]
   end
 
