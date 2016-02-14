@@ -20,7 +20,7 @@ defmodule Alice.Conn do
     "<@#{user_data(conn).id}>"
   end
 
-  defp user_data(conn=%__MODULE__{message: %{user: user_id}, slack: %{users: users}}) do
+  defp user_data(%__MODULE__{message: %{user: user_id}, slack: %{users: users}}) do
     users[user_id]
   end
 
@@ -31,11 +31,18 @@ defmodule Alice.Conn do
   end
 
   def get_state_for(conn=%__MODULE__{}, namespace, default \\ nil) do
-    Map.get(conn.state, namespace, default)
+    state_backend.get(conn.state, namespace, default)
   end
 
   def put_state_for(conn=%__MODULE__{}, namespace, value) do
-    new_state = Map.put(conn.state, namespace, value)
+    new_state = state_backend.put(conn.state, namespace, value)
     make(conn.message, conn.slack, new_state)
+  end
+
+  defp state_backend do
+    case Application.get_env(:alice, :state_backend) do
+      :redis -> Alice.StateBackends.Redis
+      _other -> Map
+    end
   end
 end
