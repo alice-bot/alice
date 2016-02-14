@@ -1,9 +1,7 @@
 defmodule Alice.Bot do
   use Slack
 
-  @token Application.get_env(:alice, :api_key)
-
-  def start_link, do: start_link(@token, init_state)
+  def start_link, do: start_link(Application.get_env(:alice, :api_key), init_state)
 
   defp init_state do
     case Application.get_env(:alice, :state_backend) do
