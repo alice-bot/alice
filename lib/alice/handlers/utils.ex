@@ -17,9 +17,7 @@ defmodule Alice.Handlers.Utils do
   def handle(conn, :debug_slack), do: inspect(conn.slack)|> format_code |> reply(conn)
   def handle(conn, :debug_conn),  do: inspect(conn)|> format_code |> reply(conn)
 
-  @doc """
-  Formats code for Slack
-  """
+  # Formats code for Slack
   defp format_code(code) do
     """
     ```
