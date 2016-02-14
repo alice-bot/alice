@@ -7,11 +7,13 @@ defmodule Alice.Router.Helpers do
   Reply to a message in a handler.
 
   Sends `response` back to the channel that triggered the handler.
+
+  Adds random tag to end of image urls to break Slack's img cache.
   """
-  def reply(response, conn = %{message: %{channel: channel}, slack: slack}) do
+  def reply(response, conn=%{message: %{channel: channel}, slack: slack}) do
     response
     |> uncache_images
-    |> Slack.send_message(channel, slack)
+    |> slack_api.send_message(channel, slack)
     conn
   end
 
@@ -27,6 +29,13 @@ defmodule Alice.Router.Helpers do
   defp random_tag do
     "0." <> tag = to_string(:rand.uniform)
     tag
+  end
+
+  defp slack_api do
+    case Mix.env do
+      :test -> FakeSlack
+      _else -> Slack
+    end
   end
 
   @doc """
@@ -71,13 +80,41 @@ defmodule Alice.Router.Helpers do
         conn
       end
 
+      @doc """
+      Get the state from an Alice.Conn struct, namespaced to this module
+      """
+      def get_state(conn=%Alice.Conn{}, key, default \\ nil) do
+        Alice.Conn.get_state_for(conn, namespace(key), default)
+      end
+
+      @doc """
+      Update the state of an Alice.Conn struct, namespaced to this module
+      """
+      def put_state(conn=%Alice.Conn{}, key, value) do
+        Alice.Conn.put_state_for(conn, namespace(key), value)
+      end
+
+      @doc """
+      All of the routes handled by this module
+      """
       def routes, do: @routes
+
+      @doc """
+      All of the commands handled by this module
+      """
       def commands, do: @commands
 
-      def match_routes(conn),   do: match(routes, conn)
+      @doc """
+      Match all routes in this module
+      """
+      def match_routes(conn), do: match(routes, conn)
+
+      @doc """
+      Match all commands in this module
+      """
       def match_commands(conn), do: match(commands, conn)
 
-      def match(patterns, connection=%Alice.Conn{message: message}) do
+      defp match(patterns, connection=%Alice.Conn{message: message}) do
         patterns
         |> Enum.reduce(connection, fn({pattern, name}, conn) ->
           if Regex.match?(pattern, message.text) do
