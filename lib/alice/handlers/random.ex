@@ -111,12 +111,12 @@ defmodule Alice.Handlers.Random do
   end
   def handle(conn, :haha) do
     conn
-    |> Alice.Conn.get_state_for({__MODULE__, :haha}, 0)
+    |> get_state(:haha_count, 0)
     |> case do
       93 ->
         "https://s3.amazonaws.com/giphymedia/media/Ic97mPViHEG5O/giphy.gif"
-        |> reply(Alice.Conn.put_state_for(conn, {__MODULE__, :haha}, 0))
-      count -> Alice.Conn.put_state_for(conn, {__MODULE__, :haha}, count + 1)
+        |> reply(put_state(conn, :haha_count, 0))
+      count -> put_state(conn, :haha_count, count + 1)
     end
   end
 end

@@ -1,7 +1,8 @@
 defmodule TestHandler do
   use Alice.Router
 
-  def match(_routes, _conn), do: send(self, :received)
+  # overwrite match for testing purposes
+  defp match(_routes, _conn), do: send(self, :received)
 
   route ~r/pattern/, :my_route
 end
@@ -32,5 +33,16 @@ defmodule Alice.RouterTest do
   test "match_routes calls match_routes on each handler" do
     Router.match_routes(:fake_conn)
     assert_received :received
+  end
+
+  test "it can put state" do
+    conn = Alice.Conn.make(:msg, :slk)
+    conn = TestHandler.put_state(conn, :key, :val)
+    assert conn.state == %{{TestHandler, :key} => :val}
+  end
+
+  test "it can get state" do
+    conn = Alice.Conn.make(:msg, :slk, %{{TestHandler, :key} => :val})
+    assert :val == TestHandler.get_state(conn, :key)
   end
 end

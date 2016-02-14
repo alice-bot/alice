@@ -1,4 +1,4 @@
-defmodule Slack do
+defmodule FakeSlack do
   def send_message(text, :channel, :slack) do
     send(self, {:msg, text})
   end
