@@ -14,6 +14,11 @@ defmodule Alice.StateBackends.Redis do
     Map.put(state, key, value)
   end
 
+  def delete(state, key) do
+    RedixPool.command!(["DEL", encode_key(key)])
+    Map.delete(state, key)
+  end
+
   def get_state do
     keys
     |> Enum.map(fn(key) -> {key, get(nil, key)} end)
