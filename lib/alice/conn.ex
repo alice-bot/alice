@@ -39,6 +39,11 @@ defmodule Alice.Conn do
     make(conn.message, conn.slack, new_state)
   end
 
+  def delete_state_for(conn=%__MODULE__{}, namespace) do
+    new_state = state_backend.delete(conn.state, namespace)
+    make(conn.message, conn.slack, new_state)
+  end
+
   defp state_backend do
     case Application.get_env(:alice, :state_backend) do
       :redis -> Alice.StateBackends.Redis
