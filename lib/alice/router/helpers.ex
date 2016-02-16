@@ -95,6 +95,13 @@ defmodule Alice.Router.Helpers do
       end
 
       @doc """
+      Deletes the entries in the state for a specific `key`.
+      """
+      def delete_state(conn=%Alice.Conn{}, key) do
+        Alice.Conn.delete_state_for(conn, namespace(key))
+      end
+
+      @doc """
       All of the routes handled by this module
       """
       def routes, do: @routes
