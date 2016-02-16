@@ -9,7 +9,9 @@ defmodule Alice.Mixfile do
      start_permanent: Mix.env == :prod,
      description: "A Slack bot",
      package: package,
-     deps: deps]
+     deps: deps,
+     docs: [logo: "alice.png", extras: ["README.md"]]
+    ]
   end
 
   def application do
@@ -18,11 +20,13 @@ defmodule Alice.Mixfile do
 
   defp deps do
     [
+      {:earmark, ">= 0.0.0", only: :dev},
+      {:ex_doc,  ">= 0.0.0", only: :dev},
       {:websocket_client, github: "jeremyong/websocket_client"},
-      {:slack, "~> 0.4.0"},
-      {:poison, "~> 2.0.0"},
+      {:slack,   "~> 0.4.0"},
+      {:poison,  "~> 2.0.0"},
       {:poolboy, "~> 1.5.0"},
-      {:redix, "~> 0.3.0"}
+      {:redix,   "~> 0.3.0"}
     ]
   end
 
@@ -31,6 +35,6 @@ defmodule Alice.Mixfile do
      maintainers: ["Adam Zaninovich"],
      licenses: ["MIT"],
      links: %{"GitHub" => "https://github.com/adamzaninovich/alice",
-              "Docs"   => "https://github.com/adamzaninovich/alice"}]
+              "Docs"   => "http://hexdocs.pm/alice/readme.html"}]
   end
 end
