@@ -59,6 +59,44 @@ defmodule Alice.Router.Helpers do
     end
   end
 
+  @doc """
+  Delay a reply. Alice will show to be typing while the message is delayed.
+
+  Returns the task, not a conn. If you need to get the conn, you can
+  use `Task.await(task)`, but this will block the handle process until the delay
+  finishes. If you don't need the updated conn, simply return the conn that was
+  passed to delayed_reply.
+
+  Examples
+
+      def handle(conn, :hello) do
+        "hello" |> delayed_reply(1000, conn)
+        conn
+      end
+
+      def handle(conn, :hello) do
+        task = delayed_reply("hello", 1000, conn)
+        # other work...
+        Task.await(task)
+      end
+  """
+  def delayed_reply(message, milliseconds, conn) do
+    task = Task.async fn ->
+      indicate_typing(conn)
+      :timer.sleep(milliseconds)
+      reply(message, conn)
+    end
+    task
+  end
+
+  @doc """
+  Indicate typing.
+  """
+  def indicate_typing(conn=%{message: %{channel: channel}, slack: slack}) do
+    slack_api.indicate_typing(channel, slack)
+    conn
+  end
+
   @doc "Adds a route to the handler"
   defmacro route(pattern, name) do
     quote do
