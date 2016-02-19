@@ -10,14 +10,14 @@ A Lita-inspired Slack bot written in Elixir.
 
 Very much a work in progress, but it works well enough.
 
-For an example bot, see the [awesome_friendz_alice] bot. For an example
-handler, see [alice_google_images].
+For an example bot, see the [Awesome Friendz] bot. For an example
+handler, see [Google Images Handler].
 
 You'll need a Slack API token which can be retrieved from the [Web API page] or
 by creating a new [bot integration].
 
-[awesome_friendz_alice]: https://github.com/adamzaninovich/awesome_friendz_alice
-[alice_google_images]: https://github.com/adamzaninovich/alice_google_images
+[Awesome Friendz]: https://github.com/adamzaninovich/awesome_friendz_alice
+[Google Images Handler]: https://github.com/adamzaninovich/alice_google_images
 
 [Web API page]: https://api.slack.com/web
 [bot integration]: https://my.slack.com/services/new/bot
