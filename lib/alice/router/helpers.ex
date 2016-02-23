@@ -21,7 +21,7 @@ defmodule Alice.Router.Helpers do
     ~w[gif png jpg jpeg]
     |> Enum.any?(&(potential_image |> String.downcase |> String.ends_with?(&1)))
     |> case do
-      true -> "#{potential_image}?#{random_tag}"
+      true -> "#{potential_image}##{random_tag}"
       _    -> potential_image
     end
   end
