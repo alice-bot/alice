@@ -130,9 +130,10 @@ Your bot should be good to go. :metal:
 ```sh
 mix new alice_google_images
 cd alice_google_images
-rm lib/alice_google_images.ex
+rm lib/alice_google_images.ex test/alice_google_images_test.exs
 mkdir -p lib/alice/handlers
-touch lib/alice/handlers/google_images.ex
+mkdir -p test/alice/handlers
+touch lib/alice/handlers/google_images.ex test/alice/handlers/google_images_test.exs
 ```
 
 ### Configuring the App
@@ -147,7 +148,7 @@ end
 defp deps do
   [
     {:websocket_client, github: "jeremyong/websocket_client"},
-    {:alice, "~> 0.1.0"}
+    {:alice, "~> 0.1.4"}
   ]
 end
 ```
