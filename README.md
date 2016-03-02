@@ -22,6 +22,23 @@ by creating a new [bot integration].
 [Web API page]: https://api.slack.com/web
 [bot integration]: https://my.slack.com/services/new/bot
 
+## Handler Plugins
+
+Alice has a plug in system that allows you to customize the functionality of
+your bot instance. See [the docs] for more information about creating your own
+handlers.
+
+[the docs]: https://github.com/adamzaninovich/alice#creating-a-route-handler-plugin
+
+### Known Handlers
+
+* Alice Against Humanity: [hex](https://hex.pm/packages/alice_against_humanity), [code](https://github.com/adamzaninovich/alice_against_humanity)
+* Alice Google Images: [hex](https://hex.pm/packages/alice_google_images), [code](https://github.com/adamzaninovich/alice_google_images)
+* Alice Karma: [hex](https://hex.pm/packages/alice_karma), [code](https://github.com/adamzaninovich/alice_karma)
+* Alice Shizzle: [hex](https://hex.pm/packages/alice_shizzle), [code](https://github.com/notdevinclark/alice_shizzle)
+
+If you write your own handler, please submit a pull request and update this list!
+
 ## Creating Your Own Bot With Alice
 
 ### Create the Project
