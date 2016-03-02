@@ -25,8 +25,9 @@ defmodule Alice.Bot do
   def handle_message(message = %{type: "message"}, slack, state) do
     conn = {message, slack, state} |> Alice.Conn.make
     conn = cond do
-      Alice.Conn.command?(conn) -> Alice.Router.match_commands(conn)
-      :else                     -> Alice.Router.match_routes(conn)
+      Alice.Earmuffs.blocked?(conn) -> Alice.Earmuffs.unblock(conn)
+      Alice.Conn.command?(conn)     -> Alice.Router.match_commands(conn)
+      :else                         -> Alice.Router.match_routes(conn)
     end
     {:ok, conn.state}
   end
