@@ -5,7 +5,8 @@ defmodule Alice do
   List of Alice route handlers to register upon startup
   """
   def handlers(extras) do
-    [ Alice.Handlers.Help,
+    [ Alice.Earmuffs,
+      Alice.Handlers.Help,
       Alice.Handlers.Utils
     ] ++ extras
   end
