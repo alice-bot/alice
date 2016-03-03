@@ -1,23 +1,23 @@
 # Alice
 
-![](http://i.imgur.com/UndMkm3.png)
+![Alice Logo](http://i.imgur.com/UndMkm3.png)
 
-[![Hex.pm](https://img.shields.io/hexpm/l/alice.svg)](https://hex.pm/packages/alice)
-[![Hex.pm](https://img.shields.io/hexpm/v/alice.svg)](https://hex.pm/packages/alice)
-[![Hex.pm](https://img.shields.io/hexpm/dt/alice.svg)](https://hex.pm/packages/alice)
+[![License: MIT](https://img.shields.io/hexpm/l/alice.svg)](https://hex.pm/packages/alice)
+[![Hex Version](https://img.shields.io/hexpm/v/alice.svg)](https://hex.pm/packages/alice)
+[![Hex Downloads](https://img.shields.io/hexpm/dt/alice.svg)](https://hex.pm/packages/alice)
 
 A Lita-inspired Slack bot written in Elixir.
 
 Very much a work in progress, but it works well enough.
 
-For an example bot, see the [Awesome Friendz] bot. For an example
+For an example bot, see the [Active Alice] bot. For an example
 handler, see [Google Images Handler].
 
 You'll need a Slack API token which can be retrieved from the [Web API page] or
 by creating a new [bot integration].
 
-[Awesome Friendz]: https://github.com/adamzaninovich/awesome_friendz_alice
-[Google Images Handler]: https://github.com/adamzaninovich/alice_google_images
+[Active Alice]: https://github.com/adamzaninovich/active-alice
+[Google Images Handler]: https://github.com/alice-bot/alice_google_images
 
 [Web API page]: https://api.slack.com/web
 [bot integration]: https://my.slack.com/services/new/bot
@@ -47,7 +47,7 @@ Create a new mix project.
 ```sh
 mix new my_bot
 cd my_bot
-rm lib/my_bot.ex
+rm lib/my_bot.ex test/my_bot_test.exs
 ```
 
 ### Configure the Application
@@ -68,7 +68,11 @@ end
 
 In the same file, configure the app, registering any handlers you want. You can
 add handlers through dependencies, or you can write them directly in your bot
-instance. (We recommend putting them in `lib/alice/handlers/my_handler.ex`)
+instance. (See [Writing Route Handlers] for information on how to write a
+handler. We recommend putting them in `lib/alice/handlers/`.)
+
+[Writing Route Handlers]: https://github.com/alice-bot/alice#writing-route-handlers
+
 ```elixir
 def application do
   [ applications: [:alice],
@@ -114,9 +118,9 @@ always_rebuild=false
 post_compile="pwd"
 ```
 
-Create a `Procfile` at the root of your project. If you don't create the proc as
-a `worker`, Heroku will assume it's a web process and will terminate it for not
-binding to port 80.
+Create a `Procfile` at the root of your project. If you don't create the proc
+as a `worker`, Heroku will assume it's a web process and will terminate it for
+not binding to port 80.
 ```ruby
 worker: mix run --no-halt
 ```
