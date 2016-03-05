@@ -14,14 +14,20 @@ defmodule Alice.Handlers.Utils do
     |> random_reply(conn)
   end
 
-  @doc "`info` - info about Alice"
+  @doc "`info` - info about Alice and the system"
   def info(conn) do
-    %{total_heap_size: heap, stack_size: stack} = Process.group_leader
-                                                  |> Process.info
-                                                  |> Enum.into(%{})
+    mem         = :erlang.memory
+    total_mem   = mem[:total]     |> bytes_to_megabytes
+    process_mem = mem[:processes] |> bytes_to_megabytes
+
     conn
     |> reply("Alice #{alice_version} - https://github.com/alice-bot")
-    |> reply("Total heap size: #{heap} - Stack size: #{stack}")
+    |> reply("Total memory: #{total_mem}MB - Allocated to processes: #{process_mem}MB")
+  end
+
+  defp bytes_to_megabytes(bytes) do
+    bytes / :math.pow(1024,2)
+    |> Float.round(2)
   end
 
   defp alice_version, do: alice_version(Application.loaded_applications)
