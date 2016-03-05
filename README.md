@@ -1,6 +1,6 @@
 # Alice
 
-![Alice Logo](http://i.imgur.com/i1nqncI.png)
+<img src="http://i.imgur.com/i1nqncI.png" alt="Alice Logo" title="Alice" align="right"/>
 
 [![License: MIT](https://img.shields.io/hexpm/l/alice.svg)](https://hex.pm/packages/alice)
 [![Hex Version](https://img.shields.io/hexpm/v/alice.svg)](https://hex.pm/packages/alice)
