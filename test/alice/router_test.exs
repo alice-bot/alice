@@ -2,7 +2,7 @@ defmodule TestHandler do
   use Alice.Router
 
   # overwrite match for testing purposes
-  defp match(_routes, _conn), do: send(self, :received)
+  defp match(routes, :fake_conn), do: send(self, {:received, routes})
 
   route ~r/pattern/, :my_route
 end
@@ -32,7 +32,7 @@ defmodule Alice.RouterTest do
 
   test "match_routes calls match_routes on each handler" do
     Router.match_routes(:fake_conn)
-    assert_received :received
+    assert_received {:received, [{~r/pattern/, :my_route}]}
   end
 
   test "it can put state" do

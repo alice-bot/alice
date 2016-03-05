@@ -6,7 +6,12 @@ defmodule Alice.Earmuffs do
 
   command ~r/\bearmuffs\b/i, :earmuffs
 
-  def handle(conn, :earmuffs), do: reply("#{Conn.at_reply_user(conn)} :mute:", block(conn))
+  @doc """
+  `earmuffs` - Alice will ignore your next message in the current channel
+  * Scoped to user and channel
+  * Lasts for a single message
+  """
+  def earmuffs(conn), do: reply("#{Conn.at_reply_user(conn)} :mute:", block(conn))
 
   def block(conn=%Conn{message: %{user: user, channel: channel}}) do
     earmuffs = get_state(conn, :earmuffs, %{})
