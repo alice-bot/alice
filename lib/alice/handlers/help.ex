@@ -17,7 +17,7 @@ defmodule Alice.Handlers.Help do
     [ ">*#{name(handler)}*",
       format_routes("Routes", handler.routes, handler),
       format_routes("Commands", handler.commands, handler), "" ]
-    |> Enum.reject(&is_nil/1)
+    |> compact
     |> Enum.join("\n")
   end
 
@@ -29,14 +29,18 @@ defmodule Alice.Handlers.Help do
     routes = Enum.map(routes, fn({_,name}) -> name end)
 
     docs = Code.get_docs(handler, :docs)
-           |> Enum.map(fn({{name,_},_,_,_,text}) -> {name, text} end)
-           |> Enum.filter(fn({name,_}) -> name in routes end)
-           |> Enum.map(fn({name,text}) ->
-             [">    _#{name}_", format_text(text, title)]
-             |> Enum.join("\n")
-           end)
+           |> Enum.map(fn({{name,_},_,_,_,text}) -> {title, name, text} end)
+           |> Enum.filter(fn({_,name,_}) -> name in routes end)
+           |> Enum.map(&format_route/1)
+           |> compact
 
     [">", "> *#{title}:*" | docs]
+    |> Enum.join("\n")
+  end
+
+  defp format_route({_,_,false}), do: nil
+  defp format_route({title, name, text}) do
+    [">    _#{name}_", format_text(text, title)]
     |> Enum.join("\n")
   end
 
@@ -51,4 +55,6 @@ defmodule Alice.Handlers.Help do
 
   defp prefix_command("Commands", "`" <> line), do: "`@alice #{line}"
   defp prefix_command(_, line), do: line
+
+  defp compact(list), do: list |> Enum.reject(&is_nil/1)
 end
