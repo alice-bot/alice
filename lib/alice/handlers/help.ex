@@ -3,72 +3,52 @@ defmodule Alice.Handlers.Help do
 
   command ~r/help/i, :help
 
-  def handle(conn, :help) do
-    conn = reply("_Sure thing! Here are all the routes I know about…_", conn)
+  @doc "`help` - outputs the help text for each route in every handler"
+  def help(conn) do
+    [ "_Sure thing!_",
+      "_Commands require you @ mention me, routes do not_",
+      "_Here are all the routes and commands I know about…_"
+      | Enum.map(Alice.Router.handlers, &help_for_handler/1) ]
+    |> Enum.join("\n\n")
+    |> reply(conn)
+  end
 
-    Enum.reduce(Alice.Router.handlers, conn, fn(handler, conn) ->
-      """
-      *#{name(handler)}*
-      #{routes(handler.routes)}
-      #{commands(handler.commands)}
-      """
-      |> reply(conn)
-    end)
+  def help_for_handler(handler) do
+    [ ">*#{name(handler)}*",
+      format_routes("Routes", handler.routes, handler),
+      format_routes("Commands", handler.commands, handler), "" ]
+    |> Enum.reject(&is_nil/1)
+    |> Enum.join("\n")
   end
 
   defp name(handler) when is_atom(handler), do: handler |> to_string |> name
   defp name("Elixir." <> name), do: name
 
-  defp routes([]), do: ""
-  defp routes(routes) do
-    """
-    _Routes:_
-    ```
-    #{Enum.join(format_routes(routes), "\n")}
-    ```
-    """
+  defp format_routes(_,[],_), do: nil
+  defp format_routes(title, routes, handler) do
+    routes = Enum.map(routes, fn({_,name}) -> name end)
+
+    docs = Code.get_docs(handler, :docs)
+           |> Enum.map(fn({{name,_},_,_,_,text}) -> {name, text} end)
+           |> Enum.filter(fn({name,_}) -> name in routes end)
+           |> Enum.map(fn({name,text}) ->
+             [">    _#{name}_", format_text(text, title)]
+             |> Enum.join("\n")
+           end)
+
+    [">", "> *#{title}:*" | docs]
+    |> Enum.join("\n")
   end
 
-  defp commands([]), do: ""
-  defp commands(commands) do
-    """
-    _Commands:_
-    ```
-    #{Enum.join(format_routes(commands), "\n")}
-    ```
-    """
+  defp format_text(nil,_), do: ">        _no documentation provided_"
+  defp format_text(text, title) do
+    text
+    |> String.strip
+    |> String.split("\n")
+    |> Enum.map(fn(line) -> ">        #{prefix_command(title, line)}" end)
+    |> Enum.join("\n")
   end
 
-  defp format_routes([]), do: []
-  defp format_routes(routes) do
-    len = max_length(routes)
-    routes
-    |> Enum.map(fn({ptn, name}) ->
-      [format_handler_name(name, len), format_pattern(ptn)]
-      |> Enum.join
-    end)
-  end
-
-  def max_length(routes) do
-    routes
-    |> Enum.map(fn({_, name}) -> to_string(name) end)
-    |> Enum.sort_by(&byte_size/1)
-    |> Enum.reverse
-    |> hd
-    |> byte_size
-    |> + 2
-  end
-
-  defp format_handler_name(name, len) do
-    name
-    |> to_string
-    |> String.replace("_", " ")
-    |> fn(str) -> "#{str}:" end.()
-    |> String.ljust(len)
-  end
-
-  defp format_pattern(pattern) do
-    "~r" <> ptn = inspect(pattern)
-    ptn
-  end
+  defp prefix_command("Commands", "`" <> line), do: "`@alice #{line}"
+  defp prefix_command(_, line), do: line
 end

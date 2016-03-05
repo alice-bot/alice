@@ -27,17 +27,17 @@ defmodule Alice.Router.HelpersTest do
   end
 
   test "chance_reply, when chance passes, replies with the given message" do
-    chance_reply(1, "always", conn)
+    chance_reply(conn, 1, "always")
     assert_received {:msg, "always"}
   end
 
   test "chance_reply, when chance does not pass, when not given negative message, does not reply" do
-    chance_reply(0, "never", conn)
+    chance_reply(conn, 0, "never")
     refute_received {:msg, _}
   end
 
   test "chance_reply, when chance does not pass, when given negative message, replies with negative" do
-    chance_reply(0, "positive", "negative", conn)
+    chance_reply(conn, 0, "positive", "negative")
     refute_received {:msg, "positive"}
     assert_received {:msg, "negative"}
   end
