@@ -122,16 +122,6 @@ defmodule Alice.Router.Helpers do
   defmacro __before_compile__(_env) do
     quote do
       @doc """
-      Callback. This function gets called when a route with `name` matches
-
-      Must return an `Alice.Conn`.
-      """
-      def handle(conn, name) do
-        Logger.warn("#{__MODULE__}.handle(conn, :#{name}) is not defined")
-        conn
-      end
-
-      @doc """
       Get the state from an Alice.Conn struct, namespaced to this module
       """
       def get_state(conn=%Conn{}, key, default \\ nil) do
