@@ -8,13 +8,17 @@
 
 A Lita-inspired Slack bot written in Elixir.
 
-Very much a work in progress, but it works well enough.
+Some breaking changes have been introduced in version [0.2.0]. Please see the
+[wiki page] for more info.
 
 For an example bot, see the [Active Alice] bot. For an example
 handler, see [Google Images Handler].
 
 You'll need a Slack API token which can be retrieved from the [Web API page] or
 by creating a new [bot integration].
+
+[0.2.0]: https://hex.pm/packages/alice/0.2.0
+[wiki page]: https://github.com/alice-bot/alice/wiki/Alice-0.2.0-Changes
 
 [Active Alice]: https://github.com/adamzaninovich/active-alice
 [Google Images Handler]: https://github.com/alice-bot/alice_google_images
@@ -59,9 +63,9 @@ include the `websocket_client` dependency because it's not a [hex] package.
 defp deps do
   [
     {:websocket_client, github: "jeremyong/websocket_client"},
-    {:alice,                  "~> 0.1.0"},
-    {:alice_against_humanity, "~> 0.0.1"},
-    {:alice_google_images,    "~> 0.0.1"}
+    {:alice,                  "~> 0.2.0"},
+    {:alice_against_humanity, "~> 0.1.0"},
+    {:alice_google_images,    "~> 0.1.0"}
   ]
 end
 ```
@@ -169,7 +173,7 @@ end
 defp deps do
   [
     {:websocket_client, github: "jeremyong/websocket_client"},
-    {:alice, "~> 0.1.4"}
+    {:alice, "~> 0.2.0"}
   ]
 end
 ```
@@ -185,7 +189,8 @@ defmodule Alice.Handlers.GoogleImages do
   command ~r/(image|img)\s+me (?<term>.+)/i, :fetch
   route   ~r/(image|img)\s+me (?<term>.+)/i, :fetch
 
-  def handle(conn, :fetch) do
+  @doc "`img me alice in wonderland` - gets a random image from Google Images"
+  def fetch(conn) do
     conn
     |> extract_term
     |> get_images
