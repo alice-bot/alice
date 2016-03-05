@@ -10,7 +10,7 @@ defmodule Alice.Mixfile do
      description: "A Slack bot",
      package: package,
      deps: deps,
-     docs: [logo: "alice.png", extras: ["README.md"]]
+     docs: [logo: "resources/logo.png", extras: ["README.md"]]
     ]
   end
 
