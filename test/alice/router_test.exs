@@ -20,7 +20,7 @@ defmodule Alice.RouterTest do
     assert TestHandler.routes == [{~r/pattern/, :my_route}]
   end
 
-  test "starting the router with an array of handlers registers them immediately" do
+  test "starting the router with an array of handlers registers the handlers" do
     assert Router.handlers == [TestHandler]
   end
 

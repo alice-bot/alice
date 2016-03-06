@@ -1,4 +1,5 @@
 defmodule Alice.Handlers.Utils do
+  @moduledoc "Some utility routes for Alice"
   use Alice.Router
 
   route   ~r/\Aping\z/i,        :ping
@@ -16,18 +17,17 @@ defmodule Alice.Handlers.Utils do
 
   @doc "`info` - info about Alice and the system"
   def info(conn) do
-    mem         = :erlang.memory
-    total_mem   = mem[:total]     |> bytes_to_megabytes
-    process_mem = mem[:processes] |> bytes_to_megabytes
+    mem     = :erlang.memory
+    total   = "Total memory: #{bytes_to_megabytes(mem[:total])}MB"
+    process = "Allocated to processes: #{bytes_to_megabytes(mem[:process])}MB"
 
     conn
     |> reply("Alice #{alice_version} - https://github.com/alice-bot")
-    |> reply("Total memory: #{total_mem}MB - Allocated to processes: #{process_mem}MB")
+    |> reply("#{total} - #{process}")
   end
 
   defp bytes_to_megabytes(bytes) do
-    bytes / :math.pow(1024,2)
-    |> Float.round(2)
+    Float.round(bytes / :math.pow(1024,2), 2)
   end
 
   defp alice_version, do: alice_version(Application.loaded_applications)
@@ -36,13 +36,13 @@ defmodule Alice.Handlers.Utils do
   defp alice_version([_app|apps]), do: alice_version(apps)
 
   @doc "`debug state` - the current state data for debugging"
-  def debug_state(conn), do: inspect(conn.state)|> format_code |> reply(conn)
+  def debug_state(conn), do: conn.state |> inspect |> format_code |> reply(conn)
 
   @doc "`debug slack` - the current slack data for debugging"
-  def debug_slack(conn), do: inspect(conn.slack)|> format_code |> reply(conn)
+  def debug_slack(conn), do: conn.slack |> inspect |> format_code |> reply(conn)
 
   @doc "`debug conn` - the current conn data for debugging"
-  def debug_conn(conn),  do: inspect(conn)|> format_code |> reply(conn)
+  def debug_conn(conn),  do: conn |> inspect |> format_code |> reply(conn)
 
   # Formats code for Slack
   defp format_code(code) do
