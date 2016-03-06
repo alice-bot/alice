@@ -1,7 +1,12 @@
 defmodule Alice.Bot do
+  @moduledoc "Adapter for Slack"
   use Slack
 
-  def start_link, do: start_link(Application.get_env(:alice, :api_key), init_state)
+  def start_link do
+    :alice
+    |> Application.get_env(:api_key)
+    |> start_link(init_state)
+  end
 
   defp init_state do
     case Application.get_env(:alice, :state_backend) do
@@ -27,7 +32,7 @@ defmodule Alice.Bot do
     conn = cond do
       Alice.Earmuffs.blocked?(conn) -> Alice.Earmuffs.unblock(conn)
       Alice.Conn.command?(conn)     -> Alice.Router.match_commands(conn)
-      :else                         -> Alice.Router.match_routes(conn)
+      true                          -> Alice.Router.match_routes(conn)
     end
     {:ok, conn.state}
   end

@@ -1,5 +1,5 @@
 defmodule Alice.Router.Helpers do
-  @docmodule """
+  @moduledoc """
   Helpers to make replying easier in handlers
   """
 
@@ -13,7 +13,9 @@ defmodule Alice.Router.Helpers do
 
   Adds random tag to end of image urls to break Slack's img cache.
   """
-  def reply(response, conn=%Conn{}), do: reply(conn, response)
+  @spec reply(String.t, Conn.t) :: Conn.t
+  @spec reply(Conn.t, String.t) :: Conn.t
+  def reply(response, conn) when is_binary(response), do: reply(conn, response)
   def reply(conn=%Conn{message: %{channel: channel}, slack: slack}, response) do
     response
     |> uncache_images
@@ -46,6 +48,8 @@ defmodule Alice.Router.Helpers do
   Takes a conn and a list of possible response in any order.
   Replies with a random element of the `list` provided.
   """
+  @spec random_reply(list, Conn.t) :: Conn.t
+  @spec random_reply(Conn.t, list) :: Conn.t
   def random_reply(list, conn=%Conn{}), do: random_reply(conn, list)
   def random_reply(conn=%Conn{}, list), do: list |> Enum.random |> reply(conn)
 
@@ -54,16 +58,18 @@ defmodule Alice.Router.Helpers do
 
   Examples
 
-      > chance_reply(conn, 0.5, "this will be sent half the time, otherwise nothing will be sent")
-      > chance_reply(conn, 0.25, "this will be sent 25% of the time", "sent 75% of the time")
+      > chance_reply(conn, 0.5, "sent half the time")
+      > chance_reply(conn, 0.25, "sent 25% of the time", "sent 75% of the time")
   """
+  @spec chance_reply(Conn.t, float, String.t, String.t) :: Conn.t
   def chance_reply(conn=%Conn{}, chance, positive, negative \\ :noreply) do
-    case {:rand.uniform <= chance, negative} do
-      {true,  _}        -> reply(positive, conn)
-      {false, :noreply} -> conn
-      {false, negative} -> reply(negative, conn)
-    end
+    {:rand.uniform <= chance, negative}
+    |> do_chance_reply(positive, conn)
   end
+
+  defp do_chance_reply({true, _}, positive, conn),  do: reply(positive, conn)
+  defp do_chance_reply({false, :noreply}, _, conn), do: conn
+  defp do_chance_reply({false, negative}, _, conn), do: reply(negative, conn)
 
   @doc """
   Delay a reply. Alice will show to be typing while the message is delayed.
@@ -88,6 +94,8 @@ defmodule Alice.Router.Helpers do
         Task.await(task)
       end
   """
+  @spec delayed_reply(Conn.t, String.t, integer) :: Task.t
+  @spec delayed_reply(String.t, integer, Conn.t) :: Task.t
   def delayed_reply(msg, ms, conn=%Conn{}), do: delayed_reply(conn, msg, ms)
   def delayed_reply(conn=%Conn{}, message, milliseconds) do
     Task.async(fn ->
@@ -100,6 +108,7 @@ defmodule Alice.Router.Helpers do
   @doc """
   Indicate typing.
   """
+  @spec indicate_typing(Conn.t) :: Conn.t
   def indicate_typing(conn=%Conn{message: %{channel: channel}, slack: slack}) do
     slack_api.indicate_typing(channel, slack)
     conn
@@ -166,7 +175,8 @@ defmodule Alice.Router.Helpers do
         patterns
         |> Enum.reduce(connection, fn({pattern, name}, conn) ->
           if Regex.match?(pattern, message.text) do
-            Logger.info("#{__MODULE__} is responding to #{Conn.user(conn)} with #{name}")
+            "#{__MODULE__} is responding to #{Conn.user(conn)} with #{name}"
+            |> Logger.info
             conn = conn |> Conn.add_captures(pattern)
             apply(__MODULE__, name, [conn])
           end

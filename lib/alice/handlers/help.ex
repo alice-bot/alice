@@ -1,4 +1,5 @@
 defmodule Alice.Handlers.Help do
+  @moduledoc "A handler to return helptext for all registered handlers"
   use Alice.Router
 
   command ~r/help/i, :help
@@ -28,7 +29,8 @@ defmodule Alice.Handlers.Help do
   defp format_routes(title, routes, handler) do
     routes = Enum.map(routes, fn({_,name}) -> name end)
 
-    docs = Code.get_docs(handler, :docs)
+    docs = handler
+           |> Code.get_docs(:docs)
            |> Enum.map(fn({{name,_},_,_,_,text}) -> {title, name, text} end)
            |> Enum.filter(fn({_,name,_}) -> name in routes end)
            |> Enum.map(&format_route/1)
