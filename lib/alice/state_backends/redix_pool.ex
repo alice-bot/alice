@@ -1,4 +1,6 @@
 defmodule Alice.StateBackends.RedixPool do
+  @moduledoc "Redis connection pool for the `StateBackends.Redis`"
+
   use Supervisor
 
   def start_link do
@@ -30,4 +32,3 @@ defmodule Alice.StateBackends.RedixPool do
     :poolboy.transaction(:redix_poolboy, &Redix.pipeline!(&1, commands))
   end
 end
-

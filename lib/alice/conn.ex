@@ -26,7 +26,8 @@ defmodule Alice.Conn do
   end
 
   @doc """
-  Returns a boolean depending on whether or not the incoming message is a command
+  Returns a boolean depending on whether or
+  not the incoming message is a command
   """
   def command?(conn=%__MODULE__{}) do
     String.contains?(conn.message.text, "<@#{conn.slack.me.id}>")
@@ -46,8 +47,8 @@ defmodule Alice.Conn do
     "<@#{user_data(conn).id}>"
   end
 
-  defp user_data(%__MODULE__{message: %{user: user_id}, slack: %{users: users}}) do
-    users[user_id]
+  defp user_data(%__MODULE__{message: %{user: id}, slack: %{users: users}}) do
+    users[id]
   end
 
   @doc """

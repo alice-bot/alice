@@ -39,7 +39,9 @@ defmodule Alice.ConnTest do
   end
 
   test "add_captures adds regex captures to the conn" do
-    conn = Conn.add_captures(conn_with_text("hello test world"), ~r/(?:hello) (test) (?<term>.*)/)
+    conn = "hello test world"
+           |> conn_with_text
+           |> Conn.add_captures(~r/(?:hello) (test) (?<term>.*)/)
     assert conn.message.captures == ["hello test world", "test", "world"]
   end
 
