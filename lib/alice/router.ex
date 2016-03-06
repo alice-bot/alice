@@ -1,7 +1,10 @@
 defmodule Alice.Router do
+  @moduledoc "Handles the routing of messages for Alice"
+
   use GenServer
 
   defmodule State do
+    @moduledoc "Holds the registered handlers"
     defstruct handlers: MapSet.new
   end
 
@@ -10,8 +13,8 @@ defmodule Alice.Router do
   @doc """
   Starts a Alice.Router process linked to the current process.
 
-  Note that a process started with `start_link/2` is linked to the parent process
-  and will exit in case of crashes.
+  Note that a process started with `start_link/2` is linked to the parent
+  process and will exit in case of crashes.
 
   ## Options
 
@@ -35,8 +38,8 @@ defmodule Alice.Router do
   @doc """
   Returns a list of the currently registered handlers.
 
-  If you started the router with default options, then you don't have to pass in a
-  pid. (It will use the default registered name `Alice.Router`.
+  If you started the router with default options, then you don't have to pass
+  in a pid. (It will use the default registered name `Alice.Router`.
   """
   def handlers(pid \\ Alice.Router) do
     GenServer.call(pid, :get_handlers)

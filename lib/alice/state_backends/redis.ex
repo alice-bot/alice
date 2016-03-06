@@ -1,8 +1,11 @@
 defmodule Alice.StateBackends.Redis do
+  @moduledoc "State backend for Alice using Redis for persistence"
+
   alias Alice.StateBackends.RedixPool
 
   def get(_state, key, default \\ nil) do
-    RedixPool.command!(["GET", encode_key(key)])
+    ["GET", encode_key(key)]
+    |> RedixPool.command!
     |> case do
       nil   -> default
       value -> value |> Code.eval_string |> elem(0)
@@ -26,7 +29,8 @@ defmodule Alice.StateBackends.Redis do
   end
 
   defp keys do
-    RedixPool.command!(["KEYS", "*|Alice.State"])
+    ["KEYS", "*|Alice.State"]
+    |> RedixPool.command!
     |> Enum.map(&decode_key/1)
   end
 

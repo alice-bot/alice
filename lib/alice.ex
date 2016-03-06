@@ -1,4 +1,5 @@
 defmodule Alice do
+  @moduledoc "The top-level supervisor for Alice"
   use Application
 
   @doc """

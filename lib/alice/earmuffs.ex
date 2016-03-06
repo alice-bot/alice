@@ -1,4 +1,8 @@
 defmodule Alice.Earmuffs do
+  @moduledoc """
+  Allows a user to block Alice from responding to their next message
+  """
+
   use Alice.Router
   alias Alice.Conn
 
@@ -8,10 +12,12 @@ defmodule Alice.Earmuffs do
 
   @doc """
   `earmuffs` - Alice will ignore your next message in the current channel
-  * Scoped to user and channel
-  * Lasts for a single message
+      - Scoped to user and channel
+      - Lasts for a single message
   """
-  def earmuffs(conn), do: reply("#{Conn.at_reply_user(conn)} :mute:", block(conn))
+  def earmuffs(conn) do
+    reply("#{Conn.at_reply_user(conn)} :mute:", block(conn))
+  end
 
   def block(conn=%Conn{message: %{user: user, channel: channel}}) do
     earmuffs = get_state(conn, :earmuffs, %{})
@@ -31,7 +37,8 @@ defmodule Alice.Earmuffs do
 
   def unblock(conn=%Conn{message: %{user: user, channel: channel}}) do
     earmuffs = get_state(conn, :earmuffs, %{})
-    channels = Map.get(earmuffs, user, [])
+    channels = earmuffs
+               |> Map.get(user, [])
                |> Enum.reject(&(&1 == channel))
     put_state(conn, :earmuffs, Map.put(earmuffs, user, channels))
   end

@@ -1,4 +1,5 @@
 defmodule Alice.Handlers.TestHandler do
+  @moduledoc "Purely for testing purposes"
   use Alice.Router
 
   route   ~r/cmd1/,     :command1
