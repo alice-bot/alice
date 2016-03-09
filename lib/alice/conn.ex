@@ -61,6 +61,13 @@ defmodule Alice.Conn do
   end
 
   @doc """
+  Get the last capture from the `conn`
+  """
+  def last_capture(%__MODULE__{message: %{captures: captures}}) do
+    captures |> Enum.reverse |> hd
+  end
+
+  @doc """
   Used internally to get namespaced state
   """
   def get_state_for(conn=%__MODULE__{}, namespace, default \\ nil) do
