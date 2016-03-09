@@ -45,6 +45,13 @@ defmodule Alice.ConnTest do
     assert conn.message.captures == ["hello test world", "test", "world"]
   end
 
+  test "last_capture returns the last capture in the regex" do
+    conn = "hello test world"
+           |> conn_with_text
+           |> Conn.add_captures(~r/(?:hello) (test) (?<term>.*)/)
+    assert Conn.last_capture(conn) == "world"
+  end
+
   test "get_state_for returns the state for a given namespace" do
     state = %{{:some, :namespace} => :value}
     conn = Conn.make(:msg, :slk, state)
