@@ -68,6 +68,38 @@ defmodule Alice.Conn do
   end
 
   @doc """
+  Used internally to sanitize the incoming message text
+  """
+  def sanitize_message(conn=%__MODULE__{message: message=%{text: text}}) do
+    message
+    |> Map.put(:original_text, text)
+    |> Map.put(:text, sanitize_text(text))
+    |> make(conn.slack, conn.state)
+  end
+
+  defp sanitize_text(text) do
+    text
+    |> remove_smart_quotes
+    |> remove_formatted_emails
+    |> remove_formatted_urls
+  end
+
+  defp remove_smart_quotes(text) do
+    text
+    |> String.replace(~s(“), ~s("))
+    |> String.replace(~s(”), ~s("))
+    |> String.replace(~s(’), ~s('))
+  end
+
+  defp remove_formatted_emails(text) do
+    text |> String.replace(~r/<mailto:([^|]+)[^\s]*>/i, "\\1")
+  end
+
+  defp remove_formatted_urls(text) do
+    text |> String.replace(~r/<([^|@]+)([^\s]*)?>/, "\\1")
+  end
+
+  @doc """
   Used internally to get namespaced state
   """
   def get_state_for(conn=%__MODULE__{}, namespace, default \\ nil) do
