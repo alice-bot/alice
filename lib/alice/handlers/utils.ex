@@ -19,14 +19,14 @@ defmodule Alice.Handlers.Utils do
   def info(conn) do
     mem     = :erlang.memory
     total   = "Total memory: #{bytes_to_megabytes(mem[:total])}MB"
-    process = "Allocated to processes: #{bytes_to_megabytes(mem[:process])}MB"
+    process = "Allocated to processes: #{bytes_to_megabytes(mem[:processes])}MB"
 
     conn
     |> reply("Alice #{alice_version} - https://github.com/alice-bot")
     |> reply("#{total} - #{process}")
   end
 
-  defp bytes_to_megabytes(bytes) do
+  def bytes_to_megabytes(bytes) do
     Float.round(bytes / :math.pow(1024,2), 2)
   end
 
