@@ -24,7 +24,7 @@ defmodule Alice.Mixfile do
       {:dogma,            github: "lpil/dogma", only: :dev},
       {:earmark, ">= 0.0.0", only: :dev},
       {:ex_doc,  ">= 0.0.0", only: :dev},
-      {:poison,  "~> 2.0.0", override: true},
+      {:poison,  "~> 2.0.0", only: :dev, override: true},
       {:slack,   "~> 0.4.2"},
       {:poolboy, "~> 1.5.0"},
       {:redix,   "~> 0.3.0"}
