@@ -5,15 +5,14 @@ defmodule Alice.Handlers.Help do
   command ~r/>:? help\z/i, :help
   command ~r/\bhelp (.*)\z/i, :help_specific
 
+  @pro_tip "_*Pro Tip:* Commands require you @ mention me, routes do not_"
+
   @doc "`help` - lists all known handlers"
   def help(conn) do
     [ "_Here are all the handlers I know about…_",
-      handler_list
-    ] ++ [
-      "_You can get more information about a specific handler with_",
-      "```@alice help <handler name>```",
-      "_Or get information about all handlers with_",
-      "```@alice help all```" ]
+      handler_list,
+      "_Get info about a specific handler with_ `@alice help <handler name>`",
+      "_Get info about all handlers with_ `@alice help all`" ]
     |> Enum.join("\n\n")
     |> reply(conn)
   end
@@ -27,7 +26,7 @@ defmodule Alice.Handlers.Help do
   end
 
   defp get_specific_help(conn, "all") do
-    [ "_*Pro Tip:* Commands require you @ mention me, routes do not_",
+    [ @pro_tip,
       "_Here are all the routes and commands I know about…_"
       | Enum.map(Alice.Router.handlers, &help_for_handler/1) ]
     |> Enum.reduce(conn, &reply/2)
@@ -75,8 +74,7 @@ defmodule Alice.Handlers.Help do
 
   end
   defp deliver_help(handler, conn) do
-    [ "_Sure thing!_",
-      "_Commands require you @ mention me, routes do not_",
+    [ @pro_tip,
       ~s(_Here are all the routes and commands I know for "#{get_term(conn)}"_),
       help_for_handler(handler) ]
     |> Enum.join("\n\n")
