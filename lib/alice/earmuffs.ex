@@ -8,7 +8,7 @@ defmodule Alice.Earmuffs do
 
   @state_id {Alice.Earmuffs, :earmuffs}
 
-  command ~r/\bearmuffs\b/i, :earmuffs
+  command ~r/>:? earmuffs\b/i, :earmuffs
 
   @doc """
   `earmuffs` - Alice will ignore your next message in the current channel

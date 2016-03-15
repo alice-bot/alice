@@ -2,14 +2,81 @@ defmodule Alice.Handlers.Help do
   @moduledoc "A handler to return helptext for all registered handlers"
   use Alice.Router
 
-  command ~r/help/i, :help
+  command ~r/>:? help\z/i, :help
+  command ~r/\bhelp (.*)\z/i, :help_specific
 
-  @doc "`help` - outputs the help text for each route in every handler"
+  @pro_tip "_*Pro Tip:* Commands require you @ mention me, routes do not_"
+
+  @doc "`help` - lists all known handlers"
   def help(conn) do
-    [ "_Sure thing!_",
-      "_Commands require you @ mention me, routes do not_",
+    [ "_Here are all the handlers I know about…_",
+      handler_list,
+      "_Get info about a specific handler with_ `@alice help <handler name>`",
+      "_Get info about all handlers with_ `@alice help all`" ]
+    |> Enum.join("\n\n")
+    |> reply(conn)
+  end
+
+  @doc """
+  `help all` - outputs the help text for each route in every handler
+  `help <handler name>` - outputs the help text for a single matching handler
+  """
+  def help_specific(conn) do
+    get_specific_help(conn, get_term(conn))
+  end
+
+  defp get_specific_help(conn, "all") do
+    [ @pro_tip,
       "_Here are all the routes and commands I know about…_"
       | Enum.map(Alice.Router.handlers, &help_for_handler/1) ]
+    |> Enum.reduce(conn, &reply/2)
+  end
+  defp get_specific_help(conn, term) do
+    Router.handlers
+    |> Enum.find(&(downcased_handler_name(&1) == term))
+    |> deliver_help(conn)
+  end
+
+  defp handler_list do
+    Router.handlers
+    |> Enum.map(&handler_name/1)
+    |> Enum.sort
+    |> Enum.map(&("> *#{&1}*"))
+    |> Enum.join("\n")
+  end
+
+  defp get_term(conn) do
+    conn
+    |> Conn.last_capture
+    |> String.downcase
+    |> String.replace(~r/[_\s]+/, "")
+    |> String.strip
+  end
+
+  defp handler_name(handler) do
+    handler
+    |> Atom.to_string
+    |> String.split(".")
+    |> Enum.reverse
+    |> hd
+  end
+
+  defp downcased_handler_name(handler) do
+    handler
+    |> handler_name
+    |> String.downcase
+  end
+
+  defp deliver_help(nil, conn) do
+    ~s(I can't find a handler matching "#{get_term(conn)}")
+    |> reply(conn)
+    |> help
+
+  end
+  defp deliver_help(handler, conn) do
+    [ @pro_tip,
+      ~s(_Here are all the routes and commands I know for "#{get_term(conn)}"_),
+      help_for_handler(handler) ]
     |> Enum.join("\n\n")
     |> reply(conn)
   end
