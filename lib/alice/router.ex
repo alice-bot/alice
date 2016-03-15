@@ -88,8 +88,6 @@ defmodule Alice.Router do
       Module.register_attribute __MODULE__, :routes, accumulate: true
       Module.register_attribute __MODULE__, :commands, accumulate: true
       @before_compile Alice.Router.Helpers
-      alias Alice.Conn
-      alias Alice.Router
 
       defp namespace(key), do: {__MODULE__, key}
     end

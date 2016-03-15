@@ -1,6 +1,8 @@
 defmodule Alice.Handlers.Help do
   @moduledoc "A handler to return helptext for all registered handlers"
   use Alice.Router
+  alias Alice.Router
+  alias Alice.Conn
 
   command ~r/>:? help\z/i, :help
   command ~r/\bhelp (.*)\z/i, :help_specific
