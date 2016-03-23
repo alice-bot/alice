@@ -1,6 +1,8 @@
 %{"alice": {:hex, :alice, "0.0.4"},
+  "bunt": {:hex, :bunt, "0.1.5"},
   "certifi": {:hex, :certifi, "0.3.0"},
   "connection": {:hex, :connection, "1.0.2"},
+  "credo": {:hex, :credo, "0.3.8"},
   "dogma": {:git, "https://github.com/lpil/dogma.git", "b7928d8b840b11c8020a57e210a7465275a97730", []},
   "earmark": {:hex, :earmark, "0.2.1"},
   "ex_doc": {:hex, :ex_doc, "0.11.4"},

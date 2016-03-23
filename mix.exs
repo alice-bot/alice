@@ -21,7 +21,7 @@ defmodule Alice.Mixfile do
   defp deps do
     [
       {:websocket_client, github: "jeremyong/websocket_client"},
-      {:dogma,            github: "lpil/dogma", only: :dev},
+      {:credo,   ">= 0.0.0", only: [:dev, :test]},
       {:earmark, ">= 0.0.0", only: :dev},
       {:ex_doc,  ">= 0.0.0", only: :dev},
       {:poison,  "~> 2.0.0", only: :dev, override: true},
