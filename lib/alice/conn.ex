@@ -13,13 +13,15 @@ defmodule Alice.Conn do
   Conn structs.
   """
 
+  alias Alice.Conn
+
   defstruct([:message, :slack, :state])
 
   @doc """
   Convenience function to make a new `Alice.Conn` struct
   """
   def make({message, slack, state}) do
-    %__MODULE__{message: message, slack: slack, state: state}
+    %Conn{message: message, slack: slack, state: state}
   end
   def make(message, slack, state \\ %{}) do
     make({message, slack, state})
@@ -29,32 +31,32 @@ defmodule Alice.Conn do
   Returns a boolean depending on whether or
   not the incoming message is a command
   """
-  def command?(conn=%__MODULE__{}) do
+  def command?(conn = %Conn{}) do
     String.contains?(conn.message.text, "<@#{conn.slack.me.id}>")
   end
 
   @doc """
   Returns the name of the user for the incoming message
   """
-  def user(conn=%__MODULE__{}) do
+  def user(conn = %Conn{}) do
     user_data(conn).name
   end
 
   @doc """
   Builds a string to use as an @reply back to the user who sent the message
   """
-  def at_reply_user(conn=%__MODULE__{}) do
+  def at_reply_user(conn = %Conn{}) do
     "<@#{user_data(conn).id}>"
   end
 
-  defp user_data(%__MODULE__{message: %{user: id}, slack: %{users: users}}) do
+  defp user_data(%Conn{message: %{user: id}, slack: %{users: users}}) do
     users[id]
   end
 
   @doc """
   Used internally to add the regex captures to the `message`
   """
-  def add_captures(conn=%__MODULE__{}, pattern) do
+  def add_captures(conn = %Conn{}, pattern) do
     conn.message
     |> Map.put(:captures, Regex.run(pattern, conn.message.text))
     |> make(conn.slack, conn.state)
@@ -63,14 +65,14 @@ defmodule Alice.Conn do
   @doc """
   Get the last capture from the `conn`
   """
-  def last_capture(%__MODULE__{message: %{captures: captures}}) do
+  def last_capture(%Conn{message: %{captures: captures}}) do
     captures |> Enum.reverse |> hd
   end
 
   @doc """
   Used internally to sanitize the incoming message text
   """
-  def sanitize_message(conn=%__MODULE__{message: message=%{text: text}}) do
+  def sanitize_message(conn = %Conn{message: message = %{text: text}}) do
     message
     |> Map.put(:original_text, text)
     |> Map.put(:text, sanitize_text(text))
@@ -102,14 +104,14 @@ defmodule Alice.Conn do
   @doc """
   Used internally to get namespaced state
   """
-  def get_state_for(conn=%__MODULE__{}, namespace, default \\ nil) do
+  def get_state_for(conn = %Conn{}, namespace, default \\ nil) do
     state_backend.get(conn.state, namespace, default)
   end
 
   @doc """
   Used internally to put namespaced state
   """
-  def put_state_for(conn=%__MODULE__{}, namespace, value) do
+  def put_state_for(conn = %Conn{}, namespace, value) do
     new_state = state_backend.put(conn.state, namespace, value)
     make(conn.message, conn.slack, new_state)
   end
@@ -117,7 +119,7 @@ defmodule Alice.Conn do
   @doc """
   Used internally to delete namespaced state
   """
-  def delete_state_for(conn=%__MODULE__{}, namespace) do
+  def delete_state_for(conn = %Conn{}, namespace) do
     new_state = state_backend.delete(conn.state, namespace)
     make(conn.message, conn.slack, new_state)
   end

@@ -19,13 +19,13 @@ defmodule Alice.Earmuffs do
     reply("#{Conn.at_reply_user(conn)} :mute:", block(conn))
   end
 
-  def block(conn=%Conn{message: %{user: user, channel: channel}}) do
-    earmuffs = get_state(conn, :earmuffs, %{})
-    channels = [channel | Map.get(earmuffs, user, [])]
-    put_state(conn, :earmuffs, Map.put(earmuffs, user, channels))
+  def block(conn = %Conn{message: %{user: user, channel: channel}}) do
+    earmuff_data = get_state(conn, :earmuffs, %{})
+    channels = [channel | Map.get(earmuff_data, user, [])]
+    put_state(conn, :earmuffs, Map.put(earmuff_data, user, channels))
   end
 
-  def blocked?(conn=%Conn{message: %{user: user, channel: channel}}) do
+  def blocked?(conn = %Conn{message: %{user: user, channel: channel}}) do
     conn
     |> get_state(:earmuffs, %{})
     |> case do
@@ -35,11 +35,11 @@ defmodule Alice.Earmuffs do
   end
   def blocked?(%Conn{}), do: false
 
-  def unblock(conn=%Conn{message: %{user: user, channel: channel}}) do
-    earmuffs = get_state(conn, :earmuffs, %{})
-    channels = earmuffs
+  def unblock(conn = %Conn{message: %{user: user, channel: channel}}) do
+    earmuff_data = get_state(conn, :earmuffs, %{})
+    channels = earmuff_data
                |> Map.get(user, [])
                |> Enum.reject(&(&1 == channel))
-    put_state(conn, :earmuffs, Map.put(earmuffs, user, channels))
+    put_state(conn, :earmuffs, Map.put(earmuff_data, user, channels))
   end
 end

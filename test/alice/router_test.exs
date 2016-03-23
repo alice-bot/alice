@@ -2,7 +2,7 @@ defmodule TestHandler do
   use Alice.Router
 
   # overwrite match for testing purposes
-  defp match(routes, :fake_conn), do: send(self, {:received, routes})
+  defp match(routes, %Alice.Conn{}), do: send(self, {:received, routes})
 
   route ~r/pattern/, :my_route
 end
@@ -10,6 +10,7 @@ end
 defmodule Alice.RouterTest do
   use ExUnit.Case, async: true
   alias Alice.Router
+  alias Alice.Conn
 
   setup do
     Router.start_link([TestHandler])
@@ -31,7 +32,9 @@ defmodule Alice.RouterTest do
   end
 
   test "match_routes calls match_routes on each handler" do
-    Router.match_routes(:fake_conn)
+    {:message, :slack, :state}
+    |> Conn.make
+    |> Router.match_routes
     assert_received {:received, [{~r/pattern/, :my_route}]}
   end
 
