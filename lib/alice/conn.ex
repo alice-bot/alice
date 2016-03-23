@@ -129,3 +129,14 @@ defmodule Alice.Conn do
     end
   end
 end
+
+defimpl Inspect, for: Alice.Conn do
+  import Inspect.Algebra
+
+  def inspect(conn, _opts) do
+    concat(["%Alice.Conn{",
+            "message: #{Kernel.inspect(conn.message)}, ",
+            "slack: %{...}, ",
+            "state: #{Kernel.inspect(conn.state)}}"])
+  end
+end
