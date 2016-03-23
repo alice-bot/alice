@@ -2,6 +2,10 @@ defmodule Alice.Bot do
   @moduledoc "Adapter for Slack"
   use Slack
 
+  alias Alice.Conn
+  alias Alice.Router
+  alias Alice.Earmuffs
+
   def start_link do
     :alice
     |> Application.get_env(:api_key)
@@ -28,16 +32,26 @@ defmodule Alice.Bot do
 
   # Handle messages from subscribed channels
   def handle_message(message = %{type: "message"}, slack, state) do
-    conn = {message, slack, state} |> Alice.Conn.make
-                                   |> Alice.Conn.sanitize_message
-    conn = cond do
-      Alice.Earmuffs.blocked?(conn) -> Alice.Earmuffs.unblock(conn)
-      Alice.Conn.command?(conn)     -> Alice.Router.match_commands(conn)
-      true                          -> Alice.Router.match_routes(conn)
+    conn = {message, slack, state} |> Conn.make
+                                   |> Conn.sanitize_message
+    try do
+      do_handle_message(conn)
+    rescue
+      error ->
+        IO.puts Exception.format(:error, error)
+        {:ok, state}
     end
-    {:ok, conn.state}
   end
 
   # Ignore all others
   def handle_message(_message, _slack, state), do: {:ok, state}
+
+  defp do_handle_message(conn = %Conn{}) do
+    conn = cond do
+      Earmuffs.blocked?(conn) -> Earmuffs.unblock(conn)
+      Conn.command?(conn)     -> Router.match_commands(conn)
+      true                    -> Router.match_routes(conn)
+    end
+    {:ok, conn.state}
+  end
 end
