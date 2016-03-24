@@ -5,6 +5,7 @@ defmodule Alice.Bot do
   alias Alice.Conn
   alias Alice.Router
   alias Alice.Earmuffs
+  alias Alice.StateBackends.Redis
 
   def start_link do
     :alice
@@ -14,7 +15,7 @@ defmodule Alice.Bot do
 
   defp init_state do
     case Application.get_env(:alice, :state_backend) do
-      :redis -> Alice.StateBackends.Redis.get_state
+      :redis -> Redis.get_state
       _else -> %{}
     end
   end
@@ -32,13 +33,14 @@ defmodule Alice.Bot do
 
   # Handle messages from subscribed channels
   def handle_message(message = %{type: "message"}, slack, state) do
-    conn = {message, slack, state} |> Conn.make
-                                   |> Conn.sanitize_message
     try do
-      do_handle_message(conn)
+      {message, slack, state}
+      |> Conn.make
+      |> Conn.sanitize_message
+      |> do_handle_message
     rescue
       error ->
-        IO.puts Exception.format(:error, error)
+        IO.puts(Exception.format(:error, error))
         {:ok, state}
     end
   end
