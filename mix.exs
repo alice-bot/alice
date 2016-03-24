@@ -3,7 +3,7 @@ defmodule Alice.Mixfile do
 
   def project do
     [app: :alice,
-     version: "0.3.2",
+     version: "0.3.3",
      elixir: "~> 1.2",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
@@ -24,7 +24,7 @@ defmodule Alice.Mixfile do
       {:credo,   ">= 0.0.0", only: [:dev, :test]},
       {:earmark, ">= 0.0.0", only: :dev},
       {:ex_doc,  ">= 0.0.0", only: :dev},
-      {:poison,  "~> 2.0.0", only: :dev, override: true},
+      # {:poison,  "~> 2.0.0", only: :dev, override: true},
       {:slack,   "~> 0.4.2"},
       {:poolboy, "~> 1.5.0"},
       {:redix,   "~> 0.3.0"}
