@@ -1,10 +1,6 @@
-# Alice
+# Alice [![Hex Version](https://img.shields.io/hexpm/v/alice.svg)](https://hex.pm/packages/alice) [![Deps Status](https://beta.hexfaktor.org/badge/all/github/alice-bot/alice.svg)](https://beta.hexfaktor.org/github/alice-bot/alice) [![Hex Downloads](https://img.shields.io/hexpm/dt/alice.svg)](https://hex.pm/packages/alice) [![License: MIT](https://img.shields.io/hexpm/l/alice.svg)](https://hex.pm/packages/alice)
 
 ![Alice Logo](http://i.imgur.com/i1nqncI.png)
-
-[![License: MIT](https://img.shields.io/hexpm/l/alice.svg)](https://hex.pm/packages/alice)
-[![Hex Version](https://img.shields.io/hexpm/v/alice.svg)](https://hex.pm/packages/alice)
-[![Hex Downloads](https://img.shields.io/hexpm/dt/alice.svg)](https://hex.pm/packages/alice)
 
 A Lita-inspired Slack bot written in Elixir.
 
