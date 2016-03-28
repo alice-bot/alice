@@ -1,52 +1,67 @@
+defmodule Alice.Adapters.TestAdapter do
+  use GenServer
+
+  def start_link(state) do
+    GenServer.start_link(__MODULE__, state, [])
+  end
+
+  def init(state), do: {:ok, state}
+
+  def send_message(message, data) do
+    GenServer.call(__MODULE__, {:message, {message, data}})
+  end
+
+  def handle_call({:message, {message, data}}, _from, state) do
+    Alice.Bot.handle_message(message, data, state)
+  end
+end
+
 defmodule Alice.Bot do
-  @moduledoc "Adapter for Slack"
-  use Slack
+  use GenServer
 
   alias Alice.Conn
   alias Alice.Router
   alias Alice.Earmuffs
-  alias Alice.StateBackends.Redis
 
   def start_link do
-    :alice
-    |> Application.get_env(:api_key)
-    |> start_link(init_state)
+    GenServer.start_link(__MODULE__, :ok, name: __MODULE__)
   end
 
-  defp init_state do
+  def init(:ok) do
+    {:ok, adapter_pid} = adapter.start_link(initial_state)
+    {:ok, adapter_pid}
+  end
+
+  defp initial_state do
     case Application.get_env(:alice, :state_backend) do
-      :redis -> Redis.get_state
-      _else -> %{}
+      :redis -> Alice.StateBackends.Redis.get_state
+      _else  -> %{}
     end
   end
 
-  def handle_connect(_slack, state) do
-    IO.puts "Connected to Slack"
-    {:ok, state}
+  defp adapter do
+    Alice.Adapters.TestAdapter
+    # Application.get_env(:alice, :adapter)
   end
 
-  # Ignore my own messages
-  def handle_message(%{user: id}, %{me: %{id: id}}, state), do: {:ok, state}
+  def handle_message(message, adapter_data, state) do
+    GenServer.call(__MODULE__, {:message, {message, adapter_data, state}})
+  end
 
-  # Ignore subtypes
-  def handle_message(%{subtype: _}, _slack, state), do: {:ok, state}
+  # Server Callbacks
 
-  # Handle messages from subscribed channels
-  def handle_message(message = %{type: "message"}, slack, state) do
+  def handle_call({:message, conn_data = {_, _, state}}, _from, _adapter_pid) do
     try do
-      {message, slack, state}
+      conn_data
       |> Conn.make
       |> Conn.sanitize_message
       |> do_handle_message
     rescue
       error ->
         IO.puts(Exception.format(:error, error))
-        {:ok, state}
+        {:reply, state}
     end
   end
-
-  # Ignore all others
-  def handle_message(_message, _slack, state), do: {:ok, state}
 
   defp do_handle_message(conn = %Conn{}) do
     conn = cond do
@@ -54,6 +69,6 @@ defmodule Alice.Bot do
       Conn.command?(conn)     -> Router.match_commands(conn)
       true                    -> Router.match_routes(conn)
     end
-    {:ok, conn.state}
+    {:reply, conn.state}
   end
 end
