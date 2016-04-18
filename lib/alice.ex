@@ -28,7 +28,7 @@ defmodule Alice do
     import Supervisor.Spec, warn: false
     state_backend_children ++ [
       worker(Alice.Router, [handlers(extras)]),
-      worker(Alice.Bot, [])
+      worker(Alice.ChatBackends.Slack, [])
     ]
   end
 
