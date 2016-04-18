@@ -1,4 +1,4 @@
-defmodule Alice.Bot do
+defmodule Alice.ChatBackends.Slack do
   @moduledoc "Adapter for Slack"
   use Slack
 
