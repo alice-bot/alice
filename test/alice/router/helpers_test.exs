@@ -21,9 +21,15 @@ defmodule Alice.Router.HelpersTest do
     assert_received {:msg, "yo"}
   end
 
-  test "random_reply sends a message from a given list" do
-    ["element"] |> random_reply(conn)
+  test "reply calls random_reply when given a list" do
+    ["element"] |> reply(conn)
     assert_received {:msg, "element"}
+  end
+
+  test "random_reply sends a message from a given list" do
+    ~w[rabbit hole] |> random_reply(conn)
+    assert_received {:msg, resp}
+    assert resp in ~w[rabbit hole]
   end
 
   test "chance_reply, when chance passes, \
