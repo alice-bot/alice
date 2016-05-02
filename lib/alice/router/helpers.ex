@@ -16,7 +16,7 @@ defmodule Alice.Router.Helpers do
   """
   @spec reply(String.t, Conn.t) :: Conn.t
   @spec reply(Conn.t, String.t) :: Conn.t
-  def reply(resp, conn = %Conn{}) when is_binary(resp), do: reply(conn, resp)
+  def reply(resp, conn = %Conn{}), do: reply(conn, resp)
   def reply(conn = %Conn{message: %{channel: channel}, slack: slack}, resp) do
     resp
     |> uncache_images
