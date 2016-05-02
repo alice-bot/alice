@@ -16,6 +16,8 @@ defmodule Alice.Router.Helpers do
   """
   @spec reply(String.t, %Conn{}) :: Conn.t
   @spec reply(%Conn{}, String.t) :: Conn.t
+  @spec reply([String.t, ...], %Conn{}) :: Conn.t
+  @spec reply(%Conn{}, [String.t, ...]) :: Conn.t
   def reply(resp, conn = %Conn{}), do: reply(conn, resp)
   def reply(conn = %Conn{}, resp) when is_list(resp), do: random_reply(resp, conn)
   def reply(conn = %Conn{message: %{channel: channel}, slack: slack}, resp) do
