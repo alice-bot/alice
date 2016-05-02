@@ -39,6 +39,7 @@ handlers.
 * Alice Against Humanity: [hex](https://hex.pm/packages/alice_against_humanity), [code](https://github.com/alice-bot/alice_against_humanity)
 * Alice Google Images: [hex](https://hex.pm/packages/alice_google_images), [code](https://github.com/alice-bot/alice_google_images)
 * Alice Karma: [hex](https://hex.pm/packages/alice_karma), [code](https://github.com/alice-bot/alice_karma)
+* Alice Reddit: [hex](https://hex.pm/packages/alice_reddit), [code](https://github.com/alice-bot/alice_reddit)
 * Alice Shizzle: [hex](https://hex.pm/packages/alice_shizzle), [code](https://github.com/notdevinclark/alice_shizzle)
 * Alice XKCD: [hex](https://hex.pm/packages/alice_xkcd), [code](https://github.com/notdevinclark/alice_xkcd)
 
