@@ -41,9 +41,9 @@ defmodule Alice.Handlers.Help do
 
   defp handler_list do
     Router.handlers
-    |> Enum.map(&handler_name/1)
+    |> Stream.map(&handler_name/1)
     |> Enum.sort
-    |> Enum.map(&("> *#{&1}*"))
+    |> Stream.map(&("> *#{&1}*"))
     |> Enum.join("\n")
   end
 
@@ -99,8 +99,8 @@ defmodule Alice.Handlers.Help do
 
     docs = handler
            |> Code.get_docs(:docs)
-           |> Enum.map(fn({{name,_},_,_,_,text}) -> {title, name, text} end)
-           |> Enum.filter(fn({_,name,_}) -> name in routes end)
+           |> Stream.map(fn({{name,_},_,_,_,text}) -> {title, name, text} end)
+           |> Stream.filter(fn({_,name,_}) -> name in routes end)
            |> Enum.map(&format_route/1)
            |> compact
 
@@ -119,7 +119,7 @@ defmodule Alice.Handlers.Help do
     text
     |> String.strip
     |> String.split("\n")
-    |> Enum.map(fn(line) -> ">        #{prefix_command(title, line)}" end)
+    |> Stream.map(fn(line) -> ">        #{prefix_command(title, line)}" end)
     |> Enum.join("\n")
   end
 

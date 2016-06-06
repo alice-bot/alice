@@ -24,7 +24,7 @@ defmodule Alice.StateBackends.Redis do
 
   def get_state do
     keys
-    |> Enum.map(fn(key) -> {key, get(nil, key)} end)
+    |> Stream.map(fn(key) -> {key, get(nil, key)} end)
     |> Enum.into(%{})
   end
 
