@@ -83,11 +83,15 @@ handler. We recommend putting them in `lib/alice/handlers/`.)
 def application do
   [ applications: [:alice],
     mod: {
-      Alice, [
-        Alice.Handlers.Random,
-        Alice.Handlers.AgainstHumanity,
-        Alice.Handlers.GoogleImages
-      ] } ]
+      Alice, %{
+        :handlers => [
+          Alice.Handlers.Random,
+          Alice.Handlers.AgainstHumanity,
+          Alice.Handlers.GoogleImages
+        ]
+      }
+    }
+  ]
 end
 ```
 

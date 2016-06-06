@@ -10,10 +10,10 @@ defmodule Alice do
   List of Alice route handlers to register upon startup
   """
   def handlers(extras) do
-    [Alice.Earmuffs,
-     Alice.Handlers.Help,
-     Alice.Handlers.Utils
-    ] ++ extras
+    case Map.fetch(extras, :handlers) do
+      {:ok, additional_handlers} -> default_handlers ++ additional_handlers
+      _ -> default_handlers
+    end
   end
 
   @doc """
@@ -41,5 +41,9 @@ defmodule Alice do
       :redis -> [Supervisor.Spec.supervisor(Alice.StateBackends.RedixPool, [])]
       _other -> []
     end
+  end
+
+  defp default_handlers do
+    [Alice.Earmuffs, Alice.Handlers.Help, Alice.Handlers.Utils ]
   end
 end
