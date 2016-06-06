@@ -1,5 +1,9 @@
 defmodule Alice do
-  @moduledoc "The top-level supervisor for Alice"
+  @moduledoc """
+  Alice is a Slack bot framework for Elixir. For more information, please see
+  the [readme](https://github.com/alice-bot/alice/blob/master/README.md).
+  """
+
   use Application
 
   @doc """
