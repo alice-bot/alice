@@ -2,58 +2,25 @@ defmodule Alice.ChatBackends.Slack do
   @moduledoc "Adapter for Slack"
   use Slack
 
-  alias Alice.Conn
-  alias Alice.Router
-  alias Alice.Earmuffs
-  alias Alice.StateBackends.Redis
-
   def start_link do
-    :alice
-    |> Application.get_env(:api_key)
-    |> start_link(init_state)
+    start_link(Application.get_env(:alice, :api_key), :nostate)
   end
 
-  defp init_state do
-    case Application.get_env(:alice, :state_backend) do
-      :redis -> Redis.get_state
-      _else -> %{}
-    end
-  end
-
-  def handle_connect(_slack, state) do
+  def handle_connect(_slack, _) do
     IO.puts "Connected to Slack"
-    {:ok, state}
+    {:ok, :nostate}
   end
 
-  # Ignore my own messages
-  def handle_message(%{user: id}, %{me: %{id: id}}, state), do: {:ok, state}
+  # Ignore my own messages and subtype messages
+  def handle_message(%{user: id}, %{me: %{id: id}}, _), do: {:ok, :nostate}
+  def handle_message(%{subtype: _}, _slack, _), do: {:ok, :nostate}
 
-  # Ignore subtypes
-  def handle_message(%{subtype: _}, _slack, state), do: {:ok, state}
-
-  # Handle messages from subscribed channels
-  def handle_message(message = %{type: "message"}, slack, state) do
-    try do
-      {message, slack, state}
-      |> Conn.make
-      |> Conn.sanitize_message
-      |> do_handle_message
-    rescue
-      error ->
-        IO.puts(Exception.format(:error, error))
-        {:ok, state}
-    end
+  # Respond to messages from subscribed channels
+  def handle_message(%{type: "message"} = message, slack, _) do
+    Alice.Bot.respond_to_message(message, slack: slack)
+    {:ok, :nostate}
   end
 
-  # Ignore all others
-  def handle_message(_message, _slack, state), do: {:ok, state}
-
-  defp do_handle_message(conn = %Conn{}) do
-    conn = cond do
-      Earmuffs.blocked?(conn) -> Earmuffs.unblock(conn)
-      Conn.command?(conn)     -> Router.match_commands(conn)
-      true                    -> Router.match_routes(conn)
-    end
-    {:ok, conn.state}
-  end
+  # Ignore all other messages
+  def handle_message(_message, _slack, _), do: {:ok, :nostate}
 end
