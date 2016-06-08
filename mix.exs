@@ -24,9 +24,10 @@ defmodule Alice.Mixfile do
       {:credo,   ">= 0.0.0", only: [:dev, :test]},
       {:earmark, ">= 0.0.0", only: :dev},
       {:ex_doc,  ">= 0.0.0", only: :dev},
-      {:slack,   "~> 0.4.2"},
-      {:poolboy, "~> 1.5.0"},
-      {:redix,   "~> 0.3.0"}
+      {:slack,   "~> 0.4"},
+      {:poolboy, "~> 1.5"},
+      {:redix,   "~> 0.3"},
+      {:poison,  "~> 2.1"}
     ]
   end
 
