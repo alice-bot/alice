@@ -49,7 +49,6 @@ defmodule Alice.StateBackends.Redis do
   end
 
   def put(state, key, value) do
-    IO.inspect(value)
     RedixPool.command!(["SET", encode_key(key), Poison.encode!(value)])
     Map.put(state, key, value)
   end
