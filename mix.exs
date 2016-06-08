@@ -26,7 +26,8 @@ defmodule Alice.Mixfile do
       {:ex_doc,  ">= 0.0.0", only: :dev},
       {:slack,   "~> 0.4.2"},
       {:poolboy, "~> 1.5.0"},
-      {:redix,   "~> 0.3.0"}
+      {:redix,   "~> 0.3.0"},
+      {:poison,  "~> 2.1"}
     ]
   end
 

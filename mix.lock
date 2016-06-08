@@ -11,6 +11,7 @@
   "jsx": {:hex, :jsx, "2.4.0", "fb83830ac15e981b6ce310b645324ceecd01b1e0847d23921c33df829de5d2db", [:mix], []},
   "metrics": {:hex, :metrics, "1.0.1", "25f094dea2cda98213cecc3aeff09e940299d950904393b2a29d191c346a8486", [:rebar3], []},
   "mimerl": {:hex, :mimerl, "1.0.2", "993f9b0e084083405ed8252b99460c4f0563e41729ab42d9074fd5e52439be88", [:rebar3], []},
+  "poison": {:hex, :poison, "2.1.0", "f583218ced822675e484648fa26c933d621373f01c6c76bd00005d7bd4b82e27", [:mix], []},
   "poolboy": {:hex, :poolboy, "1.5.1", "6b46163901cfd0a1b43d692657ed9d7e599853b3b21b95ae5ae0a777cf9b6ca8", [:rebar], []},
   "redix": {:hex, :redix, "0.3.6", "882b3b9a81ac1245277a0ee60a0f33fef39dc5f988f513b605c8c93f40f7206f", [:mix], [{:connection, "~> 1.0.0", [hex: :connection, optional: false]}]},
   "slack": {:hex, :slack, "0.4.2", "ae23da58e702979731d13d90e3bd0cdd5f44fbca7166eac635a8163a640bd382", [:mix], [{:httpoison, "~> 0.8.0", [hex: :httpoison, optional: false]}, {:exjsx, "~> 3.1.0", [hex: :exjsx, optional: false]}]},
