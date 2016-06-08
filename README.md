@@ -11,6 +11,8 @@ _"Who are YOU?" said the Caterpillar. This was not an encouraging opening for co
 Some breaking changes have been introduced in version [0.2.0]. Please see the
 [wiki page] for more info.
 
+__Anyone running Alice 0.3 or higher is highly encouraged to move to [0.3.6] ASAP. Version [0.3.6] will save the state data in Redis as JSON, whereas the previous versions were simply converting the elixir into a string. This had some limitations, namely only supporting 50 key-value pairs before producing an unparsable string with a "..." in it. Version [0.3.6] will also migrate your existing state to use JSON, so there’s no going back after upgrading. This change should not affect handler so it is not a breaking change.__
+
 For an example bot, see the [Active Alice] bot. For an example
 handler, see [Google Images Handler].
 
@@ -19,7 +21,7 @@ by creating a new [bot integration].
 
 [0.2.0]: https://hex.pm/packages/alice/0.2.0
 [wiki page]: https://github.com/alice-bot/alice/wiki/Alice-0.2.0-Changes
-
+[0.3.6]: https://hex.pm/packages/alice/0.3.6
 [Active Alice]: https://github.com/adamzaninovich/active-alice
 [Google Images Handler]: https://github.com/alice-bot/alice_google_images
 
