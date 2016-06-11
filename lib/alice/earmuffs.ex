@@ -16,7 +16,7 @@ defmodule Alice.Earmuffs do
       - Lasts for a single message
   """
   def earmuffs(conn) do
-    reply("#{Conn.at_reply_user(conn)} :mute:", block(conn))
+    reply("#{Conn.at_reply_user(conn)} 🔇", block(conn))
   end
 
   def block(conn = %Conn{message: %{user: user, channel: channel}}) do
