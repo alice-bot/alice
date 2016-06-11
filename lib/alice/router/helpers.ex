@@ -23,7 +23,7 @@ defmodule Alice.Router.Helpers do
   def reply(conn = %Conn{message: %{channel: channel}, slack: slack}, resp) do
     resp
     |> uncache_images
-    |> slack_api.send_message(channel, slack)
+    |> adapter.send_message(channel, slack)
     conn
   end
 
@@ -41,10 +41,10 @@ defmodule Alice.Router.Helpers do
     tag
   end
 
-  defp slack_api do
+  defp adapter do
     case Mix.env do
       :test -> FakeSlack
-      _else -> Slack
+      _else -> Alice.ChatBackends.selected_adapter
     end
   end
 
@@ -114,7 +114,7 @@ defmodule Alice.Router.Helpers do
   """
   @spec indicate_typing(Conn.t) :: Conn.t
   def indicate_typing(conn = %Conn{message: %{channel: chan}, slack: slack}) do
-    slack_api.indicate_typing(chan, slack)
+    adapter.indicate_typing(chan, slack)
     conn
   end
 

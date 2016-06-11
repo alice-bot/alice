@@ -6,10 +6,8 @@ defmodule Alice.Bot do
   alias Alice.Earmuffs
   alias Alice.State
 
-  require Logger
-
   def start_link(adapter \\ Alice.ChatBackends.Slack) do
-    adapter.start_link
+    Alice.ChatBackends.start_link(adapter)
   end
 
   # TODO: The state needs to be updated more granularly. This is simply a step
@@ -34,7 +32,7 @@ defmodule Alice.Bot do
     end
     # NOTE: This is only temporary to keep things working for now. This would
     #       not be acceptable for release as it overwrites the state completely
-    #       meaning that adapters cannot run comcurrently, which is kind of the
+    #       meaning that adapters cannot run concurrently, which is kind of the
     #       whole point
     State.put_state(conn.state)
   end
