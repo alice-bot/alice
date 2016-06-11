@@ -13,6 +13,6 @@ defmodule AliceTest do
             Alice.Handlers.Help,
             Alice.Handlers.Utils,
             Alice.Handlers.TestHandler] ==
-          Alice.handlers(%{:handlers => [TestHandler]})
+          Alice.handlers(%{handlers: [TestHandler]})
   end
 end

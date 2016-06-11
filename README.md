@@ -83,7 +83,7 @@ def application do
   [ applications: [:alice],
     mod: {
       Alice, %{
-        :handlers => [
+        handlers: [
           Alice.Handlers.Random,
           Alice.Handlers.AgainstHumanity,
           Alice.Handlers.GoogleImages
