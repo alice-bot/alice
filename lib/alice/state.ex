@@ -21,7 +21,7 @@ defmodule Alice.State do
 
   def init(backend) do
     state = case backend do
-              :redis -> Redis.get_state
+              :redis -> Alice.StateBackends.Redis.get_state
               _other -> %{}
             end
     {:ok, state}

@@ -6,17 +6,18 @@ defmodule Alice.Bot do
   alias Alice.Earmuffs
   alias Alice.State
 
-  def start_link do
-    # TODO: Support multiple backends and start them dynamically
-    Alice.ChatBackends.Slack.start_link
+  require Logger
+
+  def start_link(adapter \\ Alice.ChatBackends.Slack) do
+    adapter.start_link
   end
 
   # TODO: The state needs to be updated more granularly. This is simply a step
   #       in the direction of decoupling state from the adapter and bot.
   #       Eventually state will no longer need to be a part of Alice.Conn
-  def respond_to_message(message, [{adapter_key, adapter_state}]) do
+  def respond_to_message(message, adapter_state) do
     try do
-      {message, %{adapter_key => adapter_state}, State.get_state}
+      {message, adapter_state, State.get_state}
       |> Conn.make
       |> Conn.sanitize_message # TODO: possibly move this to Slack adapter?
       |> respond

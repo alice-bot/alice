@@ -17,7 +17,7 @@ defmodule Alice.ChatBackends.Slack do
 
   # Respond to messages from subscribed channels
   def handle_message(%{type: "message"} = message, slack, _) do
-    Alice.Bot.respond_to_message(message, slack: slack)
+    Alice.Bot.respond_to_message(message, slack)
     {:ok, :nostate}
   end
 

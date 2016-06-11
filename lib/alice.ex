@@ -7,6 +7,16 @@ defmodule Alice do
   use Application
 
   @doc """
+  Selects adapter
+  """
+  def adapter(extras) do
+    case Map.fetch(extras, :adapter) do
+      {:ok, adapter} -> adapter
+      _ -> Alice.ChatBackends.Slack
+    end
+  end
+
+  @doc """
   List of Alice route handlers to register upon startup
   """
   def handlers(extras) do
@@ -33,7 +43,7 @@ defmodule Alice do
     state_backend_children ++ [
       worker(Alice.State, []),
       worker(Alice.Router, [handlers(extras)]),
-      worker(Alice.Bot, [])
+      worker(Alice.Bot, [adapter(extras)])
     ]
   end
 
