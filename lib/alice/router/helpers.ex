@@ -42,10 +42,7 @@ defmodule Alice.Router.Helpers do
   end
 
   defp adapter do
-    case Mix.env do
-      :test -> FakeSlack
-      _else -> Alice.ChatBackends.selected_adapter
-    end
+    Alice.ChatBackends.selected_adapter
   end
 
   @doc """

@@ -1,15 +1,14 @@
-defmodule FakeSlack do
-  def send_message(text, :channel, :slack) do
-    send(self, {:msg, text})
-  end
-end
-
 defmodule Alice.Router.HelpersTest do
   use ExUnit.Case, async: true
   import Alice.Router.Helpers
 
+  setup_all do
+    Alice.ChatBackends.start_link(Alice.ChatBackends.TestAdapter)
+    :ok
+  end
+
   def conn do
-    %Alice.Conn{message: %{channel: :channel}, slack: :slack}
+    %Alice.Conn{message: %{channel: "test"}, slack: :adapter_state}
   end
 
   test "reply returns the conn" do
