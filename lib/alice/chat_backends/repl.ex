@@ -1,19 +1,28 @@
 defmodule Alice.ChatBackends.REPL do
   use GenServer
 
+  def prompt, do: "alice> "
+
+  def response_prompt, do: IO.ANSI.blue <> "alice> " <> IO.ANSI.reset
+
   def start_link do
+    IO.puts("Starting Alice REPL")
     {:ok, pid} = GenServer.start_link(__MODULE__, :nostate, name: __MODULE__)
     GenServer.cast(pid, :start_repl)
     {:ok, pid}
   end
 
+  def handle_message(%{text: "exit"}, repl_state) do
+    Alice.CLI.stop
+    GenServer.stop(__MODULE__)
+    {:ok, repl_state}
+  end
   def handle_message(message, repl_state) do
     Alice.Bot.respond_to_message(message, repl_state)
     {:ok, repl_state}
   end
 
   def init(:nostate) do
-    IO.puts("Starting Alice REPL")
     {:ok, %{
       me: %{id: "alice"},
       users: %{
@@ -43,8 +52,8 @@ defmodule Alice.ChatBackends.REPL do
     |> String.rstrip
   end
 
-  defp line_prefix(0), do: IO.ANSI.blue <> "alice> " <> IO.ANSI.reset
-  defp line_prefix(_), do: "       "
+  def line_prefix(0), do: response_prompt
+  def line_prefix(_), do: "       "
 
   @doc """
   Outputs typing notification on repl.
@@ -69,17 +78,17 @@ defmodule Alice.ChatBackends.REPL do
     |> loop
   end
 
-  defp read do
-    "#{username}> "
+  def read do
+    prompt
     |> IO.gets
     |> String.strip
   end
 
-  defp eval(text) do
+  def eval(text) do
     %{text: process_text(text), type: "message", channel: "repl", user: username}
   end
 
-  defp print(message, repl_state) do
+  def print(message, repl_state) do
     {:ok, state} = handle_message(message, repl_state)
     state
   end
