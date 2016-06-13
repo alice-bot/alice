@@ -7,7 +7,8 @@ defmodule Alice.Bot do
   alias Alice.State
 
   def start_link(adapter \\ Alice.ChatBackends.Slack) do
-    Alice.ChatBackends.start_link(adapter)
+    {:ok, pid, _} = Alice.ChatBackends.start_link(adapter)
+    {:ok, pid}
   end
 
   # TODO: The state needs to be updated more granularly. This is simply a step
