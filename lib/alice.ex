@@ -7,10 +7,21 @@ defmodule Alice do
   use Application
 
   @doc """
+  Starts the application and all subprocesses
+
+  *Note:* does not start children in :test env
+  """
+  def start(_type, options) do
+    Mix.env
+    |> children(options)
+    |> Supervisor.start_link(strategy: :one_for_one, name: Alice.Supervisor)
+  end
+
+  @doc """
   Selects adapter
   """
-  def adapter(extras) do
-    case Map.fetch(extras, :adapter) do
+  def adapter(options) do
+    case Map.fetch(options, :adapter) do
       {:ok, adapter} -> adapter
       _ -> Alice.ChatBackends.Slack
     end
@@ -19,31 +30,20 @@ defmodule Alice do
   @doc """
   List of Alice route handlers to register upon startup
   """
-  def handlers(extras) do
-    case Map.fetch(extras, :handlers) do
+  def handlers(options) do
+    case Map.fetch(options, :handlers) do
       {:ok, additional_handlers} -> default_handlers ++ additional_handlers
       _ -> default_handlers
     end
   end
 
-  @doc """
-  Starts the application and all subprocesses
-
-  *Note:* does not start children in :test env
-  """
-  def start(_type, extras) do
-    Mix.env
-    |> children(extras)
-    |> Supervisor.start_link(strategy: :one_for_one, name: Alice.Supervisor)
-  end
-
   defp children(:test, _), do: []
-  defp children(_env, extras) do
+  defp children(_env, options) do
     import Supervisor.Spec, warn: false
     state_backend_children ++ [
       worker(Alice.State, []),
-      worker(Alice.Router, [handlers(extras)]),
-      worker(Alice.Bot, [adapter(extras)])
+      worker(Alice.Router, [handlers(options)]),
+      worker(Alice.Bot, [adapter(options)])
     ]
   end
 
