@@ -1,3 +1,3 @@
 use Mix.Config
 
-config :logger, level: :info, truncate: 32_768
+config :logger, level: :error, truncate: 32_768
