@@ -4,7 +4,6 @@ defmodule Alice.State do
   # Public API
 
   def start_link, do: start_link(Application.get_env(:alice, :state_backend))
-  def start_link(nil), do: start_link
   def start_link(backend) do
     GenServer.start_link(__MODULE__, backend, name: __MODULE__)
   end
@@ -20,11 +19,10 @@ defmodule Alice.State do
   # Callbacks
 
   def init(backend) do
-    state = case backend do
-              :redis -> Alice.StateBackends.Redis.get_state
-              _other -> %{}
-            end
-    {:ok, state}
+    case backend do
+      :redis -> {:ok, Alice.StateBackends.Redis.get_state}
+      _other -> {:ok, %{}}
+    end
   end
 
   def handle_call(:get_state, _from, state) do
