@@ -45,8 +45,9 @@ defmodule Alice.Adapters.REPL do
   @doc """
   Sends `text` to the repl.
   """
-  def send_message(text, "repl", _repl_state) do
-    # go to beginning of current line
+  def send_message(text), do: send_message(text, "repl")
+  def send_message(text, "repl", _repl_state \\ :nostate) do
+    reset_cursor
     text
     |> format_text
     |> IO.puts
@@ -69,10 +70,9 @@ defmodule Alice.Adapters.REPL do
   Outputs typing notification on repl.
   """
   def indicate_typing("repl", _repl_state) do
-    # copy text on current line
-    # go to beginning of current line
-    IO.puts("Alice is typing...")
-    # output copied text
+    reset_cursor
+    IO.write("Alice is typing... ")
+    IO.write(prompt)
   end
 
   # Server Callbacks
@@ -89,6 +89,7 @@ defmodule Alice.Adapters.REPL do
   end
 
   def read do
+    save_position
     prompt
     |> IO.gets
     |> String.strip
@@ -111,4 +112,15 @@ defmodule Alice.Adapters.REPL do
   defp username do
     System.user_home |> String.split("/") |> Enum.reverse |> hd
   end
+
+  defp reset_cursor do
+    restore_position
+    clear_line
+  end
+
+  defp save_position, do: IO.write "\e[s"
+
+  defp restore_position, do: IO.write "\e[u"
+
+  defp clear_line, do: IO.write "\e[K"
 end

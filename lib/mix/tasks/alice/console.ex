@@ -1,12 +1,14 @@
 defmodule Mix.Tasks.Alice.Console do
   use Mix.Task
 
+  alias Alice.Adapters.REPL
+
   @shortdoc "Starts an Alice REPL"
   def run(_) do
-    Alice.start(:normal, %{adapter: Alice.Adapters.REPL})
+    Alice.start(:normal, %{adapter: REPL})
     Process.register(self, __MODULE__)
     receive do
-      :stop -> IO.puts(REPL.response_prompt <> "Goodbye!")
+      :stop -> REPL.send_message("Goodbye!")
     end
   end
 
