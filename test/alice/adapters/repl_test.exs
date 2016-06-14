@@ -9,8 +9,9 @@ defmodule Alice.Adapters.REPLTest do
 
   test "it responds to input on the repl" do
     Alice.State.start_link
-    Alice.Router.start_link([Alice.Handlers.TestHandler])
-    Alice.Adapters.start_link(REPL, start_adapter: false)
+    Alice.Router.start_link
+    Application.put_env(:alice, :adapter, REPL)
+    Alice.Adapters.start_link(start_adapter: false)
     {:ok, state} = REPL.init(:nostate)
     prompt = "\e[s" <> REPL.prompt <> "\e[u\e[K" <> REPL.response_prompt
 

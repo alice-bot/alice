@@ -3,7 +3,7 @@ defmodule Alice.Router.HelpersTest do
   import Alice.Router.Helpers
 
   setup_all do
-    Alice.Adapters.start_link(Alice.Adapters.TestAdapter)
+    {:ok, Alice.Adapters.TestAdapter} = Alice.Adapters.start_link
     :ok
   end
 

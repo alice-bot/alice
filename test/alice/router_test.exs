@@ -13,7 +13,12 @@ defmodule Alice.RouterTest do
   alias Alice.Conn
 
   setup do
-    Router.start_link([TestHandler])
+    handlers = Application.get_env(:alice, :handlers, [])
+    Application.put_env(:alice, :handlers, [TestHandler])
+    on_exit fn ->
+      Application.put_env(:alice, :handlers, handlers)
+    end
+    Router.start_link
     :ok
   end
 
@@ -21,7 +26,7 @@ defmodule Alice.RouterTest do
     assert TestHandler.routes == [{~r/pattern/, :my_route}]
   end
 
-  test "starting the router with an array of handlers registers the handlers" do
+  test "configuring the app with an array of handlers registers the handlers" do
     assert Router.handlers == [TestHandler]
   end
 
