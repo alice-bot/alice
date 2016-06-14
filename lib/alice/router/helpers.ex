@@ -42,7 +42,7 @@ defmodule Alice.Router.Helpers do
   end
 
   defp adapter do
-    Alice.ChatBackends.selected_adapter
+    Alice.Adapters.selected_adapter
   end
 
   @doc """

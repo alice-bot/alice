@@ -23,7 +23,7 @@ defmodule Alice do
   def adapter(options) do
     case Map.fetch(options, :adapter) do
       {:ok, adapter} -> adapter
-      _ -> Alice.ChatBackends.Slack
+      _ -> Alice.Adapters.Slack
     end
   end
 

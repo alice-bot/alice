@@ -1,4 +1,4 @@
-defmodule Alice.ChatBackends.REPL do
+defmodule Alice.Adapters.REPL do
   use GenServer
 
   def prompt, do: "alice> "

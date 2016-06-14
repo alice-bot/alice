@@ -6,8 +6,8 @@ defmodule Alice.Bot do
   alias Alice.Earmuffs
   alias Alice.State
 
-  def start_link(adapter \\ Alice.ChatBackends.Slack) do
-    {:ok, pid, _} = Alice.ChatBackends.start_link(adapter)
+  def start_link(adapter \\ Alice.Adapters.Slack) do
+    {:ok, pid, _} = Alice.Adapters.start_link(adapter)
     {:ok, pid}
   end
 

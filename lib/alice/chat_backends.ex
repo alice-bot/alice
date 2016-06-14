@@ -1,4 +1,4 @@
-defmodule Alice.ChatBackends do
+defmodule Alice.Adapters do
   def start_link(adapter, opts \\ [start_adapter: true]) do
     {:ok, pid} = Agent.start_link(fn -> adapter end, name: __MODULE__)
     if opts[:start_adapter], do: adapter.start_link

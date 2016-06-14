@@ -3,7 +3,7 @@ defmodule Alice.Router.HelpersTest do
   import Alice.Router.Helpers
 
   setup_all do
-    Alice.ChatBackends.start_link(Alice.ChatBackends.TestAdapter)
+    Alice.Adapters.start_link(Alice.Adapters.TestAdapter)
     :ok
   end
 

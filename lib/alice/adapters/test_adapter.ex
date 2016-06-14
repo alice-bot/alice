@@ -1,4 +1,4 @@
-defmodule Alice.ChatBackends.TestAdapter do
+defmodule Alice.Adapters.TestAdapter do
   @moduledoc """
   This is an adapter for testing handlers
   """
