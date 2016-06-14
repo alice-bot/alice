@@ -1,10 +1,13 @@
 defmodule Alice.Adapters.REPL do
   use GenServer
 
+  @doc "Specifies the user prompt for the REPL"
   def prompt, do: "alice> "
 
+  @doc "Specifies the response prompt for the REPL"
   def response_prompt, do: IO.ANSI.blue <> "alice> " <> IO.ANSI.reset
 
+  @doc "Starts the REPL"
   def start_link do
     IO.puts("Starting Alice REPL")
     {:ok, pid} = GenServer.start_link(__MODULE__, :nostate, name: __MODULE__)
@@ -12,16 +15,7 @@ defmodule Alice.Adapters.REPL do
     {:ok, pid}
   end
 
-  def handle_message(%{text: "exit"}, repl_state) do
-    Mix.Tasks.Alice.Console.stop
-    GenServer.stop(__MODULE__)
-    {:ok, repl_state}
-  end
-  def handle_message(message, repl_state) do
-    Alice.Bot.respond_to_message(message, repl_state)
-    {:ok, repl_state}
-  end
-
+  @doc "Creates the initial REPL state"
   def init(:nostate) do
     {:ok, %{
       me: %{id: "alice"},
@@ -30,6 +24,22 @@ defmodule Alice.Adapters.REPL do
         "alice"  => %{id: "alice", name: "alice"}
       }
     } }
+  end
+
+  @doc """
+  Handles incoming messages from the REPL
+
+  Incoming text of "exit" will exit the REPL, anything else will be sent to
+  Alice.Bot to generate a response
+  """
+  def handle_message(%{text: "exit"}, repl_state) do
+    Mix.Tasks.Alice.Console.stop
+    GenServer.stop(__MODULE__)
+    {:ok, repl_state}
+  end
+  def handle_message(message, repl_state) do
+    Alice.Bot.respond_to_message(message, repl_state)
+    {:ok, repl_state}
   end
 
   @doc """

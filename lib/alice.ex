@@ -18,7 +18,7 @@ defmodule Alice do
   end
 
   @doc """
-  Selects adapter
+  Selects adapter, defaults to Slack
   """
   def adapter(options) do
     case Map.fetch(options, :adapter) do
