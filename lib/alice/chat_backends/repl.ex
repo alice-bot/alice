@@ -13,7 +13,7 @@ defmodule Alice.ChatBackends.REPL do
   end
 
   def handle_message(%{text: "exit"}, repl_state) do
-    Alice.CLI.stop
+    Mix.Tasks.Alice.Console.stop
     GenServer.stop(__MODULE__)
     {:ok, repl_state}
   end

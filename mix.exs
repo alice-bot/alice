@@ -10,8 +10,7 @@ defmodule Alice.Mixfile do
      description: "A Slack bot",
      package: package,
      deps: deps,
-     docs: [logo: "resources/logo.png"],
-     escript: [main_module: Alice.CLI],
+     docs: [logo: "resources/logo.png"]
     ]
   end
 
