@@ -31,18 +31,12 @@ defmodule Alice.Router do
   """
   def start_link do
     {:ok, pid} = GenServer.start_link(__MODULE__, %State{}, name: Alice.Router)
-    for handler <- handlers, do: register_handler(pid, handler)
+    for handler <- configured_handlers, do: register_handler(pid, handler)
     {:ok, pid}
   end
 
-  @doc """
-  List of Alice route handlers to register upon startup
-  """
-  def handlers do
-    default_handlers ++ Application.get_env(:alice, :handlers, [])
-  end
-
-  defp default_handlers do
+  defp configured_handlers do
+    Application.get_env(:alice, :handlers, []) ++
     case Mix.env do
       :test -> []
       _else -> [Alice.Earmuffs, Alice.Handlers.Help, Alice.Handlers.Utils]

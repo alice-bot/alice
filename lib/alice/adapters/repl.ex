@@ -47,7 +47,6 @@ defmodule Alice.Adapters.REPL do
   """
   def send_message(text), do: send_message(text, "repl")
   def send_message(text, "repl", _repl_state \\ :nostate) do
-    reset_cursor
     text
     |> format_text
     |> IO.puts

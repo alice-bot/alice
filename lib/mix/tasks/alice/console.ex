@@ -5,7 +5,8 @@ defmodule Mix.Tasks.Alice.Console do
 
   @shortdoc "Starts an Alice REPL"
   def run(_) do
-    Alice.start(:normal, %{adapter: REPL})
+    Application.put_env(:alice, :adapter, REPL)
+    Application.ensure_all_started(:alice)
     Process.register(self, __MODULE__)
     receive do
       :stop -> REPL.send_message("Goodbye!")

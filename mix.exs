@@ -15,7 +15,7 @@ defmodule Alice.Mixfile do
   end
 
   def application do
-    [applications: [:logger, :slack, :mix]]
+    [applications: [:logger, :slack, :mix], mod: {Alice, []}]
   end
 
   defp deps do

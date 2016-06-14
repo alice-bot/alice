@@ -6,7 +6,10 @@ defmodule Alice.Bot do
   alias Alice.Earmuffs
   alias Alice.State
 
-  def start_link, do: Alice.Adapters.start_link
+  def start_link do
+    {:ok, _adapter} = Alice.Adapters.start_link
+    {:ok, self}
+  end
 
   # TODO: The state needs to be updated more granularly. This is simply a step
   #       in the direction of decoupling state from the adapter and bot.
