@@ -52,6 +52,14 @@ defmodule Alice.Adapters.REPL do
     |> IO.puts
   end
 
+  @doc """
+  Outputs typing notification on repl.
+  """
+  def indicate_typing("repl", _repl_state) do
+    restore_position
+    IO.puts("\nAlice is typing...")
+  end
+
   defp format_text(text) do
     text
     |> String.replace(~r/<@(\w+)>/, "@\\1")
@@ -62,16 +70,8 @@ defmodule Alice.Adapters.REPL do
     |> String.rstrip
   end
 
-  def line_prefix(0), do: response_prompt
-  def line_prefix(_), do: "       "
-
-  @doc """
-  Outputs typing notification on repl.
-  """
-  def indicate_typing("repl", _repl_state) do
-    reset_cursor
-    IO.puts("Alice is typing... ")
-  end
+  defp line_prefix(0), do: response_prompt
+  defp line_prefix(_), do: "       "
 
   # Server Callbacks
 
@@ -103,8 +103,7 @@ defmodule Alice.Adapters.REPL do
   end
 
   defp process_text(text) do
-    text
-    |> String.replace(~r/@(\w+)/, "<@\\1>")
+    String.replace(text, ~r/@(\w+)/, "<@\\1>")
   end
 
   defp username do
