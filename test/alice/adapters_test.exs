@@ -3,7 +3,7 @@ defmodule FakeAdapter do
 end
 
 defmodule Alice.AdaptersTest do
-  use ExUnit.Case, async: true
+  use ExUnit.Case
 
   setup do
     adapter = Application.get_env(:alice, :adapter)
