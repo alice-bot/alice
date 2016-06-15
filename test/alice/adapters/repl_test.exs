@@ -13,7 +13,7 @@ defmodule Alice.Adapters.REPLTest do
     Application.put_env(:alice, :adapter, REPL)
     Alice.Adapters.start_link(start_adapter: false)
     {:ok, state} = REPL.init(:nostate)
-    prompt = "\e[s" <> REPL.prompt <> "\e[u\e[K" <> REPL.response_prompt
+    prompt = "\e[s" <> REPL.prompt <> REPL.response_prompt
 
     assert capture_io([input: "ping"], fn ->
       REPL.read
