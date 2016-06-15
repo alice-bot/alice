@@ -33,7 +33,7 @@ defmodule Alice.Adapters.REPL do
   Alice.Bot to generate a response
   """
   def handle_message(%{text: "exit"}, repl_state) do
-    Mix.Tasks.Alice.Console.stop
+    Alice.Console.stop
     GenServer.stop(__MODULE__)
     {:ok, repl_state}
   end
@@ -70,8 +70,7 @@ defmodule Alice.Adapters.REPL do
   """
   def indicate_typing("repl", _repl_state) do
     reset_cursor
-    IO.write("Alice is typing... ")
-    IO.write(prompt)
+    IO.puts("Alice is typing... ")
   end
 
   # Server Callbacks
