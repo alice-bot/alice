@@ -3,7 +3,8 @@ defmodule Alice.Adapters.Slack do
   use Slack
 
   def start_link do
-    start_link(Application.get_env(:alice, :api_key), :nostate)
+    api_key = Application.get_env(:alice, :slack)[:key]
+    start_link(api_key, :nostate)
   end
 
   def handle_connect(_slack, _) do

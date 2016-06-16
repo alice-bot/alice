@@ -9,7 +9,7 @@ defmodule Alice.Adapters.REPL do
 
   @doc "Starts the REPL"
   def start_link do
-    IO.puts("Starting Alice REPL")
+    IO.puts("Starting Alice Console")
     {:ok, pid} = GenServer.start_link(__MODULE__, :nostate, name: __MODULE__)
     GenServer.cast(pid, :start_repl)
     {:ok, pid}

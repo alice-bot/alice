@@ -14,7 +14,7 @@ defmodule Alice.Adapters.REPLTest do
   end
 
   test "it outputs some messages" do
-    assert capture_io(fn -> REPL.start_link end) == "Starting Alice REPL\n"
+    assert capture_io(fn -> REPL.start_link end) == "Starting Alice Console\n"
   end
 
   test "it responds to input on the repl" do
@@ -23,7 +23,7 @@ defmodule Alice.Adapters.REPLTest do
     Application.put_env(:alice, :adapter, REPL)
     Alice.Adapters.start_link(start_adapter: false)
     {:ok, state} = REPL.init(:nostate)
-    prompt = "\e[s" <> REPL.prompt <> REPL.response_prompt
+    prompt = REPL.prompt <> REPL.response_prompt
 
     assert capture_io([input: "ping"], fn ->
       REPL.read
