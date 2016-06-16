@@ -56,7 +56,6 @@ defmodule Alice.Adapters.REPL do
   Outputs typing notification on repl.
   """
   def indicate_typing("repl", _repl_state) do
-    restore_position
     IO.puts("\nAlice is typing...")
   end
 
@@ -87,7 +86,6 @@ defmodule Alice.Adapters.REPL do
   end
 
   def read do
-    save_position
     prompt
     |> IO.gets
     |> String.strip
@@ -107,17 +105,7 @@ defmodule Alice.Adapters.REPL do
   end
 
   defp username do
-    System.user_home |> String.split("/") |> Enum.reverse |> hd
+    {user, 0} = System.cmd("whoami", [])
+    String.strip(user)
   end
-
-  defp reset_cursor do
-    restore_position
-    clear_line
-  end
-
-  defp save_position, do: IO.write "\e[s"
-
-  defp restore_position, do: IO.write "\e[u"
-
-  defp clear_line, do: IO.write "\e[K"
 end
