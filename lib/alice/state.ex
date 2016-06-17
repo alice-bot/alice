@@ -1,4 +1,5 @@
 defmodule Alice.State do
+  @moduledoc "Used to store and manipulate the bot state"
   use GenServer
 
   # Public API

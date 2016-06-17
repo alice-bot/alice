@@ -1,4 +1,5 @@
 defmodule Alice.Console do
+  @moduledoc "Starts and stop the Alice console"
   alias Alice.Adapters.REPL
 
   def start do

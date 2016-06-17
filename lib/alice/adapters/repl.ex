@@ -1,4 +1,5 @@
 defmodule Alice.Adapters.REPL do
+  @moduledoc "Provides a console adapter for Alice"
   use GenServer
 
   @doc "Specifies the user prompt for the REPL"
@@ -23,7 +24,7 @@ defmodule Alice.Adapters.REPL do
         username => %{id: username, name: username},
         "alice"  => %{id: "alice", name: "alice"}
       }
-    } }
+    }}
   end
 
   @doc """

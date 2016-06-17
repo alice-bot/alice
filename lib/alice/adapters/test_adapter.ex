@@ -29,7 +29,7 @@ defmodule Alice.Adapters.TestAdapter do
         "test"  => %{id: "test",  name: "test"},
         "alice" => %{id: "alice", name: "alice"}
       }
-    } }
+    }}
   end
 
   @doc """

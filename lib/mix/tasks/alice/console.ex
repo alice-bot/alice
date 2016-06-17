@@ -1,4 +1,5 @@
 defmodule Mix.Tasks.Alice.Console do
+  @moduledoc "Mix task to start the Alice console"
   use Mix.Task
 
   @shortdoc "Starts an Alice REPL"
