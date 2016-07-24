@@ -43,6 +43,13 @@ defmodule Alice.RouterTest do
     assert_received {:received, [{~r/pattern/, :my_route}]}
   end
 
+  test "match_commands calls match_commands on each handler" do
+    {:message, :slack, :state}
+    |> Conn.make
+    |> Router.match_commands
+    assert_received {:received, [{~r/pattern/, :my_route}]}
+  end
+
   test "it can put state" do
     conn = Alice.Conn.make(:msg, :slk)
     conn = TestHandler.put_state(conn, :key, :val)
