@@ -5,6 +5,7 @@ defmodule TestHandler do
   defp match(routes, %Alice.Conn{}), do: send(self, {:received, routes})
 
   route ~r/pattern/, :my_route
+  command ~r/pattern/, :my_route
 end
 
 defmodule Alice.RouterTest do
@@ -19,6 +20,10 @@ defmodule Alice.RouterTest do
 
   test "it remembers routes" do
     assert TestHandler.routes == [{~r/pattern/, :my_route}]
+  end
+
+  test "it remembers commands" do
+    assert TestHandler.commands == [{~r/pattern/, :my_route}]
   end
 
   test "starting the router with an array of handlers registers the handlers" do
