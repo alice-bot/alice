@@ -1,11 +1,13 @@
 defmodule TestHandler do
   use Alice.Router
 
-  # overwrite match for testing purposes
-  defp match(routes, %Alice.Conn{}), do: send(self, {:received, routes})
-
   route ~r/pattern/, :my_route
   command ~r/pattern/, :my_route
+
+  def my_route(conn) do
+    send(self, {:received, routes})
+    conn
+  end
 end
 
 defmodule Alice.RouterTest do
@@ -16,6 +18,7 @@ defmodule Alice.RouterTest do
   setup do
     Router.start_link([TestHandler])
     :ok
+    Logger.configure(level: :warn)
   end
 
   test "it remembers routes" do
@@ -37,14 +40,14 @@ defmodule Alice.RouterTest do
   end
 
   test "match_routes calls match_routes on each handler" do
-    {:message, :slack, :state}
+    {%{text: "pattern", user: "foo"}, %{users: %{"foo" => %{name: "foo"}}}, :state}
     |> Conn.make
     |> Router.match_routes
     assert_received {:received, [{~r/pattern/, :my_route}]}
   end
 
   test "match_commands calls match_commands on each handler" do
-    {:message, :slack, :state}
+    {%{text: "pattern", user: "foo"}, %{users: %{"foo" => %{name: "foo"}}}, :state}
     |> Conn.make
     |> Router.match_commands
     assert_received {:received, [{~r/pattern/, :my_route}]}
