@@ -3,6 +3,9 @@ defmodule Alice.Router do
 
   use GenServer
 
+  alias Alice.Conn
+  require Logger
+
   defmodule State do
     @moduledoc "Holds the registered handlers"
     defstruct handlers: MapSet.new
@@ -78,18 +81,94 @@ defmodule Alice.Router do
     {:noreply, %{state | handlers: MapSet.put(state.handlers, handler)}}
   end
 
+  # Internal functions
+
+  def match_pattern({pattern, name}, {mod, conn = %Conn{}}) do
+    if Regex.match?(pattern, conn.message.text) do
+      Logger.info("#{mod}.#{name} responding to -> #{Conn.user(conn)}")
+      {mod, apply(mod, name, [Conn.add_captures(conn, pattern)])}
+    else
+      {mod, conn}
+    end
+  end
+
   # Macros
 
   @doc false
   defmacro __using__(_opts) do
     quote do
       import Alice.Router.Helpers
+      import unquote(__MODULE__)
       require Logger
       Module.register_attribute __MODULE__, :routes, accumulate: true
       Module.register_attribute __MODULE__, :commands, accumulate: true
-      @before_compile Alice.Router.Helpers
+      @before_compile unquote(__MODULE__)
 
       defp namespace(key), do: {__MODULE__, key}
     end
+  end
+
+  defmacro route(pattern, name) do
+    quote do
+      @routes {unquote(pattern), unquote(name)}
+    end
+  end
+
+  defmacro command(pattern, name) do
+    quote do
+      @commands {unquote(pattern), unquote(name)}
+    end
+  end
+
+  @doc false
+  defmacro __before_compile__(_env) do
+    quote do
+      @doc """
+      Get the state from an Alice.Conn struct, namespaced to this module
+      """
+      def get_state(conn = %Conn{}, key, default \\ nil) do
+        Conn.get_state_for(conn, namespace(key), default)
+      end
+
+      @doc """
+      Update the state of an Alice.Conn struct, namespaced to this module
+      """
+      def put_state(conn = %Conn{}, key, value) do
+        Conn.put_state_for(conn, namespace(key), value)
+      end
+
+      @doc """
+      Deletes the entries in the state for a specific `key`.
+      """
+      def delete_state(conn = %Conn{}, key) do
+        Conn.delete_state_for(conn, namespace(key))
+      end
+
+      @doc """
+      All of the routes handled by this module
+      """
+      def routes, do: @routes
+
+      @doc """
+      All of the commands handled by this module
+      """
+      def commands, do: @commands
+
+      @doc """
+      Match all routes in this module
+      """
+      def match_routes(conn = %Conn{}), do: match(routes, conn)
+
+      @doc """
+      Match all commands in this module
+      """
+      def match_commands(conn = %Conn{}), do: match(commands, conn)
+
+      defp match(patterns, conn = %Conn{}) do
+        {_mod, conn} = patterns
+                        |> Enum.reduce({__MODULE__, conn}, &match_pattern/2)
+        conn
+      end
+      end
   end
 end
