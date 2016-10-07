@@ -22,23 +22,9 @@ defmodule Alice.Router.Helpers do
   def reply(conn = %Conn{}, resp) when is_list(resp), do: random_reply(conn, resp)
   def reply(conn = %Conn{message: %{channel: channel}, slack: slack}, resp) do
     resp
-    |> uncache_images
+    |> Alice.Images.uncache
     |> adapter.send_message(channel, slack)
     conn
-  end
-
-  defp uncache_images(potential_image) do
-    ~w[gif png jpg jpeg]
-    |> Enum.any?(&(potential_image |> String.downcase |> String.ends_with?(&1)))
-    |> case do
-      true -> "#{potential_image}##{random_tag}"
-      _    -> potential_image
-    end
-  end
-
-  defp random_tag do
-    "0." <> tag = to_string(:rand.uniform)
-    tag
   end
 
   defp adapter do
@@ -115,79 +101,5 @@ defmodule Alice.Router.Helpers do
     conn
   end
 
-  @doc "Adds a route to the handler"
-  defmacro route(pattern, name) do
-    quote do
-      @routes {unquote(pattern), unquote(name)}
-    end
-  end
 
-  @doc "Adds a command to the handler"
-  defmacro command(pattern, name) do
-    quote do
-      @commands {unquote(pattern), unquote(name)}
-    end
-  end
-
-  # Internal functions
-
-  def match_pattern({pattern, name}, {mod, conn = %Conn{}}) do
-    if Regex.match?(pattern, conn.message.text) do
-      Logger.info("#{mod}.#{name} responding to -> #{Conn.user(conn)}")
-      {mod, apply(mod, name, [Conn.add_captures(conn, pattern)])}
-    else
-      {mod, conn}
-    end
-  end
-
-  defmacro __before_compile__(_env) do
-    quote do
-      @doc """
-      Get the state from an Alice.Conn struct, namespaced to this module
-      """
-      def get_state(conn = %Conn{}, key, default \\ nil) do
-        Conn.get_state_for(conn, namespace(key), default)
-      end
-
-      @doc """
-      Update the state of an Alice.Conn struct, namespaced to this module
-      """
-      def put_state(conn = %Conn{}, key, value) do
-        Conn.put_state_for(conn, namespace(key), value)
-      end
-
-      @doc """
-      Deletes the entries in the state for a specific `key`.
-      """
-      def delete_state(conn = %Conn{}, key) do
-        Conn.delete_state_for(conn, namespace(key))
-      end
-
-      @doc """
-      All of the routes handled by this module
-      """
-      def routes, do: @routes
-
-      @doc """
-      All of the commands handled by this module
-      """
-      def commands, do: @commands
-
-      @doc """
-      Match all routes in this module
-      """
-      def match_routes(conn = %Conn{}), do: match(routes, conn)
-
-      @doc """
-      Match all commands in this module
-      """
-      def match_commands(conn = %Conn{}), do: match(commands, conn)
-
-      defp match(patterns, conn = %Conn{}) do
-        {_mod, conn} = patterns
-                       |> Enum.reduce({__MODULE__, conn}, &match_pattern/2)
-        conn
-      end
-    end
-  end
 end

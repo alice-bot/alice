@@ -1,10 +1,13 @@
 defmodule TestHandler do
   use Alice.Router
 
-  # overwrite match for testing purposes
-  defp match(routes, %Alice.Conn{}), do: send(self, {:received, routes})
-
   route ~r/pattern/, :my_route
+  command ~r/pattern/, :my_route
+
+  def my_route(conn) do
+    send(self, {:received, routes})
+    conn
+  end
 end
 
 defmodule Alice.RouterTest do
@@ -18,13 +21,18 @@ defmodule Alice.RouterTest do
     on_exit(fn -> Application.put_env(:alice, :handlers, handlers) end)
     Router.start_link
     :ok
+    Logger.configure(level: :warn)
   end
 
   test "it remembers routes" do
     assert TestHandler.routes == [{~r/pattern/, :my_route}]
   end
 
-  test "configuring the app with an array of handlers registers the handlers" do
+  test "it remembers commands" do
+    assert TestHandler.commands == [{~r/pattern/, :my_route}]
+  end
+
+  test "starting the router with an array of handlers registers the handlers" do
     assert Router.handlers == [TestHandler]
   end
 
@@ -35,9 +43,16 @@ defmodule Alice.RouterTest do
   end
 
   test "match_routes calls match_routes on each handler" do
-    {:message, :slack, :state}
+    {%{text: "pattern", user: "foo"}, %{users: %{"foo" => %{name: "foo"}}}, :state}
     |> Conn.make
     |> Router.match_routes
+    assert_received {:received, [{~r/pattern/, :my_route}]}
+  end
+
+  test "match_commands calls match_commands on each handler" do
+    {%{text: "pattern", user: "foo"}, %{users: %{"foo" => %{name: "foo"}}}, :state}
+    |> Conn.make
+    |> Router.match_commands
     assert_received {:received, [{~r/pattern/, :my_route}]}
   end
 
