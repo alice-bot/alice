@@ -30,7 +30,7 @@ defmodule Alice.Router.Helpers do
   defp slack_api do
     case Mix.env do
       :test -> FakeSlack
-      _else -> Slack
+      _else -> Slack.Sends
     end
   end
 

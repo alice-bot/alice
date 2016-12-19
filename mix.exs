@@ -20,11 +20,11 @@ defmodule Alice.Mixfile do
 
   defp deps do
     [
-      {:websocket_client, github: "jeremyong/websocket_client"},
+      {:websocket_client, "~> 1.1.0"},
       {:credo,   ">= 0.0.0", only: [:dev, :test]},
       {:earmark, ">= 0.0.0", only: :dev},
       {:ex_doc,  ">= 0.0.0", only: :dev},
-      {:slack,   "~> 0.4.2"},
+      {:slack,   "~> 0.9.1"},
       {:poolboy, "~> 1.5.0"},
       {:redix,   "~> 0.3.0"},
       {:poison,  "~> 2.1"}
