@@ -67,7 +67,7 @@ defmodule Alice.ChatBackends.Slack do
     {:ok, state}
   end
 
-  def handle_info(_, _, state), do: {:ok, state}
+  def handle_info(_message, _slack, state), do: {:ok, state}
 
   defp do_handle_message(conn = %Conn{}) do
     conn = cond do
