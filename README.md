@@ -44,6 +44,7 @@ handlers.
 * Alice Reddit: [hex](https://hex.pm/packages/alice_reddit), [code](https://github.com/alice-bot/alice_reddit)
 * Alice Shizzle: [hex](https://hex.pm/packages/alice_shizzle), [code](https://github.com/notdevinclark/alice_shizzle)
 * Alice XKCD: [hex](https://hex.pm/packages/alice_xkcd), [code](https://github.com/notdevinclark/alice_xkcd)
+* Alice Doge [hex](https://hex.pm/packages/alice_doge_me), [code](https://github.com/alice-bot/alice_doge_me/)
 
 If you write your own handler, please submit a pull request and update this list!
 
