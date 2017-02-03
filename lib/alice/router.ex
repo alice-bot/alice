@@ -32,10 +32,18 @@ defmodule Alice.Router do
   If the router is successfully created and initialized, the function returns
   `{:ok, pid}`, where `pid` is the pid of the router.
   """
-  def start_link(handlers \\ [], opts \\ [name: Alice.Router]) do
-    {:ok, pid} = GenServer.start_link(__MODULE__, %State{}, opts)
-    for handler <- handlers, do: register_handler(pid, handler)
+  def start_link do
+    {:ok, pid} = GenServer.start_link(__MODULE__, %State{}, name: Alice.Router)
+    for handler <- configured_handlers, do: register_handler(pid, handler)
     {:ok, pid}
+  end
+
+  defp configured_handlers do
+    Application.get_env(:alice, :handlers, []) ++
+    case Mix.env do
+      :test -> []
+      _else -> [Alice.Earmuffs, Alice.Handlers.Help, Alice.Handlers.Utils]
+    end
   end
 
   @doc """

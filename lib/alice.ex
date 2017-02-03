@@ -3,36 +3,26 @@ defmodule Alice do
   Alice is a Slack bot framework for Elixir. For more information, please see
   the [readme](https://github.com/alice-bot/alice/blob/master/README.md).
   """
-
   use Application
-
-  @doc """
-  List of Alice route handlers to register upon startup
-  """
-  def handlers(extras) do
-    case Map.fetch(extras, :handlers) do
-      {:ok, additional_handlers} -> default_handlers ++ additional_handlers
-      _ -> default_handlers
-    end
-  end
 
   @doc """
   Starts the application and all subprocesses
 
-  *Note:* does not start children in :test env
+  *Note:* does not start children in :test env (yet)
   """
-  def start(_type, extras) do
+  def start(_type, _args) do
     Mix.env
-    |> children(extras)
+    |> children
     |> Supervisor.start_link(strategy: :one_for_one, name: Alice.Supervisor)
   end
 
-  defp children(:test, _), do: []
-  defp children(_env, extras) do
+  defp children(:test), do: []
+  defp children(_env) do
     import Supervisor.Spec, warn: false
     state_backend_children ++ [
-      worker(Alice.Router, [handlers(extras)]),
-      worker(Alice.ChatBackends.Slack, [])
+      worker(Alice.State, []),
+      worker(Alice.Router, []),
+      worker(Alice.Bot, [])
     ]
   end
 
@@ -41,9 +31,5 @@ defmodule Alice do
       :redis -> [Supervisor.Spec.supervisor(Alice.StateBackends.RedixPool, [])]
       _other -> []
     end
-  end
-
-  defp default_handlers do
-    [Alice.Earmuffs, Alice.Handlers.Help, Alice.Handlers.Utils ]
   end
 end

@@ -4,14 +4,25 @@
 
 <img height="135" src="http://i.imgur.com/UndMkm3.png" align="left" />
 
-_The Caterpillar and Alice looked at each other for some time in silence: at last the Caterpillar took the hookah out of its mouth, and addressed her in a languid, sleepy voice._
+_The Caterpillar and Alice looked at each other for some time in silence: at
+last the Caterpillar took the hookah out of its mouth, and addressed her in a
+languid, sleepy voice._
 
-_"Who are YOU?" said the Caterpillar. This was not an encouraging opening for conversation. Alice replied, rather shyly, "I—I hardly know, sir, just at present—at least I know who I WAS when I got up this morning, but I think I must have been changed several times since then."_
+_"Who are YOU?" said the Caterpillar. This was not an encouraging opening for
+conversation. Alice replied, rather shyly, "I—I hardly know, sir, just at
+present—at least I know who I WAS when I got up this morning, but I think I must
+have been changed several times since then."_
 
 Some breaking changes have been introduced in version [0.2.0]. Please see the
 [wiki page] for more info.
 
-__Anyone running Alice 0.3 or higher is highly encouraged to move to [0.3.6] ASAP. Version [0.3.6] will save the state data in Redis as JSON, whereas the previous versions were simply converting the elixir into a string. This had some limitations, namely only supporting 50 key-value pairs before producing an unparsable string with a "..." in it. Version [0.3.6] will also migrate your existing state to use JSON, so there’s no going back after upgrading. This change should not affect handler so it is not a breaking change.__
+__Anyone running Alice 0.3 or higher is highly encouraged to move to [0.3.6]
+ASAP. Version [0.3.6] will save the state data in Redis as JSON, whereas the
+previous versions were simply converting the elixir into a string. This had
+some limitations, namely only supporting 50 key-value pairs before producing an
+unparsable string with a "..." in it. Version [0.3.6] will also migrate your
+existing state to use JSON, so there’s no going back after upgrading. This
+change should not affect handler so it is not a breaking change.__
 
 For an example bot, see the [Active Alice] bot. For an example
 handler, see [Google Images Handler].
@@ -75,35 +86,35 @@ defp deps do
 end
 ```
 
-In the same file, configure the app, registering any handlers you want. You can
-add handlers through dependencies, or you can write them directly in your bot
-instance. (See [Writing Route Handlers] for information on how to write a
-handler. We recommend putting them in `lib/alice/handlers/`.)
+Add Alice to the list of applications to start.
 
 [Writing Route Handlers]: https://github.com/alice-bot/alice#writing-route-handlers
 
 ```elixir
 def application do
-  [ applications: [:alice],
-    mod: {
-      Alice, %{
-        handlers: [
-          Alice.Handlers.Random,
-          Alice.Handlers.AgainstHumanity,
-          Alice.Handlers.GoogleImages
-        ]
-      }
-    }
-  ]
+  [applications: [:alice]]
 end
 ```
 
-In `config/config.exs` add any configuration that your bot needs.
+In `config/config.exs`, configure the app, registering the adapter and any
+handlers you want. You can add handlers through dependencies, or you can
+write them directly in your bot instance. (See [Writing Route Handlers]
+for information on how to write a handler. We recommend putting them in
+`lib/alice/handlers/`.)
+
+Also add any extra configuration that your bot needs.
+
 ```elixir
 use Mix.Config
 
 config :alice,
-  api_key: System.get_env("SLACK_API_TOKEN"),
+  adapter: Alice.Adapters.Slack,
+  slack: [key: System.get_env("SLACK_API_TOKEN")],
+  handlers: [
+    Alice.Handlers.Random,
+    Alice.Handlers.AgainstHumanity,
+    Alice.Handlers.GoogleImages
+  ],
   state_backend: :redis,
   redis: System.get_env("REDIS_URL")
 
@@ -114,6 +125,9 @@ config :alice_google_images,
 ```
 
 With that, you're done! Run your bot with `iex -S mix` or `mix run --no-halt`.
+
+If you want to run a console then use `mix alice.console`. (This will run the
+console even if you have a different adapter configured.)
 
 ### Deploying to Heroku
 
@@ -182,9 +196,39 @@ end
 defp deps do
   [
     {:websocket_client, github: "jeremyong/websocket_client"},
-    {:alice, "~> 0.2.0"}
+    {:alice, "~> 0.4"}
   ]
 end
+```
+
+### Using Alice.Console
+
+If you want to use the built-in console to test your handler, first add the
+handler in your `config/config.ex` (as well as any other configuration that your
+handler might need):
+
+```elixir
+use Mix.Config
+
+config :alice, handlers: [Alice.Handlers.GoogleImages]
+
+config :alice_google_images,
+  cse_id: System.get_env("GOOGLE_CSE_ID"),
+  cse_token: System.get_env("GOOGLE_CSE_TOKEN"),
+  safe_search_level: :medium
+```
+
+Then, start the console:
+
+```sh
+mix alice.console
+Starting Alice Console
+
+alice> img me pancakes
+alice> https://example.com/pancake.png#123456789
+
+alice> exit
+alice> Goodbye!
 ```
 
 ### Writing Route Handlers
@@ -208,17 +252,5 @@ defmodule Alice.Handlers.GoogleImages do
   end
 
   #...
-end
-```
-
-### Registering Handlers
-
-In the `mix.exs` file of your bot, add your handler to the list of handlers to
-register on start
-
-```elixir
-def application do
-  [ applications: [:alice],
-    mod: {Alice, [Alice.Handlers.GoogleImages, ...] } ]
 end
 ```

@@ -16,7 +16,10 @@ defmodule Alice.RouterTest do
   alias Alice.Conn
 
   setup do
-    Router.start_link([TestHandler])
+    handlers = Application.get_env(:alice, :handlers, [])
+    Application.put_env(:alice, :handlers, [TestHandler])
+    on_exit(fn -> Application.put_env(:alice, :handlers, handlers) end)
+    Router.start_link
     :ok
     Logger.configure(level: :warn)
   end

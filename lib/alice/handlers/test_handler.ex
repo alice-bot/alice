@@ -4,6 +4,7 @@ defmodule Alice.Handlers.TestHandler do
 
   route   ~r/cmd1/,     :command1
   route   ~r/hidden/,   :hidden
+  route   ~r/ping/,     :ping
   command ~r/cmd1/,     :command1
   command ~r/cmd2/i,    :command2
   command ~r/cmd3/i,    :command3
@@ -15,6 +16,9 @@ defmodule Alice.Handlers.TestHandler do
   # This should not show up in the help text at all
   @doc false
   def hidden(_conn), do: nil
+
+  @doc false
+  def ping(conn), do: reply(conn, "pong")
 
   @doc """
   `cmd2`: does some other stuff
