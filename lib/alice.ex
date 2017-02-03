@@ -44,6 +44,6 @@ defmodule Alice do
   end
 
   defp default_handlers do
-    [Alice.Earmuffs, Alice.Handlers.Help, Alice.Handlers.Utils ]
+    [Alice.Earmuffs, Alice.Handlers.Help, Alice.Handlers.Utils]
   end
 end
