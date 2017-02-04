@@ -8,8 +8,8 @@ defmodule Alice.Mixfile do
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      description: "A Slack bot",
-     package: package,
-     deps: deps,
+     package: package(),
+     deps: deps(),
      docs: [logo: "resources/logo.png"]
     ]
   end

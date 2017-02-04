@@ -59,14 +59,14 @@ defmodule Alice.Router do
   Used internally to match route handlers
   """
   def match_routes(conn) do
-    Enum.reduce(handlers, conn, &(&1.match_routes(&2)))
+    Enum.reduce(handlers(), conn, &(&1.match_routes(&2)))
   end
 
   @doc """
   Used internally to match command handlers
   """
   def match_commands(conn) do
-    Enum.reduce(handlers, conn, &(&1.match_commands(&2)))
+    Enum.reduce(handlers(), conn, &(&1.match_commands(&2)))
   end
 
   # GenServer API
@@ -157,12 +157,12 @@ defmodule Alice.Router do
       @doc """
       Match all routes in this module
       """
-      def match_routes(conn = %Conn{}), do: match(routes, conn)
+      def match_routes(conn = %Conn{}), do: match(routes(), conn)
 
       @doc """
       Match all commands in this module
       """
-      def match_commands(conn = %Conn{}), do: match(commands, conn)
+      def match_commands(conn = %Conn{}), do: match(commands(), conn)
 
       defp match(patterns, conn = %Conn{}) do
         {_mod, conn} = patterns

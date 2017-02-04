@@ -22,7 +22,7 @@ defmodule Alice.Handlers.Utils do
     process = "Allocated to processes: #{bytes_to_megabytes(mem[:processes])}MB"
 
     conn
-    |> reply("Alice #{alice_version} - https://github.com/alice-bot")
+    |> reply("Alice #{alice_version()} - https://github.com/alice-bot")
     |> reply("#{total} - #{process}")
   end
 
