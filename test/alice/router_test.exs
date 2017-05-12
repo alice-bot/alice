@@ -5,7 +5,7 @@ defmodule TestHandler do
   command ~r/pattern/, :my_route
 
   def my_route(conn) do
-    send(self, {:received, routes})
+    send(self(), {:received, routes()})
     conn
   end
 end

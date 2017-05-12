@@ -15,7 +15,7 @@ defmodule Alice.StateBackends.Redis do
     ["GET", @migration_key]
     |> RedixPool.command!
     |> case do
-      nil -> migrate_redis!
+      nil -> migrate_redis!()
       _ -> :ok
     end
   end
@@ -24,7 +24,7 @@ defmodule Alice.StateBackends.Redis do
   #       elixir to use the new method of encoding in JSON. Please remove this
   #       after most people have moved to this version.
   defp migrate_redis! do
-    state = do_get_state
+    state = do_get_state()
     Enum.each(state, fn({key, val}) -> put(state, key, val) end)
     RedixPool.command!(["SET", @migration_key, true])
     :ok
@@ -62,12 +62,12 @@ defmodule Alice.StateBackends.Redis do
   #       elixir to use the new method of encoding in JSON. Please remove this
   #       after most people have moved to this version.
   def get_state do
-    migrate_redis
-    do_get_state
+    migrate_redis()
+    do_get_state()
   end
 
   defp do_get_state do
-    keys
+    keys()
     |> Stream.map(fn(key) -> {key, get(:redis, key)} end)
     |> Enum.into(%{})
   end

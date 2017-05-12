@@ -1,6 +1,6 @@
 defmodule FakeSlack do
   def send_message(text, :channel, :slack) do
-    send(self, {:msg, text})
+    send(self(), {:msg, text})
   end
 end
 
@@ -13,42 +13,42 @@ defmodule Alice.Router.HelpersTest do
   end
 
   test "reply returns the conn" do
-    assert reply("yo", conn) == conn
+    assert reply("yo", conn()) == conn()
   end
 
   test "reply sends a message with Slack.send_message" do
-    reply("yo", conn)
+    reply("yo", conn())
     assert_received {:msg, "yo"}
   end
 
   test "reply calls random_reply when given a list" do
-    ["element"] |> reply(conn)
+    ["element"] |> reply(conn())
     assert_received {:msg, "element"}
   end
 
   test "random_reply sends a message from a given list" do
-    ~w[rabbit hole] |> random_reply(conn)
+    ~w[rabbit hole] |> random_reply(conn())
     assert_received {:msg, resp}
     assert resp in ~w[rabbit hole]
   end
 
   test "chance_reply, when chance passes, \
                       replies with the given message" do
-    chance_reply(conn, 1, "always")
+    chance_reply(conn(), 1, "always")
     assert_received {:msg, "always"}
   end
 
   test "chance_reply, when chance does not pass, \
                       when not given negative message, \
                       does not reply" do
-    chance_reply(conn, 0, "never")
+    chance_reply(conn(), 0, "never")
     refute_received {:msg, _}
   end
 
   test "chance_reply, when chance does not pass, \
                       when given negative message, \
                       replies with negative" do
-    chance_reply(conn, 0, "positive", "negative")
+    chance_reply(conn(), 0, "positive", "negative")
     refute_received {:msg, "positive"}
     assert_received {:msg, "negative"}
   end

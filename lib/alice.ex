@@ -11,8 +11,8 @@ defmodule Alice do
   """
   def handlers(extras) do
     case Map.fetch(extras, :handlers) do
-      {:ok, additional_handlers} -> default_handlers ++ additional_handlers
-      _ -> default_handlers
+      {:ok, additional_handlers} -> default_handlers() ++ additional_handlers
+      _ -> default_handlers()
     end
   end
 
@@ -30,7 +30,7 @@ defmodule Alice do
   defp children(:test, _), do: []
   defp children(_env, extras) do
     import Supervisor.Spec, warn: false
-    state_backend_children ++ [
+    state_backend_children() ++ [
       worker(Alice.Router, [handlers(extras)]),
       worker(Alice.ChatBackends.Slack, [])
     ]

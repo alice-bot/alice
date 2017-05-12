@@ -12,7 +12,7 @@ defmodule Alice.Handlers.Help do
   @doc "`help` - lists all known handlers"
   def general_help(conn) do
     ["_Here are all the handlers I know about…_",
-     handler_list,
+     handler_list(),
      "_Get info about a specific handler with_ `@alice help <handler name>`",
      "_Get info about all handlers with_ `@alice help all`"]
     |> Enum.join("\n\n")

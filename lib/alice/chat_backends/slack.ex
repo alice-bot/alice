@@ -12,7 +12,7 @@ defmodule Alice.ChatBackends.Slack do
   def start_link do
     Slack.Bot.start_link(
       __MODULE__,
-      init_state,
+      init_state(),
       Application.get_env(:alice, :api_key),
       %{name: @bot_process_name}
     )

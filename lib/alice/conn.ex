@@ -105,14 +105,14 @@ defmodule Alice.Conn do
   Used internally to get namespaced state
   """
   def get_state_for(conn = %Conn{}, namespace, default \\ nil) do
-    state_backend.get(conn.state, namespace, default)
+    state_backend().get(conn.state, namespace, default)
   end
 
   @doc """
   Used internally to put namespaced state
   """
   def put_state_for(conn = %Conn{}, namespace, value) do
-    new_state = state_backend.put(conn.state, namespace, value)
+    new_state = state_backend().put(conn.state, namespace, value)
     make(conn.message, conn.slack, new_state)
   end
 
@@ -120,7 +120,7 @@ defmodule Alice.Conn do
   Used internally to delete namespaced state
   """
   def delete_state_for(conn = %Conn{}, namespace) do
-    new_state = state_backend.delete(conn.state, namespace)
+    new_state = state_backend().delete(conn.state, namespace)
     make(conn.message, conn.slack, new_state)
   end
 
