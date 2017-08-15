@@ -20,13 +20,13 @@ defmodule Alice.Mixfile do
 
   defp deps do
     [
-      {:websocket_client, "~> 1.1.0"},
+      # {:websocket_client, "~> 1.1.0"},
       {:credo,   ">= 0.0.0", only: [:dev, :test]},
       {:earmark, ">= 0.0.0", only: :dev},
       {:ex_doc,  ">= 0.0.0", only: :dev},
-      {:slack,   "~> 0.9.1"},
+      {:slack,   "~> 0.12.0"},
       {:poolboy, "~> 1.5.0"},
-      {:redix,   "~> 0.5.0"},
+      {:redix,   "~> 0.6.0"},
       {:poison,  "~> 3.0"}
     ]
   end
