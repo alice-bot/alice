@@ -20,7 +20,6 @@ defmodule Alice.Mixfile do
 
   defp deps do
     [
-      # {:websocket_client, "~> 1.1.0"},
       {:credo,   ">= 0.0.0", only: [:dev, :test]},
       {:earmark, ">= 0.0.0", only: :dev},
       {:ex_doc,  ">= 0.0.0", only: :dev},
