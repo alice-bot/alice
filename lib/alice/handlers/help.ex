@@ -34,45 +34,45 @@ defmodule Alice.Handlers.Help do
     |> Enum.reduce(conn, &reply/2)
   end
   defp do_keyword_help(conn, term) do
-    Router.handlers
+    Router.handlers()
     |> Enum.find(&(downcased_handler_name(&1) == term))
     |> deliver_help(conn)
   end
 
   defp handler_list do
-    Router.handlers
+    Router.handlers()
     |> Stream.map(&handler_name/1)
-    |> Enum.sort
+    |> Enum.sort()
     |> Stream.map(&("> *#{&1}*"))
     |> Enum.join("\n")
   end
 
   defp get_term(conn) do
     conn
-    |> Conn.last_capture
-    |> String.downcase
+    |> Conn.last_capture()
+    |> String.downcase()
     |> String.replace(~r/[_\s]+/, "")
-    |> String.strip
+    |> String.trim()
   end
 
   defp handler_name(handler) do
     handler
-    |> to_string
+    |> to_string()
     |> String.split(".")
-    |> Enum.reverse
+    |> Enum.reverse()
     |> hd
   end
 
   defp downcased_handler_name(handler) do
     handler
-    |> handler_name
-    |> String.downcase
+    |> handler_name()
+    |> String.downcase()
   end
 
   defp deliver_help(nil, conn) do
     ~s(I can't find a handler matching "#{get_term(conn)}")
     |> reply(conn)
-    |> general_help
+    |> general_help()
   end
   defp deliver_help(handler, conn) do
     [ @pro_tip,
@@ -86,12 +86,12 @@ defmodule Alice.Handlers.Help do
     [ ">*#{path_name(handler)}*",
       format_routes("Routes", handler.routes, handler),
       format_routes("Commands", handler.commands, handler), "" ]
-    |> compact
+    |> compact()
     |> Enum.join("\n")
   end
 
   defp path_name("Elixir." <> name), do: name
-  defp path_name(handler), do: handler |> to_string |> path_name
+  defp path_name(handler), do: handler |> to_string() |> path_name()
 
   defp format_routes(_,[],_), do: nil
   defp format_routes(title, routes, handler) do
@@ -102,7 +102,7 @@ defmodule Alice.Handlers.Help do
            |> Stream.map(fn({{name,_},_,_,_,text}) -> {title, name, text} end)
            |> Stream.filter(fn({_,name,_}) -> name in routes end)
            |> Enum.map(&format_route/1)
-           |> compact
+           |> compact()
 
     [">", "> *#{title}:*" | docs]
     |> Enum.join("\n")
@@ -117,7 +117,7 @@ defmodule Alice.Handlers.Help do
   defp format_text(nil,_), do: ">        _no documentation provided_"
   defp format_text(text, title) do
     text
-    |> String.strip
+    |> String.trim()
     |> String.split("\n")
     |> Stream.map(fn(line) -> ">        #{prefix_command(title, line)}" end)
     |> Enum.join("\n")
