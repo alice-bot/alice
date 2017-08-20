@@ -3,8 +3,8 @@ defmodule Alice.Mixfile do
 
   def project do
     [app: :alice,
-     version: "0.3.6",
-     elixir: "~> 1.2",
+     version: "0.3.7",
+     elixir: "~> 1.5",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      description: "A Slack bot",
