@@ -6,8 +6,6 @@ defmodule Alice.Earmuffs do
   use Alice.Router
   alias Alice.Conn
 
-  @state_id {Alice.Earmuffs, :earmuffs}
-
   command ~r/>:? earmuffs\b/i, :earmuffs
 
   @doc """
