@@ -17,7 +17,7 @@ defmodule Alice.Handlers.Utils do
     {total, process} = memory_info()
 
     reply(msg, "Alice #{alice_version()} - https://github.com/adamzaninovich/a2")
-    reply(msg, "Running as: #{botname}"
+    reply(msg, "Running as: #{botname}")
     reply(msg, "Total memory: #{total}MB - Allocated to processes: #{process}MB")
   end
 
