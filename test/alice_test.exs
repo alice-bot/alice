@@ -1,18 +1,21 @@
 defmodule AliceTest do
-  use ExUnit.Case, async: true
-  doctest Alice
+  use Alice.BotCase
 
-  alias Alice.Handlers.TestHandler
-
-  test "contains a default set of handlers" do
-    assert [Alice.Earmuffs, Alice.Handlers.Help, Alice.Handlers.Utils] == Alice.handlers(%{})
+  @tag start_bot: true
+  test "list started bots", %{bot: bot} do
+    bots = Alice.list_bots()
+    assert [{_id, ^bot, _type, [Alice.Bot]}] = bots
   end
 
-  test "properly adds handlers to the list when they're provided" do
-    assert [Alice.Earmuffs,
-            Alice.Handlers.Help,
-            Alice.Handlers.Utils,
-            Alice.Handlers.TestHandler] ==
-          Alice.handlers(%{handlers: [TestHandler]})
+  @tag start_bot: true, name: "fred"
+  test "find a bot by name", %{bot: bot} do
+    assert :undefined == :global.whereis_name("alice")
+    assert bot == :global.whereis_name("fred")
+  end
+
+  @tag start_bot: true
+  test "stop_bot/1", %{bot: bot} do
+    Alice.stop_bot(bot)
+    refute Process.alive?(bot)
   end
 end

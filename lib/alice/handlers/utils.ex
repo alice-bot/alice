@@ -1,32 +1,43 @@
 defmodule Alice.Handlers.Utils do
-  @moduledoc "Some utility routes for Alice"
-  use Alice.Router
+  use Alice.Handler
 
-  route   ~r/\Aping\z/i,        :ping
-  command ~r/\bping\z/i,        :ping
-  command ~r/\binfo\z/i,        :info
-  command ~r/\bdebug state\z/i, :debug_state
-  command ~r/\bdebug slack\z/i, :debug_slack
-  command ~r/\bdebug conn\z/i,  :debug_conn
+  route ~r/ping$/i, :ping
+  command ~r/\binfo$/i, :info
+  command ~r/\bdebug (msg|message)$/i, :debug_msg
+  command ~r/\bdebug state$/i, :debug_state
 
   @doc "`ping` - responds with signs of life"
-  def ping(conn) do
+  def ping(msg, _state) do
     ["PONG!", "Can I help you?", "Yes...I'm still here.", "I'm alive!"]
-    |> random_reply(conn)
+    |> random_reply(msg)
   end
 
   @doc "`info` - info about Alice and the system"
-  def info(conn) do
-    mem     = :erlang.memory
-    total   = "Total memory: #{bytes_to_megabytes(mem[:total])}MB"
-    process = "Allocated to processes: #{bytes_to_megabytes(mem[:processes])}MB"
+  def info(msg, _state) do
+    {total, process} = memory_info()
 
-    conn
-    |> reply("Alice #{alice_version()} - https://github.com/alice-bot")
-    |> reply("#{total} - #{process}")
+    reply(msg, "Alice #{alice_version()} - https://github.com/adamzaninovich/a2")
+    reply(msg, "Total memory: #{total}MB - Allocated to processes: #{process}MB")
   end
 
-  def bytes_to_megabytes(bytes) do
+  @doc "`debug msg` - the current `Alice.Message` datastruct for debugging"
+  def debug_msg(msg, _state) do
+    m = Map.put(msg, :private, %{})
+    reply(msg, format_code(m))
+  end
+
+  @doc "`debug state` - the current `Alice.Adapter` state for debugging"
+  def debug_state(msg, state) do
+    reply(msg, format_code(state))
+  end
+
+  defp memory_info do
+    mem = :erlang.memory
+    {bytes_to_megabytes(mem[:total]),
+     bytes_to_megabytes(mem[:processes])}
+  end
+
+  defp bytes_to_megabytes(bytes) do
     Float.round(bytes / :math.pow(1024,2), 2)
   end
 
@@ -35,20 +46,10 @@ defmodule Alice.Handlers.Utils do
   defp alice_version([]), do: "Unknown Version"
   defp alice_version([_app|apps]), do: alice_version(apps)
 
-  @doc "`debug state` - the current state data for debugging"
-  def debug_state(conn), do: conn.state |> inspect |> format_code |> reply(conn)
-
-  @doc "`debug slack` - the current slack data for debugging"
-  def debug_slack(conn), do: conn.slack |> inspect |> format_code |> reply(conn)
-
-  @doc "`debug conn` - the current conn data for debugging"
-  def debug_conn(conn),  do: conn |> inspect |> format_code |> reply(conn)
-
-  # Formats code for Slack
   defp format_code(code) do
     """
     ```
-    #{code}
+    #{inspect code}
     ```
     """
   end

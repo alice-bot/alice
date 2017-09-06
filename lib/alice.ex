@@ -1,49 +1,41 @@
 defmodule Alice do
   @moduledoc """
-  Alice is a Slack bot framework for Elixir. For more information, please see
-  the [readme](https://github.com/alice-bot/alice/blob/master/README.md).
+  Alice
+
+  ## Starting an Alice instance
+
+      {:ok, pid} = Alice.start_bot(Rebecca.Bot, name: "rebeccaaaaa")
+
+  ## Stopping an Alice instance
+
+      Alice.stop_bot(pid)
   """
 
   use Application
 
-  @doc """
-  List of Alice route handlers to register upon startup
-  """
-  def handlers(extras) do
-    case Map.fetch(extras, :handlers) do
-      {:ok, additional_handlers} -> default_handlers() ++ additional_handlers
-      _ -> default_handlers()
-    end
+  @doc false
+  def start(_type, _args) do
+    Alice.Supervisor.start_link()
   end
 
   @doc """
-  Starts the application and all subprocesses
-
-  *Note:* does not start children in :test env
+  Spawns a new instance of an Alice bot
   """
-  def start(_type, extras) do
-    Mix.env
-    |> children(extras)
-    |> Supervisor.start_link(strategy: :one_for_one, name: Alice.Supervisor)
+  def start_bot(bot, opts \\ []) do
+    Supervisor.start_child(Alice.Bot.Supervisor, [bot, opts])
   end
 
-  defp children(:test, _), do: []
-  defp children(_env, extras) do
-    import Supervisor.Spec, warn: false
-    state_backend_children() ++ [
-      worker(Alice.Router, [handlers(extras)]),
-      worker(Alice.ChatBackends.Slack, [])
-    ]
+  @doc """
+  Stops an Alice bot instance
+  """
+  def stop_bot(pid) do
+    Supervisor.terminate_child(Alice.Bot.Supervisor, pid)
   end
 
-  defp state_backend_children do
-    case Application.get_env(:alice, :state_backend) do
-      :redis -> [Supervisor.Spec.supervisor(Alice.StateBackends.RedixPool, [])]
-      _other -> []
-    end
-  end
-
-  defp default_handlers do
-    [Alice.Earmuffs, Alice.Handlers.Help, Alice.Handlers.Utils]
+  @doc """
+  List currently running bots
+  """
+  def list_bots do
+    Supervisor.which_children(Alice.Bot.Supervisor)
   end
 end

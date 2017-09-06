@@ -2,39 +2,58 @@ defmodule Alice.Mixfile do
   use Mix.Project
 
   def project do
-    [app: :alice,
-     version: "0.3.7",
-     elixir: "~> 1.5",
-     build_embedded: Mix.env == :prod,
-     start_permanent: Mix.env == :prod,
-     description: "A Slack bot",
-     package: package(),
-     deps: deps(),
-     docs: [logo: "resources/logo.png"]
+    [
+      app: :alice,
+      version: "2.0.0-alpha.1",
+      elixir: "~> 1.5",
+      docs: docs(),
+      deps: deps(),
+      package: package(),
+      name: "Alice",
+      elixirc_paths: elixirc_paths(Mix.env),
+      description: "An elixir chat bot framework (now with adapters)",
+      source_url: "https://github.com/alice-bot/alice",
+      homepage_url: "https://github.com/alice-bot/alice",
+      test_coverage: [tool: ExCoveralls],
+      preferred_cli_env: [
+       "coveralls": :test,
+       "coveralls.html": :test,
+       "coveralls.detail": :test,
+       "coveralls.post": :test]
     ]
   end
 
   def application do
-    [applications: [:logger, :slack, :mix]]
+    [
+      extra_applications: [:logger],
+      mod: {Alice, []}
+    ]
+  end
+
+  defp docs do
+    [extras: ["README.md"],
+     main: "readme"]
   end
 
   defp deps do
     [
-      {:credo,   ">= 0.0.0", only: [:dev, :test]},
-      {:earmark, ">= 0.0.0", only: :dev},
-      {:ex_doc,  ">= 0.0.0", only: :dev},
-      {:slack,   "~> 0.12.0"},
-      {:poolboy, "~> 1.5.0"},
-      {:redix,   "~> 0.6.0"},
-      {:poison,  "~> 3.0"}
+      {:excoveralls, "~> 0.7", only: :test},
+      {:ex_doc, ">= 0.0.0", only: :dev}
     ]
   end
 
+  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(_), do: ["lib"]
+
   defp package do
-    [files: ["lib", "config", "mix.exs", "README*"],
-     maintainers: ["Adam Zaninovich"],
-     licenses: ["MIT"],
-     links: %{"GitHub" => "https://github.com/adamzaninovich/alice",
-              "Docs"   => "http://hexdocs.pm/alice/readme.html"}]
+    [
+      files: ["lib", "mix.exs", "README*", "LICENSE*"],
+      maintainers: ["Adam Zaninovich"],
+      licenses: ["MIT"],
+      links: %{
+        "GitHub" => "https://github.com/alice-bot/alice",
+        "Docs" => "https://hexdocs.pm/alice"
+      }
+    ]
   end
 end
