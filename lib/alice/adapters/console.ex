@@ -45,6 +45,7 @@ defmodule Alice.Adapters.Console do
       bot: bot,
       text: text,
       type: "chat",
+      room: "console",
       user: user
     }
   end
