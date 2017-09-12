@@ -1,10 +1,15 @@
 defmodule Alice.Handler.Supervisor do
-  def start_link do
-    import Supervisor.Spec, warn: false
+  @moduledoc """
+  Supervises any Alice.Handler process that are started.
+  """
 
-    children = [
+  use Supervisor
+
+  def start_link(_) do
+    Supervisor.start_link([
       worker(Alice.Handler, [], restart: :transient)
-    ]
-    Supervisor.start_link(children, strategy: :simple_one_for_one)
+    ], strategy: :simple_one_for_one, name: __MODULE__)
   end
+
+  def init(_), do: :ok
 end

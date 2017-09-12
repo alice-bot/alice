@@ -20,16 +20,19 @@ defmodule Alice.Adapters.NoOp do
   end
 
   @doc false
-  def handle_cast({:reply, _msg}, bot) do
+  def handle_cast({:reply, msg}, bot) do
+    IO.puts "got reply message #{inspect msg} from bot #{inspect bot}"
     {:noreply, bot}
   end
 
   @doc false
   def handle_info(:connected, bot) do
     :ok = Alice.Bot.handle_connect(bot)
+    IO.puts "NoOp connected"
     {:noreply, bot}
   end
   def handle_info({:message, msg}, bot) do
+    IO.puts "received message #{inspect msg} for bot #{inspect bot}"
     Alice.Bot.handle_in(bot, make_msg(bot, msg))
     {:noreply, bot}
   end
@@ -39,8 +42,10 @@ defmodule Alice.Adapters.NoOp do
       ref: make_ref(),
       bot: bot,
       text: msg,
+      room: "noop",
+      adapter: {__MODULE__, self()},
       type: "chat",
-      user: "user"
+      user: %Alice.User{id: "user", name: "user"}
     }
   end
 end

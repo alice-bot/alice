@@ -1,17 +1,18 @@
 defmodule Alice.Supervisor do
-  @moduledoc false
+  @moduledoc """
+  The main Supervisor in an Alice bot's hierarchy. Starts
+  and supervises the Bot, Handler, and Adapter supervisors.
+  """
 
   use Supervisor
 
   def start_link do
-    Supervisor.start_link(__MODULE__, :ok, name: __MODULE__)
+    Supervisor.start_link([
+      Alice.Adapter.Supervisor,
+      Alice.Handler.Supervisor,
+      Alice.Bot.Supervisor,
+    ], strategy: :one_for_one, name: __MODULE__)
   end
 
-  def init(:ok) do
-    children = [
-      supervisor(Alice.Bot.Supervisor, [[name: Alice.Bot.Supervisor]]),
-    ]
-
-    supervise(children, strategy: :one_for_one)
-  end
+  def init(_), do: :ok
 end

@@ -15,8 +15,8 @@ defmodule Alice.Adapter do
   @callback reply(bot, msg) :: term
 
   @doc false
-  def start_link(module, opts) do
-    GenServer.start_link(module, {self(), opts})
+  def start_link(adapter_module, bot_pid, opts) do
+    GenServer.start_link(adapter_module, {bot_pid, opts})
   end
 
   @doc false
@@ -25,13 +25,8 @@ defmodule Alice.Adapter do
       use GenServer
       @behaviour Alice.Adapter
 
-      def reply(bot, %Alice.Message{} = msg) do
-        GenServer.cast(bot, {:reply, msg})
-      end
-
-      @doc false
-      def start_link(bot, opts) do
-        Alice.Adapter.start_link(__MODULE__, opts)
+      def reply(pid, %Alice.Message{} = msg) do
+        GenServer.cast(pid, {:reply, msg})
       end
 
       @doc false
@@ -46,12 +41,7 @@ defmodule Alice.Adapter do
         :ok
       end
 
-      @doc false
-      defmacro __before_compile__(_env) do
-        :ok
-      end
-
-      defoverridable [__before_compile__: 1, reply: 2]
+      defoverridable [reply: 2]
     end
   end
 end

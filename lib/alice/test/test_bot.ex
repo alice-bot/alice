@@ -1,7 +1,7 @@
 Code.ensure_compiled(Alice.Adapters.Test)
 
 defmodule Alice.TestBot do
-  use Alice.Bot, otp_app: :alice, adapter: Alice.Adapters.Test
+  use Alice.Bot, otp_app: :alice, adapters: [Alice.Adapters.Test]
 
   def handle_connect(%{name: name} = state) do
     if :undefined = :global.whereis_name(name) do
