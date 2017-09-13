@@ -16,27 +16,19 @@ defmodule Alice.Adapters.Console do
   use Alice.Adapter
   alias Alice.Adapters.Console.Connection
 
-  @doc false
-  def init({bot, opts}) do
+  def connect(bot, opts) do
     {:ok, conn} = Connection.start(opts)
-    send(self(), :connected)
     {:ok, %{conn: conn, opts: opts, bot: bot}}
   end
 
-  @doc false
-  def handle_cast({:reply, msg}, %{conn: conn} = state) do
-    send(conn, {:reply, msg})
-    {:noreply, state}
+  def handle_outgoing(%Alice.Message{text: text}, %{conn: conn} = state) do
+    send(conn, {:reply, text})
+    {:ok, state}
   end
 
-  @doc false
-  def handle_info(:connected, %{bot: bot} = state) do
-    :ok = Alice.Bot.handle_connect(bot)
-    {:noreply, state}
-  end
-  def handle_info({:message, msg}, %{bot: bot} = state) do
-    Alice.Bot.handle_in(bot, make_msg(bot, msg))
-    {:noreply, state}
+  def handle_incoming(ext_msg, %{bot: bot} = state) do
+    msg = make_msg(bot, ext_msg)
+    {:ok, msg, state}
   end
 
   defp make_msg(bot, %{"text" => text, "user" => user}) do

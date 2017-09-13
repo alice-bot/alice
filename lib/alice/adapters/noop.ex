@@ -2,7 +2,9 @@ defmodule Alice.Adapters.NoOp do
   @moduledoc """
   Alice No Op Adapter
 
-  The console adapter doesn't do anything.
+  The NoOp adapter doesn't do anything other than logging. It may be useful
+  for testing and debugging. It is also a decent example of the simplest
+  possible Alice adapter.
 
       config :my_app, MyApp.Bot,
         adapter: Alice.Adapters.NoOp,
@@ -13,35 +15,31 @@ defmodule Alice.Adapters.NoOp do
   """
   use Alice.Adapter
 
-  @doc false
-  def init({bot, _opts}) do
-    send(self(), :connected)
+  def connect(bot, _opts) do
     {:ok, bot}
   end
 
-  @doc false
-  def handle_cast({:reply, msg}, bot) do
-    IO.puts "got reply message #{inspect msg} from bot #{inspect bot}"
-    {:noreply, bot}
-  end
-
-  @doc false
-  def handle_info(:connected, bot) do
-    :ok = Alice.Bot.handle_connect(bot)
+  def handle_connect(bot) do
     IO.puts "NoOp connected"
-    {:noreply, bot}
-  end
-  def handle_info({:message, msg}, bot) do
-    IO.puts "received message #{inspect msg} for bot #{inspect bot}"
-    Alice.Bot.handle_in(bot, make_msg(bot, msg))
-    {:noreply, bot}
+    {:ok, bot}
   end
 
-  defp make_msg(bot, msg) do
+  def handle_outgoing(msg, bot) do
+    IO.puts "got outgoing message #{inspect msg} from bot #{inspect bot}"
+    {:ok, bot}
+  end
+
+  def handle_incoming(text, bot) do
+    IO.puts "received message #{inspect text} for bot #{inspect bot}"
+    msg = make_msg(bot, text)
+    {:ok, msg, bot}
+  end
+
+  defp make_msg(bot, text) do
     %Alice.Message{
       ref: make_ref(),
       bot: bot,
-      text: msg,
+      text: text,
       room: "noop",
       adapter: {__MODULE__, self()},
       type: "chat",
