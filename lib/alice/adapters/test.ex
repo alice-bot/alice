@@ -19,7 +19,7 @@ defmodule Alice.Adapters.Test do
   end
 
   def handle_info({:message, msg}, %{bot: bot} = state) do
-    msg = %Alice.Message{bot: bot, text: msg.text, user: msg.user}
+    msg = %Alice.Message{bot: bot, adapter: {__MODULE__, self()}, text: msg.text, user: msg.user}
     Alice.Bot.handle_in(bot, msg)
     {:noreply, state}
   end

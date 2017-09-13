@@ -1,14 +1,11 @@
 Code.ensure_compiled(Alice.Adapters.Test)
 
 defmodule Alice.TestBot do
-  use Alice.Bot, otp_app: :alice, adapters: [Alice.Adapters.Test]
+  use Alice.Bot, otp_app: :alice
 
-  def handle_connect(%{name: name} = state) do
-    if :undefined = :global.whereis_name(name) do
-      :yes = :global.register_name(name, self())
-    end
-
-    {:ok, state}
+  def handle_connect(bot) do
+    true = ProcessUtils.register_eventually(self(), Alice.TestBot)
+    {:ok, bot}
   end
 
   def handle_disconnect(:error, state) do

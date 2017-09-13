@@ -26,10 +26,19 @@ defmodule Alice do
   end
 
   @doc """
-  Stops an Alice bot instance
+  Stops an Alice bot instance along with its handlers and adapters
   """
   def stop_bot(pid) do
-    Supervisor.terminate_child(Alice.Bot.Supervisor, pid)
+    if Process.alive?(pid) do
+      %{adapters: adapters, handlers: handlers} = :sys.get_state(pid)
+      for adapter <- adapters do
+        Supervisor.terminate_child(Alice.Adapter.Supervisor, Process.whereis(adapter))
+      end
+      for handler <- handlers do
+        Supervisor.terminate_child(Alice.Handler.Supervisor, Process.whereis(handler))
+      end
+      Supervisor.terminate_child(Alice.Bot.Supervisor, pid)
+    end
   end
 
   @doc """

@@ -232,7 +232,7 @@ defmodule Alice.Bot do
         handlers = ensure_builtin_handlers(handlers)
         for handler <- handlers do
           {:ok, pid} = Supervisor.start_child(Alice.Handler.Supervisor, [handler, {name, self()}])
-          Process.register(pid, handler)
+          ProcessUtils.register_eventually(pid, handler)
         end
         {:noreply, %{state | handlers: handlers}}
       end
@@ -241,7 +241,7 @@ defmodule Alice.Bot do
           case adapter do
             {name, mod} ->
               {:ok, pid} = Supervisor.start_child(Alice.Adapter.Supervisor, [mod, self(), opts])
-              Process.register(pid, name)
+              ProcessUtils.register_eventually(pid, name)
               mod
             mod when is_atom(mod) ->
               {:ok, _pid} = Supervisor.start_child(Alice.Adapter.Supervisor, [mod, self(), opts])

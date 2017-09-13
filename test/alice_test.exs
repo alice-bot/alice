@@ -7,10 +7,9 @@ defmodule AliceTest do
     assert [{_id, ^bot, _type, [Alice.Bot]}] = bots
   end
 
-  @tag start_bot: true, name: "fred"
+  @tag start_bot: true
   test "find a bot by name", %{bot: bot} do
-    assert :undefined == :global.whereis_name("alice")
-    assert bot == :global.whereis_name("fred")
+    assert bot == Process.whereis(Alice.TestBot)
   end
 
   @tag start_bot: true

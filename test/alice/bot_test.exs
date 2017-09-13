@@ -1,13 +1,12 @@
 defmodule Alice.BotTest do
-  use Alice.BotCase
+  use Alice.BotCase, async: false
 
   test "new/5" do
-    bot = Alice.Bot.new(:adapter, :name, :handlers, :handler_sup, :opts)
+    bot = Alice.Bot.new(:name, :adapters, :handlers, :opts)
     assert bot == %Alice.Bot{
-      adapter: :adapter,
       name: :name,
+      adapters: :adapters,
       handlers: :handlers,
-      handler_sup: :handler_sup,
       opts: :opts
     }
   end
@@ -31,7 +30,7 @@ defmodule Alice.BotTest do
   @tag start_bot: true
   test "handler_processes/1 returns list of handlers", %{bot: bot} do
     processes =
-      :sys.get_state(bot).handler_sup
+      Alice.Handler.Supervisor
       |> Supervisor.which_children()
       |> Enum.map(fn({_,pid,_,_}) ->
         {_,[{_,{mod,_,_}}|_]} = Process.info(pid, :dictionary)
@@ -48,7 +47,7 @@ defmodule Alice.BotTest do
 
   @tag start_bot: true
   test "handle_connect/1", %{bot: bot} do
-    assert bot == :global.whereis_name("alice")
+    assert bot == Process.whereis(Alice.TestBot)
   end
 
   @tag start_bot: true

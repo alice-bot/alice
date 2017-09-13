@@ -14,19 +14,10 @@ defmodule Alice.Bot.ConfigTest do
     end
   end
 
-  describe "init_config" do
-    test "when config is good" do
-      opts = [otp_app: :alice, adapter: Alice.Adapters.Console]
-      result = Config.init_config(Alice.Bot, opts)
-      bot_config = [log_level: :debug, bot_module: Alice.Bot, otp_app: :alice, adapter: Alice.Adapters.Console]
-      assert result == Config.new(:alice, Alice.Adapters.Console, bot_config)
-    end
-
-    test "when missing adapter keyword" do
-      opts = [otp_app: :alice]
-      assert_raise ArgumentError, fn ->
-        Config.init_config(Alice.Bot, opts)
-      end
-    end
+  test "init_config" do
+    opts = [otp_app: :alice, adapters: [Alice.Adapters.Console]]
+    result = Config.init_config(Alice.Bot, opts)
+    bot_config = [log_level: :debug, bot_module: Alice.Bot, otp_app: :alice, adapters: [Alice.Adapters.Console]]
+    assert result == Config.new(:alice, [Alice.Adapters.Console], bot_config)
   end
 end
