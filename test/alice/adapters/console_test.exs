@@ -6,22 +6,19 @@ defmodule Alice.Adapters.ConsoleTest do
 
   test "console handles messages from the connection" do
     capture_io fn ->
-      {:ok, adapter} = Alice.Adapter.start_link(Console, name: "alice", user: "testuser")
+      {:ok, adapter} = start_adapter(self(), name: "alice", user: "testuser")
 
-      handle_connect()
       msg = {:message, %{"text" => "ping", "user" => "testuser"}}
 
       send(adapter, msg)
-      assert_receive {:"$gen_cast", {:handle_in, %Alice.Message{text: "ping", user: "testuser"}}}
+      assert_receive {:"$gen_cast", {:handle_in, %Alice.Message{text: "ping", user: %Alice.User{name: "testuser"}}}}
     end
   end
 
   test "sending messages to the connection process" do
     capture_io fn ->
-      {:ok, adapter_pid} = Alice.Adapter.start_link(Console, name: "alice", user: "testuser")
-      on_exit fn -> Console.stop(adapter_pid, 1) end
+      {:ok, adapter_pid} = start_adapter(self(), name: "alice", user: "testuser")
 
-      handle_connect()
       test_process = self()
       adapter = :sys.replace_state(adapter_pid, fn state -> %{state | conn: test_process} end)
       msg = %Alice.Message{text: "pong", user: "testuser"}
@@ -29,6 +26,15 @@ defmodule Alice.Adapters.ConsoleTest do
       Console.reply(adapter.conn, msg)
       assert_receive {:"$gen_cast", {:reply, ^msg}}
     end
+  end
+
+  defp start_adapter(pid, opts) do
+    {:ok, adapter_pid} = Supervisor.start_child(Alice.Adapter.Supervisor, [Console, pid, opts])
+    on_exit fn ->
+      Supervisor.terminate_child(Alice.Adapter.Supervisor, adapter_pid)
+    end
+    handle_connect()
+    {:ok, adapter_pid}
   end
 
   defp handle_connect() do

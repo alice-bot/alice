@@ -1,15 +1,15 @@
 defmodule Alice.Bot.Config do
-  defstruct [:otp_app, :adapter, :bot_config]
+  defstruct [:otp_app, :adapters, :bot_config]
 
-  def new(otp_app, adapter, bot_config) do
-    %__MODULE__{otp_app: otp_app, adapter: adapter, bot_config: bot_config}
+  def new(otp_app, adapters, bot_config) do
+    %__MODULE__{otp_app: otp_app, adapters: adapters, bot_config: bot_config}
   end
 
   def init_config(bot_module, opts_from_use) do
     otp_app = opts_from_use[:otp_app]
     bot_config = get_bot_config(bot_module, otp_app, opts_from_use)
-    adapter = ensure_adapter!(opts_from_use, bot_config)
-    new(otp_app, adapter, bot_config)
+    adapters = get_adapters(opts_from_use, bot_config)
+    new(otp_app, adapters, bot_config)
   end
 
   def get_bot_config(bot_module, otp_app, opts_from_use) do
@@ -34,10 +34,12 @@ defmodule Alice.Bot.Config do
     |> Keyword.merge(opts_from_use)
   end
 
-  defp ensure_adapter!(opts, config) do
-    adapter = opts[:adapter] || config[:adapter] || :no_adapter
-    ensure_adapter!(adapter)
+  defp get_adapters(opts, config) do
+    with [] <- opts[:adapters],
+         [] <- config[:adapters] do
+      []
+    else
+      adapters -> adapters
+    end
   end
-  defp ensure_adapter!(:no_adapter), do: raise ArgumentError, "please configure an adapter"
-  defp ensure_adapter!(adapter), do: adapter
 end

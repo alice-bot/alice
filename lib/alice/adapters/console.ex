@@ -44,10 +44,10 @@ defmodule Alice.Adapters.Console do
       ref: make_ref(),
       bot: bot,
       text: text,
-      type: "chat",
       room: "console",
-      user: user
+      adapter: {__MODULE__, self()},
+      type: "chat",
+      user: %Alice.User{id: "console", name: user}
     }
   end
 end
-

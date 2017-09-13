@@ -26,18 +26,16 @@ defmodule Alice.Bot do
   *`handers` - list of handlers to register
   """
 
-  defstruct adapter: nil,
-            name: nil,
+  defstruct name: nil,
+            adapters: [],
             handlers: [],
-            handler_sup: [],
             opts: []
 
-  def new(adapter, name, handlers, handler_sup, opts) do
+  def new(name, adapters, handlers, opts) do
     %__MODULE__{
-      adapter: adapter,
       name: name,
+      adapters: adapters,
       handlers: handlers,
-      handler_sup: handler_sup,
       opts: opts
     }
   end
@@ -106,8 +104,7 @@ defmodule Alice.Bot do
 
       config = Alice.Bot.Config.init_config(__MODULE__, opts)
 
-      @adapter config.adapter
-      @before_compile config.adapter
+      @adapters config.adapters
       @config config.bot_config
       @log_level config.bot_config[:log_level]
       @otp_app config.otp_app
@@ -134,14 +131,13 @@ defmodule Alice.Bot do
         Logger.unquote(@log_level)(fn()-> msg end, [])
       end
 
-      def __adapter__, do: @adapter
+      def __adapters__, do: @adapters
 
       def init({bot_module, opts}) do
         with {handlers, opts}   <- register_handlers(bot_module.bot_config(opts)),
-             {:ok, adapter}     <- @adapter.start_link(bot_module, opts),
-             {:ok, handler_sup} <- Alice.Handler.Supervisor.start_link(),
+             {adapters, opts}   <- register_adapters(opts),
              name               <- opts[:name],
-             bot                <- Alice.Bot.new(adapter, name, handlers, handler_sup, opts) do
+             bot                <- Alice.Bot.new(name, adapters, handlers, opts) do
           {:ok, bot}
         else
           _ -> {:stop, :shutdown}
@@ -152,6 +148,12 @@ defmodule Alice.Bot do
         {handlers, opts} = Keyword.pop(opts, :handlers, [])
         GenServer.cast(self(), {:register_handlers, handlers})
         {handlers, opts}
+      end
+
+      defp register_adapters(opts) do
+        {adapters, opts} = Keyword.pop(opts, :adapters, [])
+        GenServer.cast(self(), {:register_adapters, adapters, opts})
+        {adapters, opts}
       end
 
       def handle_connect(state) do
@@ -172,9 +174,9 @@ defmodule Alice.Bot do
       def handle_call(:name, _from, %{name: name} = state) do
         {:reply, name, state}
       end
-      def handle_call(:handler_processes, _from, %{handler_sup: sup} = state) do
+      def handle_call(:handler_processes, _from, state) do
         handler_processes =
-          sup
+          Alice.Handler.Supervisor
           |> Supervisor.which_children()
           |> Enum.map(fn({_,pid,_,_}) ->
             {_,[{_,{mod,_,_}}|_]} = Process.info(pid, :dictionary)
@@ -199,14 +201,15 @@ defmodule Alice.Bot do
         end
       end
 
-      def handle_cast({:reply, msg}, %{adapter: adapter} = state) do
-        @adapter.reply(adapter, msg)
+      def handle_cast({:reply, msg}, state) do
+        {adapter_mod, adapter_pid} = msg.adapter
+        adapter_mod.reply(adapter_pid, msg)
         {:noreply, state}
       end
       def handle_cast({:handle_in, msg}, state) do
         case handle_in(msg, state) do
           {:dispatch, %Alice.Message{} = msg, state} ->
-            handlers = Supervisor.which_children(state.handler_sup)
+            handlers = Supervisor.which_children(Alice.Handler.Supervisor)
             Alice.Handler.dispatch(msg, handlers)
             {:noreply, state}
 
@@ -225,13 +228,31 @@ defmodule Alice.Bot do
           {:noreply, state} -> {:noreply, state}
         end
       end
-      def handle_cast({:register_handlers, handlers}, %{name: name, handler_sup: sup} = state) do
+      def handle_cast({:register_handlers, handlers}, %{name: name} = state) do
         handlers = ensure_builtin_handlers(handlers)
-        Enum.each(handlers, fn(handler) ->
-          Supervisor.start_child(sup, [handler, {name, self()}])
-        end)
+        for handler <- handlers do
+          {:ok, pid} = Supervisor.start_child(Alice.Handler.Supervisor, [handler, {name, self()}])
+          ProcessUtils.register_eventually(pid, handler)
+        end
         {:noreply, %{state | handlers: handlers}}
       end
+      def handle_cast({:register_adapters, adapters, opts}, state) do
+        adapters = for adapter <- ensure_adapter(adapters) do
+          case adapter do
+            {name, mod} ->
+              {:ok, pid} = Supervisor.start_child(Alice.Adapter.Supervisor, [mod, self(), opts])
+              ProcessUtils.register_eventually(pid, name)
+              mod
+            mod when is_atom(mod) ->
+              {:ok, _pid} = Supervisor.start_child(Alice.Adapter.Supervisor, [mod, self(), opts])
+              mod
+          end
+        end
+        {:noreply, %{state | adapters: adapters}}
+      end
+
+      defp ensure_adapter([]), do: [{:default_noop, Alice.Adapters.NoOp}]
+      defp ensure_adapter(adapters), do: adapters
 
       defp ensure_builtin_handlers(handlers) when is_list(handlers) do
         Enum.reduce(Alice.Handler.builtins(), handlers, fn(builtin, acc) ->
