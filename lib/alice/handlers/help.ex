@@ -14,7 +14,8 @@ defmodule Alice.Handlers.Help do
     ["_Here are all the handlers I know about…_",
      handler_list(),
      "_Get info about a specific handler with_ `@alice help <handler name>`",
-     "_Get info about all handlers with_ `@alice help all`"]
+     "_Get info about all handlers with_ `@alice help all`",
+    "_Feedback on Alice is appreciated. Please submit an issue at https://github.com/alice-bot/alice/issues _"]
     |> Enum.join("\n\n")
     |> reply(conn)
   end
