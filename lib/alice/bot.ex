@@ -152,7 +152,18 @@ defmodule Alice.Bot do
 
       defp register_adapters(opts) do
         {adapters, opts} = Keyword.pop(opts, :adapters, [])
-        GenServer.cast(self(), {:register_adapters, adapters, opts})
+        adapters = for adapter <- ensure_adapter(adapters) do
+          case adapter do
+            {name, mod} ->
+              {:ok, pid} = Supervisor.start_child(Alice.Adapter.Supervisor, [mod, self(), opts])
+              ProcessUtils.register_eventually(pid, name)
+              mod
+            mod when is_atom(mod) ->
+              {:ok, _pid} = Supervisor.start_child(Alice.Adapter.Supervisor, [mod, self(), opts])
+              mod
+          end
+        end
+        GenServer.cast(self(), {:update_adapters, adapters})
         {adapters, opts}
       end
 
@@ -179,7 +190,8 @@ defmodule Alice.Bot do
           Alice.Handler.Supervisor
           |> Supervisor.which_children()
           |> Enum.map(fn({_,pid,_,_}) ->
-            {_,[{_,{mod,_,_}}|_]} = Process.info(pid, :dictionary)
+            {:dictionary, info} = Process.info(pid, :dictionary)
+            {mod, _, _} = Keyword.get(info, :"$initial_call")
             {mod, pid}
           end)
         {:reply, handler_processes, state}
@@ -202,8 +214,8 @@ defmodule Alice.Bot do
       end
 
       def handle_cast({:reply, msg}, state) do
-        {adapter_mod, adapter_pid} = msg.adapter
-        adapter_mod.reply(adapter_pid, msg)
+        {_mod, pid} = msg.adapter
+        Alice.Adapter.reply(pid, msg)
         {:noreply, state}
       end
       def handle_cast({:handle_in, msg}, state) do
@@ -232,22 +244,11 @@ defmodule Alice.Bot do
         handlers = ensure_builtin_handlers(handlers)
         for handler <- handlers do
           {:ok, pid} = Supervisor.start_child(Alice.Handler.Supervisor, [handler, {name, self()}])
-          ProcessUtils.register_eventually(pid, handler)
+          # ProcessUtils.register_eventually(pid, handler)
         end
         {:noreply, %{state | handlers: handlers}}
       end
-      def handle_cast({:register_adapters, adapters, opts}, state) do
-        adapters = for adapter <- ensure_adapter(adapters) do
-          case adapter do
-            {name, mod} ->
-              {:ok, pid} = Supervisor.start_child(Alice.Adapter.Supervisor, [mod, self(), opts])
-              ProcessUtils.register_eventually(pid, name)
-              mod
-            mod when is_atom(mod) ->
-              {:ok, _pid} = Supervisor.start_child(Alice.Adapter.Supervisor, [mod, self(), opts])
-              mod
-          end
-        end
+      def handle_cast({:update_adapters, adapters}, state) do
         {:noreply, %{state | adapters: adapters}}
       end
 

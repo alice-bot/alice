@@ -61,8 +61,9 @@ defmodule Alice.Adapter do
   Returning `{:noreply, state}` will effectively ignore the message
   and nothing will be dispatched to the handlers.
   """
-  @callback handle_incoming(ext_msg, state) :: {:ok, msg, state}
-                                             | {:noreply, state}
+  @callback handle_incoming(ext_msg :: any, state) ::
+    {:ok, msg, state} |
+    {:noreply, state}
 
   @doc "start an adapter"
   def start_link(adapter_module, bot_pid, opts) do
@@ -80,7 +81,7 @@ defmodule Alice.Adapter do
       use GenServer
       @behaviour Alice.Adapter
 
-      @doc false
+      @doc "Default implementation for `handle_connected`"
       def handle_connected(state), do: {:ok, state}
 
       @doc false
@@ -127,10 +128,7 @@ defmodule Alice.Adapter do
         {:noreply, {bot, state}}
       end
 
-      defoverridable [connect: 2,
-                      handle_connected: 1,
-                      handle_outgoing: 2,
-                      handle_incoming: 2]
+      defoverridable handle_connected: 1
     end
   end
 end

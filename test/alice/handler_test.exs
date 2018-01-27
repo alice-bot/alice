@@ -23,9 +23,9 @@ defmodule Alice.HandlerTest do
     assert_receive {:reply, %{text: "route test received"}}
   end
 
-  @tag start_bot: true
+  @tag start_bot: true, name: "bot"
   test "it responds to commands", %{adapter: adapter, msg: msg} do
-    send adapter, {:message, %{msg | text: "alice test command"}}
+    send adapter, {:message, %{msg | text: "bot test command"}}
     assert_receive {:reply, %{text: "command test received"}}
   end
 

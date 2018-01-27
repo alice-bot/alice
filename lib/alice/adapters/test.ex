@@ -3,7 +3,7 @@ defmodule Alice.Adapters.Test do
 
   use Alice.Adapter
 
-  def init(bot, opts) do
+  def connect(bot, opts) do
     {:ok, %{conn: nil, opts: opts, bot: bot}}
   end
 
@@ -17,9 +17,8 @@ defmodule Alice.Adapters.Test do
     {:ok, msg, state}
   end
 
-  # ?
-  def handle_info(msg, %{bot: bot} = state) do
+  def handle_info({:message, msg}, {bot, state}) do
     Alice.Bot.handle_in(bot, msg)
-    {:noreply, state}
+    {:noreply, {bot, state}}
   end
 end
