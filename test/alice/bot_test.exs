@@ -1,5 +1,5 @@
 defmodule Alice.BotTest do
-  use Alice.BotCase, async: false
+  use Alice.BotCase
 
   test "new/5" do
     bot = Alice.Bot.new(:name, :adapters, :handlers, :opts)
@@ -33,7 +33,8 @@ defmodule Alice.BotTest do
       Alice.Handler.Supervisor
       |> Supervisor.which_children()
       |> Enum.map(fn({_,pid,_,_}) ->
-        {_,[{_,{mod,_,_}}|_]} = Process.info(pid, :dictionary)
+        {:dictionary, info} = Process.info(pid, :dictionary)
+        {mod, _, _} = Keyword.get(info, :"$initial_call")
         {mod, pid}
       end)
     assert processes == Alice.Bot.handler_processes(bot)

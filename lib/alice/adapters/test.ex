@@ -3,28 +3,22 @@ defmodule Alice.Adapters.Test do
 
   use Alice.Adapter
 
-  def init({bot, opts}) do
-    GenServer.cast(self(), :after_init)
+  def connect(bot, opts) do
     {:ok, %{conn: nil, opts: opts, bot: bot}}
   end
 
-  def handle_cast(:after_init, %{bot: bot} = state) do
-    Alice.Bot.handle_connect(bot)
-    {:noreply, state}
-  end
-
-  def handle_cast({:reply, msg}, %{conn: conn} = state) do
+  def handle_outgoing(%Alice.Message{} = msg, %{conn: conn} = state) do
     send(conn, {:reply, msg})
-    {:noreply, state}
+    {:ok, state}
   end
 
-  def handle_info({:message, msg}, %{bot: bot} = state) do
+  def handle_incoming(msg, %{bot: bot} = state) do
     msg = %Alice.Message{bot: bot, adapter: {__MODULE__, self()}, text: msg.text, user: msg.user}
-    Alice.Bot.handle_in(bot, msg)
-    {:noreply, state}
+    {:ok, msg, state}
   end
-  def handle_info(msg, %{bot: bot} = state) do
+
+  def handle_info({:message, msg}, {bot, state}) do
     Alice.Bot.handle_in(bot, msg)
-    {:noreply, state}
+    {:noreply, {bot, state}}
   end
 end
