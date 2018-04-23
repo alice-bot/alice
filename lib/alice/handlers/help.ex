@@ -3,7 +3,6 @@ defmodule Alice.Handlers.Help do
   use Alice.Router
   alias Alice.Router
   alias Alice.Conn
-  require IEx
 
   command ~r/>:? help\z/i, :general_help
   command ~r/\bhelp (.*)\z/i, :keyword_help
