@@ -43,6 +43,11 @@ defmodule Alice.Conn do
   end
 
   @doc """
+  Returns the name of the bot
+  """
+  def bot_name(conn), do: conn.slack.me.name
+
+  @doc """
   Builds a string to use as an @reply back to the user who sent the message
   """
   def at_reply_user(conn = %Conn{}) do

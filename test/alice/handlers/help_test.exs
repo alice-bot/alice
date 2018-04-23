@@ -4,7 +4,7 @@ defmodule Alice.Handlers.HelpTest do
   alias Alice.Handlers.TestHandler
 
   test "help_for_handler generates the correct output" do
-    assert Help.help_for_handler(TestHandler) ==
+    assert Help.help_for_handler(TestHandler, %{slack: %{me: %{name: "alice"}}}) ==
     """
     >*Alice.Handlers.TestHandler*
     >
