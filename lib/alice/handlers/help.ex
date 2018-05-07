@@ -13,8 +13,8 @@ defmodule Alice.Handlers.Help do
   def general_help(conn) do
     ["_Here are all the handlers I know about…_",
      handler_list(),
-     "_Get info about a specific handler with_ `@alice help <handler name>`",
-     "_Get info about all handlers with_ `@alice help all`",
+     "_Get info about a specific handler with_ `@#{Conn.bot_name(conn)} help <handler name>`",
+     "_Get info about all handlers with_ `@#{Conn.bot_name(conn)} help all`",
     "_Feedback on Alice is appreciated. Please submit an issue at https://github.com/alice-bot/alice/issues _"]
     |> Enum.join("\n\n")
     |> reply(conn)
@@ -31,7 +31,7 @@ defmodule Alice.Handlers.Help do
   defp do_keyword_help(conn, "all") do
     [@pro_tip,
      "_Here are all the routes and commands I know about…_"
-     | Enum.map(Router.handlers, &help_for_handler/1)]
+     | Enum.map(Router.handlers, &help_for_handler/2)]
     |> Enum.reduce(conn, &reply/2)
   end
   defp do_keyword_help(conn, term) do
@@ -78,15 +78,15 @@ defmodule Alice.Handlers.Help do
   defp deliver_help(handler, conn) do
     [ @pro_tip,
       ~s(_Here are all the routes and commands I know for "#{get_term(conn)}"_),
-      help_for_handler(handler) ]
+      help_for_handler(handler, conn) ]
     |> Enum.join("\n\n")
     |> reply(conn)
   end
 
-  def help_for_handler(handler) do
+  def help_for_handler(handler, conn) do
     [ ">*#{path_name(handler)}*",
-      format_routes("Routes", handler.routes, handler),
-      format_routes("Commands", handler.commands, handler), "" ]
+      format_routes("Routes", handler.routes, handler, conn),
+      format_routes("Commands", handler.commands, handler, conn), "" ]
     |> compact()
     |> Enum.join("\n")
   end
@@ -94,38 +94,38 @@ defmodule Alice.Handlers.Help do
   defp path_name("Elixir." <> name), do: name
   defp path_name(handler), do: handler |> to_string() |> path_name()
 
-  defp format_routes(_,[],_), do: nil
-  defp format_routes(title, routes, handler) do
+  defp format_routes(_,[],_,_), do: nil
+  defp format_routes(title, routes, handler, conn) do
     routes = Enum.map(routes, fn({_,name}) -> name end)
 
     docs = handler
-           |> Code.get_docs(:docs)
-           |> Stream.map(fn({{name,_},_,_,_,text}) -> {title, name, text} end)
-           |> Stream.filter(fn({_,name,_}) -> name in routes end)
-           |> Enum.map(&format_route/1)
-           |> compact()
+      |> Code.get_docs(:docs)
+      |> Stream.map(fn({{name,_},_,_,_,text}) -> {title, name, text, conn} end)
+      |> Stream.filter(fn({_,name,_,conn}) -> name in routes end)
+      |> Enum.map(&format_route/1)
+      |> compact()
 
     [">", "> *#{title}:*" | docs]
     |> Enum.join("\n")
   end
 
-  defp format_route({_,_,false}), do: nil
-  defp format_route({title, name, text}) do
-    [">    _#{name}_", format_text(text, title)]
+  defp format_route({_,_,false,_}), do: nil
+  defp format_route({title, name, text, conn}) do
+    [">    _#{name}_", format_text(text, title, conn)]
     |> Enum.join("\n")
   end
 
-  defp format_text(nil,_), do: ">        _no documentation provided_"
-  defp format_text(text, title) do
+  defp format_text(nil,_,_), do: ">        _no documentation provided_"
+  defp format_text(text, title, conn) do
     text
     |> String.trim()
     |> String.split("\n")
-    |> Stream.map(fn(line) -> ">        #{prefix_command(title, line)}" end)
+    |> Stream.map(fn(line) -> ">        #{prefix_command(title, line, conn)}" end)
     |> Enum.join("\n")
   end
 
-  defp prefix_command("Commands", "`" <> line), do: "`@alice #{line}"
-  defp prefix_command(_, line), do: line
+  defp prefix_command("Commands", "`" <> line, conn), do: "`@#{Conn.bot_name(conn)} #{line}"
+  defp prefix_command(_, line, _), do: line
 
   defp compact(list), do: list |> Enum.reject(&is_nil/1)
 end
