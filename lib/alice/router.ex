@@ -169,6 +169,6 @@ defmodule Alice.Router do
                         |> Enum.reduce({__MODULE__, conn}, &match_pattern/2)
         conn
       end
-      end
+    end
   end
 end
