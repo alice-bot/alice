@@ -27,13 +27,13 @@ jobs:
             - v1-alice-dependency-cache-{{ .Branch }}
             - v1-alice-dependency-cache-master-{{ checksum "mix.lock" }}
             - v1-alice-dependency-cache-master
-      # - restore_cache:
-      #     name: "Restore Build & PLT cache"
-      #     keys:
-      #       - v1-alice-build-and-plt-cache-{{ .Branch }}-{{ checksum "build-branch-sha" }}
-      #       - v1-alice-build-and-plt-cache-{{ .Branch }}
-      #       - v1-alice-build-and-plt-cache-master-{{ checksum "lastest-master-sha" }}
-      #       - v1-alice-build-and-plt-cache-master
+      - restore_cache:
+          name: "Restore Build & PLT cache"
+          keys:
+            - v1-alice-build-and-plt-cache-{{ .Branch }}-{{ checksum "build-branch-sha" }}
+            - v1-alice-build-and-plt-cache-{{ .Branch }}
+            - v1-alice-build-and-plt-cache-master-{{ checksum "lastest-master-sha" }}
+            - v1-alice-build-and-plt-cache-master
       - run: mix do deps.get, compile  # get updated dependencies & compile them
       - run: mix compile --force --warnings-as-errors # compile project and treat warnings as error
       - save_cache:
@@ -43,15 +43,15 @@ jobs:
             - deps
       - run: mix format --check-formatted --dry-run
       - run: mix credo
-      # - run:
-      #     name: "Building Dialyzer PLT"
-      #     command: MIX_ENV=dev mix dialyzer --plt
-      #     no_output_timeout: 30m
-      # - save_cache:
-      #     name: "Save Build & PLT cache"
-      #     key: v1-alice-build-and-plt-cache-{{ .Branch }}-{{ checksum "build-branch-sha" }}
-      #     paths:
-      #       - _build
-      #       - ~/.mix
-      # - run: MIX_ENV=dev mix dialyzer --halt-exit-status
+      - run:
+          name: "Building Dialyzer PLT"
+          command: MIX_ENV=dev mix dialyzer --plt
+          no_output_timeout: 30m
+      - save_cache:
+          name: "Save Build & PLT cache"
+          key: v1-alice-build-and-plt-cache-{{ .Branch }}-{{ checksum "build-branch-sha" }}
+          paths:
+            - _build
+            - ~/.mix
+      - run: MIX_ENV=dev mix dialyzer --halt-exit-status
       - run: mix test
