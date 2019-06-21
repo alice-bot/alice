@@ -5,7 +5,7 @@ defmodule Alice.Mixfile do
     [
       app: :alice,
       version: "0.3.7",
-      elixir: "~> 1.5",
+      elixir: "~> 1.6",
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
       description: "A Slack bot",
