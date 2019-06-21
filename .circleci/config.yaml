@@ -1,0 +1,57 @@
+# Elixir CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-elixir/ for more details
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/elixir:1.6
+        environment:
+          MIX_ENV: test
+
+    working_directory: ~/alice
+    steps:
+      - checkout
+      - run:
+          name: "Creating master branch cache key"
+          command: git log origin/master --pretty=format:'%H' -n 1 > lastest-master-sha
+      - run:
+          name: "Creating build branch cache key"
+          command: git log --pretty=format:'%H' -n 1 > build-branch-sha
+      - run: mix local.hex --force
+      - run: mix local.rebar --force
+      - restore_cache: # restores saved mix cache
+          name: "Restore dependency cache"
+          keys:
+            - v1-alice-dependency-cache-{{ .Branch }}-{{ checksum "mix.lock" }}
+            - v1-alice-dependency-cache-{{ .Branch }}
+            - v1-alice-dependency-cache-master-{{ checksum "mix.lock" }}
+            - v1-alice-dependency-cache-master
+      # - restore_cache:
+      #     name: "Restore Build & PLT cache"
+      #     keys:
+      #       - v1-alice-build-and-plt-cache-{{ .Branch }}-{{ checksum "build-branch-sha" }}
+      #       - v1-alice-build-and-plt-cache-{{ .Branch }}
+      #       - v1-alice-build-and-plt-cache-master-{{ checksum "lastest-master-sha" }}
+      #       - v1-alice-build-and-plt-cache-master
+      - run: mix do deps.get, compile  # get updated dependencies & compile them
+      - run: mix compile --force --warnings-as-errors # compile project and treat warnings as error
+      - save_cache:
+          name: "Save dependency cache"
+          key: v1-alice-dependency-cache-{{ .Branch }}-{{ checksum "mix.lock" }}
+          paths:
+            - deps
+      - run: mix format --check-formatted --dry-run
+      - run: mix credo
+      # - run:
+      #     name: "Building Dialyzer PLT"
+      #     command: MIX_ENV=dev mix dialyzer --plt
+      #     no_output_timeout: 30m
+      # - save_cache:
+      #     name: "Save Build & PLT cache"
+      #     key: v1-alice-build-and-plt-cache-{{ .Branch }}-{{ checksum "build-branch-sha" }}
+      #     paths:
+      #       - _build
+      #       - ~/.mix
+      # - run: MIX_ENV=dev mix dialyzer --halt-exit-status
+      - run: mix test
