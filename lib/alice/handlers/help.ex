@@ -4,8 +4,8 @@ defmodule Alice.Handlers.Help do
   alias Alice.Router
   alias Alice.Conn
 
-  command(~r/>:? help\z/i, :general_help)
-  command(~r/\bhelp (.*)\z/i, :keyword_help)
+  command ~r/>:? help\z/i, :general_help
+  command ~r/\bhelp (.*)\z/i, :keyword_help
 
   @pro_tip "_*Pro Tip:* Commands require you @ mention me, routes do not_"
 
