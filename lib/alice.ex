@@ -22,18 +22,21 @@ defmodule Alice do
   *Note:* does not start children in :test env
   """
   def start(_type, extras) do
-    Mix.env
+    Mix.env()
     |> children(extras)
     |> Supervisor.start_link(strategy: :one_for_one, name: Alice.Supervisor)
   end
 
   defp children(:test, _), do: []
+
   defp children(_env, extras) do
     import Supervisor.Spec, warn: false
-    state_backend_children() ++ [
-      worker(Alice.Router, [handlers(extras)]),
-      worker(Alice.ChatBackends.Slack, [])
-    ]
+
+    state_backend_children() ++
+      [
+        worker(Alice.Router, [handlers(extras)]),
+        worker(Alice.ChatBackends.Slack, [])
+      ]
   end
 
   defp state_backend_children do

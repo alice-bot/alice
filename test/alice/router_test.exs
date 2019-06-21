@@ -22,34 +22,36 @@ defmodule Alice.RouterTest do
   end
 
   test "it remembers routes" do
-    assert TestHandler.routes == [{~r/pattern/, :my_route}]
+    assert TestHandler.routes() == [{~r/pattern/, :my_route}]
   end
 
   test "it remembers commands" do
-    assert TestHandler.commands == [{~r/pattern/, :my_route}]
+    assert TestHandler.commands() == [{~r/pattern/, :my_route}]
   end
 
   test "starting the router with an array of handlers registers the handlers" do
-    assert Router.handlers == [TestHandler]
+    assert Router.handlers() == [TestHandler]
   end
 
   test "you can only register a handler once" do
     Router.register_handler(TestHandler)
     Router.register_handler(TestHandler)
-    assert Router.handlers == [TestHandler]
+    assert Router.handlers() == [TestHandler]
   end
 
   test "match_routes calls match_routes on each handler" do
     {%{text: "pattern", user: "foo"}, %{users: %{"foo" => %{name: "foo"}}}, :state}
-    |> Conn.make
-    |> Router.match_routes
+    |> Conn.make()
+    |> Router.match_routes()
+
     assert_received {:received, [{~r/pattern/, :my_route}]}
   end
 
   test "match_commands calls match_commands on each handler" do
     {%{text: "pattern", user: "foo"}, %{users: %{"foo" => %{name: "foo"}}}, :state}
-    |> Conn.make
-    |> Router.match_commands
+    |> Conn.make()
+    |> Router.match_commands()
+
     assert_received {:received, [{~r/pattern/, :my_route}]}
   end
 

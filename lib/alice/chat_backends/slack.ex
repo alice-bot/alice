@@ -20,19 +20,19 @@ defmodule Alice.ChatBackends.Slack do
 
   defp init_state do
     case Application.get_env(:alice, :state_backend) do
-      :redis -> Redis.get_state
+      :redis -> Redis.get_state()
       _else -> %{}
     end
   end
 
   def send_message(message, channel) do
-    send @bot_process_name, {:message, message, channel}
+    send(@bot_process_name, {:message, message, channel})
 
     {:ok}
   end
 
   def handle_connect(_slack, state) do
-    IO.puts "Connected to Slack"
+    IO.puts("Connected to Slack")
     {:ok, state}
   end
 
@@ -46,8 +46,8 @@ defmodule Alice.ChatBackends.Slack do
   def handle_event(message = %{type: "message"}, slack, state) do
     try do
       {message, slack, state}
-      |> Conn.make
-      |> Conn.sanitize_message
+      |> Conn.make()
+      |> Conn.sanitize_message()
       |> do_handle_message
     rescue
       error ->
@@ -70,11 +70,13 @@ defmodule Alice.ChatBackends.Slack do
   def handle_info(_message, _slack, state), do: {:ok, state}
 
   defp do_handle_message(conn = %Conn{}) do
-    conn = cond do
-      Earmuffs.blocked?(conn) -> Earmuffs.unblock(conn)
-      Conn.command?(conn)     -> Router.match_commands(conn)
-      true                    -> Router.match_routes(conn)
-    end
+    conn =
+      cond do
+        Earmuffs.blocked?(conn) -> Earmuffs.unblock(conn)
+        Conn.command?(conn) -> Router.match_commands(conn)
+        true -> Router.match_routes(conn)
+      end
+
     {:ok, conn.state}
   end
 end

@@ -23,6 +23,7 @@ defmodule Alice.Conn do
   def make({message, slack, state}) do
     %Conn{message: message, slack: slack, state: state}
   end
+
   def make(message, slack, state \\ %{}) do
     make({message, slack, state})
   end
@@ -66,7 +67,7 @@ defmodule Alice.Conn do
   Get the last capture from the `conn`
   """
   def last_capture(%Conn{message: %{captures: captures}}) do
-    captures |> Enum.reverse |> hd
+    captures |> Enum.reverse() |> hd
   end
 
   @doc """
@@ -136,9 +137,11 @@ defimpl Inspect, for: Alice.Conn do
   import Inspect.Algebra
 
   def inspect(conn, _opts) do
-    concat(["%Alice.Conn{",
-            "message: #{Kernel.inspect(conn.message)}, ",
-            "slack: %{...}, ",
-            "state: #{Kernel.inspect(conn.state)}}"])
+    concat([
+      "%Alice.Conn{",
+      "message: #{Kernel.inspect(conn.message)}, ",
+      "slack: %{...}, ",
+      "state: #{Kernel.inspect(conn.state)}}"
+    ])
   end
 end
