@@ -8,7 +8,7 @@ defmodule Alice.Router do
 
   defmodule State do
     @moduledoc "Holds the registered handlers"
-    defstruct handlers: MapSet.new
+    defstruct handlers: MapSet.new()
   end
 
   # Client
@@ -59,14 +59,14 @@ defmodule Alice.Router do
   Used internally to match route handlers
   """
   def match_routes(conn) do
-    Enum.reduce(handlers(), conn, &(&1.match_routes(&2)))
+    Enum.reduce(handlers(), conn, & &1.match_routes(&2))
   end
 
   @doc """
   Used internally to match command handlers
   """
   def match_commands(conn) do
-    Enum.reduce(handlers(), conn, &(&1.match_commands(&2)))
+    Enum.reduce(handlers(), conn, & &1.match_commands(&2))
   end
 
   # GenServer API
@@ -100,8 +100,8 @@ defmodule Alice.Router do
       import Alice.Router.Helpers
       import unquote(__MODULE__)
       require Logger
-      Module.register_attribute __MODULE__, :routes, accumulate: true
-      Module.register_attribute __MODULE__, :commands, accumulate: true
+      Module.register_attribute(__MODULE__, :routes, accumulate: true)
+      Module.register_attribute(__MODULE__, :commands, accumulate: true)
       @before_compile unquote(__MODULE__)
 
       defp namespace(key), do: {__MODULE__, key}
@@ -165,8 +165,10 @@ defmodule Alice.Router do
       def match_commands(conn = %Conn{}), do: match(commands(), conn)
 
       defp match(patterns, conn = %Conn{}) do
-        {_mod, conn} = patterns
-                        |> Enum.reduce({__MODULE__, conn}, &match_pattern/2)
+        {_mod, conn} =
+          patterns
+          |> Enum.reduce({__MODULE__, conn}, &match_pattern/2)
+
         conn
       end
     end

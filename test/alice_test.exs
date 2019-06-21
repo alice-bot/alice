@@ -9,10 +9,7 @@ defmodule AliceTest do
   end
 
   test "properly adds handlers to the list when they're provided" do
-    assert [Alice.Earmuffs,
-            Alice.Handlers.Help,
-            Alice.Handlers.Utils,
-            Alice.Handlers.TestHandler] ==
-          Alice.handlers(%{handlers: [TestHandler]})
+    assert [Alice.Earmuffs, Alice.Handlers.Help, Alice.Handlers.Utils, Alice.Handlers.TestHandler] ==
+             Alice.handlers(%{handlers: [TestHandler]})
   end
 end

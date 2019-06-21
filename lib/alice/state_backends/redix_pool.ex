@@ -12,7 +12,7 @@ defmodule Alice.StateBackends.RedixPool do
       name: {:local, :redix_poolboy},
       worker_module: Redix,
       size: 10,
-      max_overflow: 5,
+      max_overflow: 5
     ]
 
     redis_connection_params = Application.get_env(:alice, :redis)

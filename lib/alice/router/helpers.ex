@@ -14,21 +14,23 @@ defmodule Alice.Router.Helpers do
 
   Adds random tag to end of image urls to break Slack's img cache.
   """
-  @spec reply(String.t, %Conn{}) :: Conn.t
-  @spec reply(%Conn{}, String.t) :: Conn.t
-  @spec reply([String.t, ...], %Conn{}) :: Conn.t
-  @spec reply(%Conn{}, [String.t, ...]) :: Conn.t
+  @spec reply(String.t(), %Conn{}) :: Conn.t()
+  @spec reply(%Conn{}, String.t()) :: Conn.t()
+  @spec reply([String.t(), ...], %Conn{}) :: Conn.t()
+  @spec reply(%Conn{}, [String.t(), ...]) :: Conn.t()
   def reply(resp, conn = %Conn{}), do: reply(conn, resp)
   def reply(conn = %Conn{}, resp) when is_list(resp), do: random_reply(conn, resp)
+
   def reply(conn = %Conn{message: %{channel: channel}, slack: slack}, resp) do
     resp
-    |> Alice.Images.uncache
+    |> Alice.Images.uncache()
     |> slack_api().send_message(channel, slack)
+
     conn
   end
 
   defp slack_api do
-    case Mix.env do
+    case Mix.env() do
       :test -> FakeSlack
       _else -> Slack.Sends
     end
@@ -38,10 +40,10 @@ defmodule Alice.Router.Helpers do
   Takes a conn and a list of possible response in any order.
   Replies with a random element of the `list` provided.
   """
-  @spec random_reply(list, Conn.t) :: Conn.t
-  @spec random_reply(Conn.t, list) :: Conn.t
+  @spec random_reply(list, Conn.t()) :: Conn.t()
+  @spec random_reply(Conn.t(), list) :: Conn.t()
   def random_reply(list, conn = %Conn{}), do: random_reply(conn, list)
-  def random_reply(conn = %Conn{}, list), do: list |> Enum.random |> reply(conn)
+  def random_reply(conn = %Conn{}, list), do: list |> Enum.random() |> reply(conn)
 
   @doc """
   Reply with random chance.
@@ -51,9 +53,9 @@ defmodule Alice.Router.Helpers do
       > chance_reply(conn, 0.5, "sent half the time")
       > chance_reply(conn, 0.25, "sent 25% of the time", "sent 75% of the time")
   """
-  @spec chance_reply(Conn.t, float, String.t, String.t) :: Conn.t
+  @spec chance_reply(Conn.t(), float, String.t(), String.t()) :: Conn.t()
   def chance_reply(conn = %Conn{}, chance, positive, negative \\ :noreply) do
-    {:rand.uniform <= chance, negative}
+    {:rand.uniform() <= chance, negative}
     |> do_chance_reply(positive, conn)
   end
 
@@ -84,9 +86,10 @@ defmodule Alice.Router.Helpers do
         Task.await(task)
       end
   """
-  @spec delayed_reply(Conn.t, String.t, integer) :: Task.t
-  @spec delayed_reply(String.t, integer, Conn.t) :: Task.t
+  @spec delayed_reply(Conn.t(), String.t(), integer) :: Task.t()
+  @spec delayed_reply(String.t(), integer, Conn.t()) :: Task.t()
   def delayed_reply(msg, ms, conn = %Conn{}), do: delayed_reply(conn, msg, ms)
+
   def delayed_reply(conn = %Conn{}, message, milliseconds) do
     Task.async(fn ->
       conn = indicate_typing(conn)
@@ -98,11 +101,9 @@ defmodule Alice.Router.Helpers do
   @doc """
   Indicate typing.
   """
-  @spec indicate_typing(Conn.t) :: Conn.t
+  @spec indicate_typing(Conn.t()) :: Conn.t()
   def indicate_typing(conn = %Conn{message: %{channel: chan}, slack: slack}) do
     slack_api().indicate_typing(chan, slack)
     conn
   end
-
-
 end

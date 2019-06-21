@@ -13,7 +13,7 @@ defmodule Alice.StateBackends.Redis do
   #       after most people have moved to this version.
   defp migrate_redis do
     ["GET", @migration_key]
-    |> RedixPool.command!
+    |> RedixPool.command!()
     |> case do
       nil -> migrate_redis!()
       _ -> :ok
@@ -25,17 +25,17 @@ defmodule Alice.StateBackends.Redis do
   #       after most people have moved to this version.
   defp migrate_redis! do
     state = do_get_state()
-    Enum.each(state, fn({key, val}) -> put(state, key, val) end)
+    Enum.each(state, fn {key, val} -> put(state, key, val) end)
     RedixPool.command!(["SET", @migration_key, true])
     :ok
   end
 
   def get(_state, key, default \\ nil) do
     ["GET", encode_key(key)]
-    |> RedixPool.command!
+    |> RedixPool.command!()
     |> case do
-      nil   -> default
-      value -> value |> Poison.decode |> handle_parse_output(value)
+      nil -> default
+      value -> value |> Poison.decode() |> handle_parse_output(value)
     end
   end
 
@@ -43,6 +43,7 @@ defmodule Alice.StateBackends.Redis do
   #       elixir to use the new method of encoding in JSON. Please remove this
   #       after most people have moved to this version.
   defp handle_parse_output({:ok, decoded}, _encoded), do: decoded
+
   defp handle_parse_output({:error, _}, encoded) do
     {decoded, _} = Code.eval_string(encoded)
     decoded
@@ -68,13 +69,13 @@ defmodule Alice.StateBackends.Redis do
 
   defp do_get_state do
     keys()
-    |> Stream.map(fn(key) -> {key, get(:redis, key)} end)
+    |> Stream.map(fn key -> {key, get(:redis, key)} end)
     |> Enum.into(%{})
   end
 
   defp keys do
     ["KEYS", "*|Alice.State"]
-    |> RedixPool.command!
+    |> RedixPool.command!()
     |> Enum.map(&decode_key/1)
   end
 
@@ -83,8 +84,8 @@ defmodule Alice.StateBackends.Redis do
   end
 
   defp decode_key(key) do
-    [key|_] = String.split(key, "|Alice.State")
-    {key,_} = Code.eval_string(key)
+    [key | _] = String.split(key, "|Alice.State")
+    {key, _} = Code.eval_string(key)
     key
   end
 end

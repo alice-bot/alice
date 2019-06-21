@@ -8,18 +8,15 @@ defmodule Alice.ConnTest do
   end
 
   test "make makes a conn" do
-    assert Conn.make(:m, :sl, :st)
-        == %Conn{message: :m, slack: :sl, state: :st}
+    assert Conn.make(:m, :sl, :st) == %Conn{message: :m, slack: :sl, state: :st}
   end
 
   test "make makes a conn with a default state" do
-    assert Conn.make(:m, :sl)
-        == %Conn{message: :m, slack: :sl, state: %{}}
+    assert Conn.make(:m, :sl) == %Conn{message: :m, slack: :sl, state: %{}}
   end
 
   test "make makes a conn with a tuple" do
-    assert Conn.make({:m, :sl, :st})
-        == %Conn{message: :m, slack: :sl, state: :st}
+    assert Conn.make({:m, :sl, :st}) == %Conn{message: :m, slack: :sl, state: :st}
   end
 
   test "command? is true when the bot is @username'd" do
@@ -39,16 +36,20 @@ defmodule Alice.ConnTest do
   end
 
   test "add_captures adds regex captures to the conn" do
-    conn = "hello test world"
-           |> conn_with_text
-           |> Conn.add_captures(~r/(?:hello) (test) (?<term>.*)/)
+    conn =
+      "hello test world"
+      |> conn_with_text
+      |> Conn.add_captures(~r/(?:hello) (test) (?<term>.*)/)
+
     assert conn.message.captures == ["hello test world", "test", "world"]
   end
 
   test "last_capture returns the last capture in the regex" do
-    conn = "hello test world"
-           |> conn_with_text
-           |> Conn.add_captures(~r/(?:hello) (test) (?<term>.*)/)
+    conn =
+      "hello test world"
+      |> conn_with_text
+      |> Conn.add_captures(~r/(?:hello) (test) (?<term>.*)/)
+
     assert Conn.last_capture(conn) == "world"
   end
 
@@ -82,15 +83,19 @@ defmodule Alice.ConnTest do
   end
 
   test "sanitize_message removes formatted emails" do
-    conn = "I email kitten gifs to <mailto:user@example.com|user@example.com>!"
-           |> conn_with_text
+    conn =
+      "I email kitten gifs to <mailto:user@example.com|user@example.com>!"
+      |> conn_with_text
+
     clean_string = "I email kitten gifs to user@example.com!"
     assert Conn.sanitize_message(conn).message.text == clean_string
   end
 
   test "sanitize_message removes formatted urls" do
-    conn = "I go to <http://cnn.com|cnn.com> for my news!"
-           |> conn_with_text
+    conn =
+      "I go to <http://cnn.com|cnn.com> for my news!"
+      |> conn_with_text
+
     clean_string = "I go to http://cnn.com for my news!"
     assert Conn.sanitize_message(conn).message.text == clean_string
   end
@@ -106,11 +111,13 @@ defmodule Alice.ConnTest do
     <mailto:user@example.com|user@example.com> and don’t you “forget” it dude!
     Email <@U025Q5H6D> here, at <http://CNN.com|CNN.com>
     """
+
     sanitized_string = """
     <@U02EGPSD3>'s http://CNN.com email address is
     user@example.com and don't you "forget" it dude!
     Email <@U025Q5H6D> here, at http://CNN.com
     """
+
     conn = conn_with_text(unsanitized_string)
     assert Conn.sanitize_message(conn).message.text == sanitized_string
   end

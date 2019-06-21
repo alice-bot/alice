@@ -9,7 +9,7 @@ use Mix.Config
 # 3rd-party users, it should be done in your "mix.exs" file.
 
 # You can configure for your application as:
-case Mix.env do
+case Mix.env() do
   env when env in [:prod, :dev] -> import_config "#{env}.exs"
-  _other                        -> import_config "other.exs"
+  _other -> import_config "other.exs"
 end
