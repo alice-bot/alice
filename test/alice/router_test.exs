@@ -1,8 +1,8 @@
 defmodule TestHandler do
   use Alice.Router
 
-  route(~r/pattern/, :my_route)
-  command(~r/pattern/, :my_route)
+  route ~r/pattern/, :my_route
+  command ~r/pattern/, :my_route
 
   def my_route(conn) do
     send(self(), {:received, routes()})
