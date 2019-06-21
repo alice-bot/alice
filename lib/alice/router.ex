@@ -6,6 +6,10 @@ defmodule Alice.Router do
   alias Alice.Conn
   require Logger
 
+  def init(args) do
+    {:ok, args}
+  end
+
   defmodule State do
     @moduledoc "Holds the registered handlers"
     defstruct handlers: MapSet.new()
