@@ -6,7 +6,7 @@ defmodule Alice.Earmuffs do
   use Alice.Router
   alias Alice.Conn
 
-  command(~r/>:? earmuffs\b/i, :earmuffs)
+  command ~r/>:? earmuffs\b/i, :earmuffs
 
   @doc """
   `earmuffs` - Alice will ignore your next message in the current channel
