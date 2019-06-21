@@ -4,7 +4,6 @@ locals_without_parens = [
   route: 2
 ]
 
-
 [
   locals_without_parens: locals_without_parens,
   export: [locals_without_parens: locals_without_parens],
