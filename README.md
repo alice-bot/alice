@@ -17,7 +17,7 @@ You'll need a Slack API token which can be retrieved from the [Web API page] or
 by creating a new [bot integration].
 
 [wiki page]: https://github.com/alice-bot/alice/wiki/Alice-0.2.0-Changes
-[0.3.7]: https://hex.pm/packages/alice/0.3.6
+[0.3.7]: https://hex.pm/packages/alice/0.3.7
 [Active Alice]: https://github.com/adamzaninovich/active-alice
 [Google Images Handler]: https://github.com/alice-bot/alice_google_images
 
