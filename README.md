@@ -17,7 +17,7 @@ You'll need a Slack API token which can be retrieved from the [Web API page] or
 by creating a new [bot integration].
 
 [wiki page]: https://github.com/alice-bot/alice/wiki/Alice-0.2.0-Changes
-[0.3.6]: https://hex.pm/packages/alice/0.3.6
+[0.3.7]: https://hex.pm/packages/alice/0.3.7
 [Active Alice]: https://github.com/adamzaninovich/active-alice
 [Google Images Handler]: https://github.com/alice-bot/alice_google_images
 
@@ -63,8 +63,7 @@ include the `websocket_client` dependency because it's not a [hex] package.
 ```elixir
 defp deps do
   [
-    {:websocket_client, github: "jeremyong/websocket_client"},
-    {:alice,                  "~> 0.2.0"},
+    {:alice,                  "~> 0.3.7"},
     {:alice_against_humanity, "~> 0.1.0"},
     {:alice_google_images,    "~> 0.1.0"}
   ]
@@ -177,8 +176,7 @@ end
 
 defp deps do
   [
-    {:websocket_client, github: "jeremyong/websocket_client"},
-    {:alice, "~> 0.2.0"}
+    {:alice, "~> 0.3.7"}
   ]
 end
 ```
@@ -197,7 +195,7 @@ defmodule Alice.Handlers.GoogleImages do
   @doc "`img me alice in wonderland` - gets a random image from Google Images"
   def fetch(conn) do
     conn
-    |> extract_term
+    |> Alice.Conn.last_capture
     |> get_images
     |> select_image
     |> reply(conn)
