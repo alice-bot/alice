@@ -3,4 +3,4 @@
   * Fixes help handler for the versions of elixir (#98)
 
 ## v0.3.7
-  * Supports Elixir 1.7 or earlier
+  * Supports Elixir 1.6 or earlier
