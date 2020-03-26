@@ -63,7 +63,7 @@ include the `websocket_client` dependency because it's not a [hex] package.
 ```elixir
 defp deps do
   [
-    {:alice,                  "~> 0.3.7"},
+    {:alice,                  "~> 0.4.0"},
     {:alice_against_humanity, "~> 0.1.0"},
     {:alice_google_images,    "~> 0.1.0"}
   ]
@@ -176,7 +176,7 @@ end
 
 defp deps do
   [
-    {:alice, "~> 0.3.7"}
+    {:alice, "~> 0.4.0"}
   ]
 end
 ```
