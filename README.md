@@ -1,17 +1,20 @@
-# Alice [![Hex Version](https://img.shields.io/hexpm/v/alice.svg)](https://hex.pm/packages/alice) [![Deps Status](https://beta.hexfaktor.org/badge/all/github/alice-bot/alice.svg)](https://beta.hexfaktor.org/github/alice-bot/alice) [![Hex Downloads](https://img.shields.io/hexpm/dt/alice.svg)](https://hex.pm/packages/alice) [![License: MIT](https://img.shields.io/hexpm/l/alice.svg)](https://hex.pm/packages/alice)
+# Alice [![Hex Version](https://img.shields.io/hexpm/v/alice.svg)](https://hex.pm/packages/alice) [![Hex Downloads](https://img.shields.io/hexpm/dt/alice.svg)](https://hex.pm/packages/alice) [![License: MIT](https://img.shields.io/hexpm/l/alice.svg)](https://hex.pm/packages/alice)
 
 #### A Lita-inspired Slack bot written in Elixir.
 
 <img height="135" src="http://i.imgur.com/UndMkm3.png" align="left" />
 
-_The Caterpillar and Alice looked at each other for some time in silence: at last the Caterpillar took the hookah out of its mouth, and addressed her in a languid, sleepy voice._
+_The Caterpillar and Alice looked at each other for some time in silence: at
+last the Caterpillar took the hookah out of its mouth, and addressed her in a
+languid, sleepy voice._
 
-_"Who are YOU?" said the Caterpillar. This was not an encouraging opening for conversation. Alice replied, rather shyly, "I—I hardly know, sir, just at present—at least I know who I WAS when I got up this morning, but I think I must have been changed several times since then."_
+_"Who are YOU?" said the Caterpillar. This was not an encouraging opening for
+conversation. Alice replied, rather shyly, "I—I hardly know, sir, just at
+present—at least I know who I WAS when I got up this morning, but I think I must
+have been changed several times since then."_
 
-__Anyone running Alice 0.3 or higher is highly encouraged to move to [0.3.6] ASAP. Version [0.3.6] will save the state data in Redis as JSON, whereas the previous versions were simply converting the elixir into a string. This had some limitations, namely only supporting 50 key-value pairs before producing an unparsable string with a "..." in it. Version [0.3.6] will also migrate your existing state to use JSON, so there’s no going back after upgrading. This change should not affect handler so it is not a breaking change.__
-
-For an example bot, see the [Active Alice] bot. For an example
-handler, see [Google Images Handler].
+For an example bot, see the [Active Alice] bot. For an example handler, see
+[Google Images Handler].
 
 You'll need a Slack API token which can be retrieved from the [Web API page] or
 by creating a new [bot integration].
