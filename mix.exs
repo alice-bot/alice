@@ -21,7 +21,7 @@ defmodule Alice.Mixfile do
 
   defp deps do
     [
-      {:credo, ">= 0.0.0", only: [:dev, :test]},
+      {:credo, "~> 1.2", only: [:dev, :test], runtime: false},
       {:earmark, ">= 0.0.0", only: :dev},
       {:ex_doc, ">= 0.0.0", only: :dev},
       {:slack, "~> 0.12.0"},
