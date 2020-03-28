@@ -1,5 +1,5 @@
 locals_without_parens = [
-  #Alice.Router
+  # Alice.Router
   command: 2,
   route: 2
 ]
