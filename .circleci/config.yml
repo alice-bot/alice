@@ -45,7 +45,7 @@ jobs:
       - run: mix credo
       - run:
           name: "Building Dialyzer PLT"
-          command: MIX_ENV=dev mix dialyzer --plt
+          command: echo skipping dialyzer # MIX_ENV=dev mix dialyzer --plt
           no_output_timeout: 30m
       - save_cache:
           name: "Save Build & PLT cache"
