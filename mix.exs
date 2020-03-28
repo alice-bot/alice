@@ -21,13 +21,14 @@ defmodule Alice.Mixfile do
 
   defp deps do
     [
-      {:credo, ">= 0.0.0", only: [:dev, :test]},
+      {:credo, "~> 1.2", only: [:dev, :test], runtime: false},
       {:earmark, ">= 0.0.0", only: :dev},
       {:ex_doc, ">= 0.0.0", only: :dev},
       {:slack, "~> 0.12.0"},
       {:poolboy, "~> 1.5.0"},
       {:redix, "~> 0.6.0"},
-      {:poison, "~> 3.0"}
+      {:poison, "~> 3.0"},
+      {:dialyxir, "~> 1.0.0-rc.6", only: [:dev], runtime: false}
     ]
   end
 
