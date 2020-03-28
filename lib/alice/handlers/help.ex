@@ -112,8 +112,9 @@ defmodule Alice.Handlers.Help do
 
     docs =
       handler
-      |> Code.get_docs(:docs)
-      |> Stream.map(fn {{name, _}, _, _, _, text} -> {title, name, text} end)
+      |> Code.fetch_docs()
+      |> elem(6)
+      |> Stream.map(fn {{_, name, _}, _, _, %{"en" => text}, _} -> {title, name, text} end)
       |> Stream.filter(fn {_, name, _} -> name in routes end)
       |> Enum.map(&format_route/1)
       |> compact()
