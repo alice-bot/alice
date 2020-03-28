@@ -27,10 +27,10 @@ defmodule Alice.Handlers.Help do
   `help <handler name>` - outputs the help text for a single matching handler
   """
   def keyword_help(conn) do
-    do_keyword_help(conn, get_term(conn))
+    keyword_help(conn, get_term(conn))
   end
 
-  defp do_keyword_help(conn, "all") do
+  defp keyword_help(conn, "all") do
     [
       @pro_tip,
       "_Here are all the routes and commands I know about…_"
@@ -39,7 +39,7 @@ defmodule Alice.Handlers.Help do
     |> Enum.reduce(conn, &reply/2)
   end
 
-  defp do_keyword_help(conn, term) do
+  defp keyword_help(conn, term) do
     Router.handlers()
     |> Enum.find(&(downcased_handler_name(&1) == term))
     |> deliver_help(conn)
