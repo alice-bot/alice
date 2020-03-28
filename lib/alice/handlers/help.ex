@@ -105,7 +105,7 @@ defmodule Alice.Handlers.Help do
   defp path_name("Elixir." <> name), do: name
   defp path_name(handler), do: handler |> to_string() |> path_name()
 
-  defp format_routes(_, [], _), do: nil
+  defp format_routes(_title, [], _handler), do: nil
 
   defp format_routes(title, routes, handler) do
     routes = Enum.map(routes, fn {_, name} -> name end)
@@ -113,24 +113,46 @@ defmodule Alice.Handlers.Help do
     docs =
       handler
       |> Code.fetch_docs()
-      |> elem(6)
-      |> Stream.map(fn {{_, name, _}, _, _, %{"en" => text}, _} -> {title, name, text} end)
-      |> Stream.filter(fn {_, name, _} -> name in routes end)
+      |> parse_docs(title)
+      |> Enum.filter(fn {_, name, _} -> name in routes end)
       |> Enum.map(&format_route/1)
       |> compact()
 
-    [">", "> *#{title}:*" | docs]
-    |> Enum.join("\n")
+    Enum.join([">", "> *#{title}:*" | docs], "\n")
   end
 
-  defp format_route({_, _, false}), do: nil
+  defp parse_docs({:docs_v1, _anno, _lang, _format, _mod_doc, _meta, docs}, title) do
+    Enum.map(docs, &parse_function_doc(&1, title))
+  end
+
+  defp parse_docs(_unmatching_doc_content, _title), do: []
+
+  defp parse_function_doc({{:function, name, _arity}, _anno, _sig, %{"en" => text}, _meta}, title) do
+    {title, name, text}
+  end
+
+  defp parse_function_doc({{:function, name, _arity}, _anno, _sig, :none, _meta}, title) do
+    {title, name, :none}
+  end
+
+  defp parse_function_doc({{:function, name, _arity}, _anno, _sig, :hidden, _meta}, title) do
+    {title, name, :hidden}
+  end
+
+  defp parse_function_doc({_function, _anno, _sig, _doc_content, _meta}, title) do
+    {title, nil, :hidden}
+  end
+
+  defp format_route({_, _, :hidden}), do: nil
 
   defp format_route({title, name, text}) do
     [">    _#{name}_", format_text(text, title)]
     |> Enum.join("\n")
   end
 
-  defp format_text(nil, _), do: ">        _no documentation provided_"
+  defp format_text(:none, _title) do
+    ">        _no documentation provided_"
+  end
 
   defp format_text(text, title) do
     text
