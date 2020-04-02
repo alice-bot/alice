@@ -30,8 +30,9 @@ defmodule Alice.ConnTest do
   end
 
   test "user returns the username of the messaging user" do
-    user = %{name: "username"}
-    conn = Conn.make(%{user: "user_id"}, %{users: %{"user_id" => user}})
+    slack = %{users: [%{"id" => "user_id", "name" => "username"}]}
+    message = %{user: "user_id"}
+    conn = Conn.make(message, slack)
     assert "username" = Conn.user(conn)
   end
 
