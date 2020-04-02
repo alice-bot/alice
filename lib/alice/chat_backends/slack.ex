@@ -7,14 +7,12 @@ defmodule Alice.ChatBackends.Slack do
   alias Alice.Earmuffs
   alias Alice.StateBackends.Redis
 
-  @bot_process_name __MODULE__
-
   def start_link do
     Slack.Bot.start_link(
       __MODULE__,
       init_state(),
-      Application.get_env(:alice, :api_key),
-      %{name: @bot_process_name}
+      get_token(),
+      %{name: __MODULE__}
     )
   end
 
@@ -25,14 +23,17 @@ defmodule Alice.ChatBackends.Slack do
     end
   end
 
-  def send_message(message, channel) do
-    send(@bot_process_name, {:message, message, channel})
+  defp get_token do
+    Application.get_env(:alice, :api_key)
+  end
 
+  def send_message(message, channel) do
+    send(__MODULE__, {:message, message, channel})
     {:ok}
   end
 
-  def handle_connect(_slack, state) do
-    IO.puts("Connected to Slack")
+  def handle_connect(slack, state) do
+    IO.puts("Connected to Slack as @#{slack.me.name}")
     {:ok, state}
   end
 
@@ -45,10 +46,13 @@ defmodule Alice.ChatBackends.Slack do
   # Handle messages from subscribed channels
   def handle_event(message = %{type: "message"}, slack, state) do
     try do
-      {message, slack, state}
+      slack_users = Map.get(Slack.Web.Users.list(%{token: get_token()}), "members")
+      slack_data = Map.put(slack, :users, slack_users)
+
+      {message, slack_data, state}
       |> Conn.make()
       |> Conn.sanitize_message()
-      |> do_handle_message
+      |> handle_message
     rescue
       error ->
         IO.puts(Exception.format(:error, error))
@@ -69,7 +73,7 @@ defmodule Alice.ChatBackends.Slack do
 
   def handle_info(_message, _slack, state), do: {:ok, state}
 
-  defp do_handle_message(conn = %Conn{}) do
+  defp handle_message(conn = %Conn{}) do
     conn =
       cond do
         Earmuffs.blocked?(conn) -> Earmuffs.unblock(conn)

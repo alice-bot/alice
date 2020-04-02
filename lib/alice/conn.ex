@@ -40,18 +40,18 @@ defmodule Alice.Conn do
   Returns the name of the user for the incoming message
   """
   def user(conn = %Conn{}) do
-    user_data(conn).name
+    user_data(conn)["name"]
   end
 
   @doc """
   Builds a string to use as an @reply back to the user who sent the message
   """
   def at_reply_user(conn = %Conn{}) do
-    "<@#{user_data(conn).id}>"
+    "<@#{user_data(conn)["id"]}>"
   end
 
   defp user_data(%Conn{message: %{user: id}, slack: %{users: users}}) do
-    users[id]
+    Enum.find(users, &(&1["id"] == id))
   end
 
   @doc """
