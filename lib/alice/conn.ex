@@ -44,6 +44,20 @@ defmodule Alice.Conn do
   end
 
   @doc """
+  Returns the timezone offset for the user
+  """
+  def tz_offset(conn = %Conn{}) do
+    user_data(conn).tz_offset
+  end
+
+  @doc """
+  Returns the timestamp of the message
+  """
+  def timestamp(conn = %Conn{}) do
+    conn.message.ts
+  end
+
+  @doc """
   Builds a string to use as an @reply back to the user who sent the message
   """
   def at_reply_user(conn = %Conn{}) do

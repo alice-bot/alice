@@ -35,6 +35,18 @@ defmodule Alice.ConnTest do
     assert "username" = Conn.user(conn)
   end
 
+  test "tz_offset returns the timezone offset of the user" do
+    user = %{tz_offset: "SOME_OFFSET"}
+    conn = Conn.make(%{user: "user_id"}, %{users: %{"user_id" => user}})
+    assert "SOME_OFFSET" = Conn.tz_offset(conn)
+  end
+
+  test "timestamp returns the timestamp of the message" do
+    message = %{ts: "SOME_TIMESTAMP"}
+    conn = Conn.make(message, :slack)
+    assert "SOME_TIMESTAMP" = Conn.timestamp(conn)
+  end
+
   test "add_captures adds regex captures to the conn" do
     conn =
       "hello test world"
