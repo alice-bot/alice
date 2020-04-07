@@ -1,5 +1,8 @@
+## v0.4.1
+  * Adds `tz_offset/1` and `timestamp/1` functions to `Alice.Conn`
+
 ## v0.4.0
-  * Fixes help handler for the versions of elixir (#98)
+  * Fixes help handler for recent versions of elixir (#98)
   * Minimum Elixir Version 1.7
 
 ## v0.3.7
