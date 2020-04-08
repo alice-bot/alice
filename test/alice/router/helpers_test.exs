@@ -1,67 +1,59 @@
 defmodule Alice.Router.HelpersTest do
   use ExUnit.Case
-  import Mox
-  import Alice.TestHelpers
+  use Alice.Handlers.Case
   import Alice.Router.Helpers
 
   test "reply returns the conn" do
-    Alice.ChatBackends.OutboundMock
-    |> stub(:send_message, fn _, _, _ -> "" end)
+    stub_response()
 
-    assert reply("yo", conn()) == conn()
+    assert reply("yo", fake_conn()) == fake_conn()
   end
 
   test "reply sends a message with Slack.send_message" do
-    Alice.ChatBackends.OutboundMock
-    |> expect(:send_message, fn "yo", _, _ -> "" end)
+    expect_response("yo")
 
-    reply("yo", conn())
+    reply("yo", fake_conn())
     verify!()
   end
 
   test "reply calls random_reply when given a list" do
-    Alice.ChatBackends.OutboundMock
-    |> expect(:send_message, fn "element", _, _ -> "" end)
+    expect_response("element")
 
-    reply(["element"], conn())
+    reply(["element"], fake_conn())
     verify!()
   end
 
   test "random_reply sends a message from a given list" do
-    Alice.ChatBackends.OutboundMock
-    |> expect(:send_message, fn resp, _, _ when resp in ["rabbit", "hole"] -> "" end)
+    expect_response(["rabbit", "hole"])
 
-    ~w[rabbit hole] |> random_reply(conn())
+    ~w[rabbit hole] |> random_reply(fake_conn())
     verify!()
   end
 
   test "chance_reply, when chance passes, \
                       replies with the given message" do
-    Alice.ChatBackends.OutboundMock
-    |> expect(:send_message, fn "always", _, _ -> "" end)
+    expect_response("always")
 
-    chance_reply(conn(), 1, "always")
+    chance_reply(fake_conn(), 1, "always")
     verify!()
   end
 
   test "chance_reply, when chance does not pass, \
                       when not given negative message, \
                       does not reply" do
-    Alice.ChatBackends.OutboundMock
-    |> expect(:send_message, 0, fn "never", _, _ -> "" end)
+    expect_response("never", 0)
 
-    chance_reply(conn(), 0, "never")
+    chance_reply(fake_conn(), 0, "never")
     verify!()
   end
 
   test "chance_reply, when chance does not pass, \
                       when given negative message, \
                       replies with negative" do
-    Alice.ChatBackends.OutboundMock
-    |> expect(:send_message, 0, fn "positive", _, _ -> "" end)
-    |> expect(:send_message, 1, fn "negative", _, _ -> "" end)
+    expect_response("positive", 0)
+    expect_response("negative", 1)
 
-    chance_reply(conn(), 0, "positive", "negative")
+    chance_reply(fake_conn(), 0, "positive", "negative")
     verify!()
   end
 end

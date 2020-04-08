@@ -30,7 +30,7 @@ defmodule Alice.Mixfile do
       {:redix, "~> 0.6.0"},
       {:poison, "~> 3.0"},
       {:dialyxir, "~> 1.0.0-rc.6", only: [:dev], runtime: false},
-      {:mox, "~> 0.5", only: :test}
+      {:mox, "~> 0.5", only: [:test]}
     ]
   end
 
@@ -46,6 +46,5 @@ defmodule Alice.Mixfile do
     ]
   end
 
-  defp elixirc_paths(:test), do: ["test/support", "lib"]
   defp elixirc_paths(_),     do: ["lib"]
 end
