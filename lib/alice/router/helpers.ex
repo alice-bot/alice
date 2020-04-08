@@ -24,12 +24,12 @@ defmodule Alice.Router.Helpers do
   def reply(conn = %Conn{message: %{channel: channel}, slack: slack}, resp) do
     resp
     |> Alice.Images.uncache()
-    |> slack_api().send_message(channel, slack)
+    |> outbound_api().send_message(channel, slack)
 
     conn
   end
 
-  defp slack_api do
+  defp outbound_api do
     case Mix.env() do
       :test -> Alice.ChatBackends.OutboundMock
       _else -> Alice.ChatBackends.SlackOutbound
@@ -103,7 +103,7 @@ defmodule Alice.Router.Helpers do
   """
   @spec indicate_typing(Conn.t()) :: Conn.t()
   def indicate_typing(conn = %Conn{message: %{channel: chan}, slack: slack}) do
-    slack_api().indicate_typing(chan, slack)
+    outbound_api().indicate_typing(chan, slack)
     conn
   end
 end
