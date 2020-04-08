@@ -8,6 +8,15 @@ defmodule Alice.Handlers.Case do
     %Alice.Conn{message: %{channel: :channel}, slack: :slack}
   end
 
+  def fake_conn_with_text(text) do
+    %Alice.Conn{message: %{text: text, channel: :channel}, slack: :slack}
+  end
+
+  def fake_conn_with_capture(message, capture_regex) do
+    fake_conn_with_text(message)
+    |> Alice.Conn.add_captures(capture_regex)
+  end
+
   defmacro __using__(_opts) do
     quote do
       import Mox

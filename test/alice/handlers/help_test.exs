@@ -1,5 +1,6 @@
 defmodule Alice.Handlers.HelpTest do
   use ExUnit.Case, async: true
+  use Alice.Handlers.Case
   alias Alice.Handlers.Help
   alias Alice.Handlers.TestHandler
 

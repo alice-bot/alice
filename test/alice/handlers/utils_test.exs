@@ -1,14 +1,19 @@
 defmodule Alice.Handlers.UtilsTest do
   use ExUnit.Case
-  import Mox
-  import Alice.Handlers.Case
+  use Alice.Handlers.Case
   import Alice.Handlers.Utils
 
-  test "it should respond approriately" do
-    Alice.ChatBackends.OutboundMock
-    |> expect(:send_message, fn resp, _, _ when resp in ["PONG!", "Can I help you?", "Yes...I'm still here.", "I'm alive!"] -> "" end)
+  test "it should respond to a ping" do
+    expect_response(["PONG!", "Can I help you?", "Yes...I'm still here.", "I'm alive!"])
 
     ping(fake_conn())
+    verify!()
+  end
+
+  test "it should respond with info about the running bot" do
+    expect_response(_, 2)
+
+    info(fake_conn())
     verify!()
   end
 end
