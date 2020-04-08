@@ -1,11 +1,8 @@
 defmodule Alice.Handlers.UtilsTest do
   use ExUnit.Case
   import Mox
+  import Alice.TestHelpers
   import Alice.Handlers.Utils
-
-  def conn do
-    %Alice.Conn{message: %{channel: :channel}, slack: :slack}
-  end
 
   test "it should respond approriately" do
     Alice.ChatBackends.OutboundMock

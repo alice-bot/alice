@@ -1,11 +1,8 @@
 defmodule Alice.Router.HelpersTest do
   use ExUnit.Case
   import Mox
+  import Alice.TestHelpers
   import Alice.Router.Helpers
-
-  def conn do
-    %Alice.Conn{message: %{channel: :channel}, slack: :slack}
-  end
 
   test "reply returns the conn" do
     Alice.ChatBackends.OutboundMock
