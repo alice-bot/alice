@@ -179,7 +179,8 @@ end
 
 defp deps do
   [
-    {:alice, "~> 0.4.0"}
+    {:alice, "~> 0.4.0"},
+    {:mox, "~> 0.5", only: test}
   ]
 end
 ```
@@ -205,6 +206,42 @@ defmodule Alice.Handlers.GoogleImages do
   end
 
   #...
+end
+```
+
+### Testing Handlers
+
+To test a handler, we've exposed a few macros that create a mock Alice's
+outbound internals so that you can test your handler's actual
+implementation. Do do so, you'll need to add the following to your test
+helper to ensure things are started properly.
+
+In `test/test_helper.exs`:
+
+```
+Alice.Handlers.Case.start()
+```
+
+Then you can write the actual test. You set the expectation for what you
+want the final message to be sent to the chat to be, then you can create
+a fake of a connection to pass into your method. From there, you just
+pass it in, then finally verify that all your expectations were met.
+
+In `test/alice/handlers/google_images_test.exs`:
+
+```elixir
+defmodule Alice.Handlers.GoogleImagesTest do
+  use ExUnit.Case
+  use Alice.Handlers.Case
+
+  test "it fetches an image when asked" do
+    expect_response("http://example.com/image_from_google.jpg")
+
+    fake_conn_with_capture("img me example image", ~r/(image|img)\s+me (?<term>.+)/i)
+    |> Alice.Handlers.GoogleImages.fetch
+
+    verify!()
+  end
 end
 ```
 
