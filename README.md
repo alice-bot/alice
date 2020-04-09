@@ -218,7 +218,7 @@ helper to ensure things are started properly.
 
 In `test/test_helper.exs`:
 
-```
+```elixir
 Alice.Handlers.Case.start()
 ```
 
