@@ -11,6 +11,8 @@ defmodule Alice.Mixfile do
       description: "A Slack bot",
       package: package(),
       deps: deps(),
+      test_coverage: [tool: ExCoveralls],
+      preferrred_cli_env: [coveralls: :test],
       docs: [logo: "resources/logo.png"]
     ]
   end
@@ -28,7 +30,8 @@ defmodule Alice.Mixfile do
       {:poolboy, "~> 1.5.0"},
       {:redix, "~> 0.6.0"},
       {:poison, "~> 3.0"},
-      {:dialyxir, "~> 1.0.0-rc.6", only: [:dev], runtime: false}
+      {:dialyxir, "~> 1.0.0-rc.6", only: [:dev], runtime: false},
+      {:excoveralls, "~> 0.12.3", only: :test}
     ]
   end
 
