@@ -29,8 +29,7 @@ defmodule Alice.Mixfile do
       {:poolboy, "~> 1.5.0"},
       {:redix, "~> 0.6.0"},
       {:poison, "~> 3.0"},
-      {:dialyxir, "~> 1.0.0-rc.6", only: [:dev], runtime: false},
-      {:mox, "~> 0.5", only: [:test]}
+      {:dialyxir, "~> 1.0.0-rc.6", only: [:dev], runtime: false}
     ]
   end
 

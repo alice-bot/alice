@@ -12,7 +12,7 @@ defmodule Alice.Handlers.Case do
   end
 
   def first_reply() do
-    case replies_received do
+    case replies_received() do
       [first_message |  _] -> first_message
       _                    -> nil
     end
