@@ -29,7 +29,7 @@ defmodule Alice.Router.HelpersTest do
   test "random_reply sends a message from a given list" do
     ~w[rabbit hole] |> random_reply(fake_conn())
 
-    assert Enum.member?(~w[rabbit hole], first_reply())
+    assert first_reply() in ~w[rabbit hole]
   end
 
   test "chance_reply, when chance passes, \

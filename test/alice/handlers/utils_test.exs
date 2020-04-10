@@ -5,7 +5,7 @@ defmodule Alice.Handlers.UtilsTest do
   test "it should respond to a ping" do
     receive_message("ping")
 
-    assert Enum.member?(["PONG!", "Can I help you?", "Yes...I'm still here.", "I'm alive!"], first_reply())
+    assert first_reply() in ["PONG!", "Can I help you?", "Yes...I'm still here.", "I'm alive!"]
   end
 
   test "it should respond with info about the running bot" do
