@@ -1,5 +1,5 @@
 defmodule Alice.Handlers.Case do
-  def replies_received() do
+  def all_replies() do
     message = receive do
       {:send_message, %{response: message}} -> message
     after
@@ -7,12 +7,12 @@ defmodule Alice.Handlers.Case do
     end
     case message do
       nil -> []
-      message -> [message | replies_received()]
+      message -> [message | all_replies()]
     end
   end
 
   def first_reply() do
-    case replies_received() do
+    case all_replies() do
       [first_message |  _] -> first_message
       _                    -> nil
     end
@@ -31,7 +31,7 @@ defmodule Alice.Handlers.Case do
     |> Alice.Conn.add_captures(capture_regex)
   end
 
-  def send_test_message(message) do
+  def receive_message(message) do
     conn = fake_conn_with_text(message)
     case Alice.Conn.command?(conn) do
       true  -> Alice.Router.match_commands(conn)

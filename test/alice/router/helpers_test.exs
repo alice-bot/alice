@@ -17,7 +17,7 @@ defmodule Alice.Router.HelpersTest do
     reply("first", fake_conn())
     reply("second", fake_conn())
 
-    assert ["first", "second"] == replies_received()
+    assert ["first", "second"] == all_replies()
   end
 
   test "reply calls random_reply when given a list" do
@@ -52,6 +52,6 @@ defmodule Alice.Router.HelpersTest do
                       replies with negative" do
     chance_reply(fake_conn(), 0, "positive", "negative")
 
-    assert replies_received() == ["negative"]
+    assert all_replies() == ["negative"]
   end
 end
