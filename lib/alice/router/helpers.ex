@@ -31,7 +31,7 @@ defmodule Alice.Router.Helpers do
 
   defp outbound_api do
     case Mix.env() do
-      :test -> Alice.ChatBackends.OutboundFake
+      :test -> Alice.ChatBackends.OutboundSpy
       _else -> Alice.ChatBackends.SlackOutbound
     end
   end

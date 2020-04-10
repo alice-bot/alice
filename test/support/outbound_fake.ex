@@ -1,4 +1,4 @@
-defmodule Alice.ChatBackends.OutboundFake do
+defmodule Alice.ChatBackends.OutboundSpy do
   @behaviour Alice.ChatBackends.OutboundClient
 
   def send_message(response, channel, slack) do
