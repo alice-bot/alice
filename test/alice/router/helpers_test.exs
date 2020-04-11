@@ -54,4 +54,10 @@ defmodule Alice.Router.HelpersTest do
 
     assert all_replies() == ["negative"]
   end
+
+  test "it should indicate typing when asked" do
+    indicate_typing(fake_conn())
+
+    assert typing?() == true
+  end
 end

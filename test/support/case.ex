@@ -36,6 +36,14 @@ defmodule Alice.Handlers.Case do
     end
   end
 
+  def typing?() do
+    receive do
+      {:indicate_typing, _} -> true
+    after
+      0 -> false
+    end
+  end
+
   defmacro __using__(opts \\ []) do
     handlers = opts
                |> Keyword.get(:handlers, [])

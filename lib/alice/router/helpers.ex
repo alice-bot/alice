@@ -89,7 +89,6 @@ defmodule Alice.Router.Helpers do
   @spec delayed_reply(Conn.t(), String.t(), integer) :: Task.t()
   @spec delayed_reply(String.t(), integer, Conn.t()) :: Task.t()
   def delayed_reply(msg, ms, conn = %Conn{}), do: delayed_reply(conn, msg, ms)
-
   def delayed_reply(conn = %Conn{}, message, milliseconds) do
     Task.async(fn ->
       conn = indicate_typing(conn)
