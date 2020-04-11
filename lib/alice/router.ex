@@ -92,6 +92,7 @@ defmodule Alice.Router do
       unless Mix.env() == :test do
         Logger.info("#{mod}.#{name} responding to -> #{Conn.user(conn)}")
       end
+
       {mod, apply(mod, name, [Conn.add_captures(conn, pattern)])}
     else
       {mod, conn}

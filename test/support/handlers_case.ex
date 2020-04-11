@@ -1,14 +1,14 @@
 defmodule Alice.HandlersCase do
   @moduledoc """
   Helpers for writing tests of Alice Handlers.
-  
+
   When used it accepts the following options:
   * `:handlers` - The handler (or List of handlers) that you want to test. Defaults to [] (thereby giving you no handlers to test)
-  
+
   `use`ing this handler automatically brings in `ExUnit.Case` as well.
 
   ## Examples
-  
+
       defmodule Alice.Handlers.ExampleHandlerTest do
         use Alice.HandlersCase, handlers: Alice.Handlers.ExampleHandler
 
@@ -21,11 +21,11 @@ defmodule Alice.HandlersCase do
 
   @doc """
   Generates a fake connection for testing purposes.
-  
+
   Can be called as `fake_conn/0` to generate a quick connection. Or it can be called as `fake_conn/1` to pass a message. Or finally can be called as `fake_conn/2` to set options with the message.
 
   ## Example
-  
+
       test "you can directly use the reply function" do
         conn = fake_conn()
         reply("hello world", conn)
@@ -33,9 +33,14 @@ defmodule Alice.HandlersCase do
       end
   """
   def fake_conn(), do: fake_conn("")
+
   def fake_conn(text) do
-    %Alice.Conn{message: %{text: text, channel: :channel, user: :fake_user}, slack: %{users: [fake_user: %{name: "fake_user"}], me: %{id: :alice}}}
+    %Alice.Conn{
+      message: %{text: text, channel: :channel, user: :fake_user},
+      slack: %{users: [fake_user: %{name: "fake_user"}], me: %{id: :alice}}
+    }
   end
+
   def fake_conn(message, capture: capture_regex) do
     message
     |> fake_conn()
@@ -56,10 +61,11 @@ defmodule Alice.HandlersCase do
   """
   def send_message(conn = %Alice.Conn{}) do
     case Alice.Conn.command?(conn) do
-      true  -> Alice.Router.match_commands(conn)
+      true -> Alice.Router.match_commands(conn)
       false -> Alice.Router.match_routes(conn)
     end
   end
+
   def send_message(message) do
     message
     |> fake_conn()
@@ -78,11 +84,13 @@ defmodule Alice.HandlersCase do
       end
   """
   def all_replies() do
-    message = receive do
-      {:send_message, %{response: message}} -> message
-    after
-      0 -> :no_message_received
-    end
+    message =
+      receive do
+        {:send_message, %{response: message}} -> message
+      after
+        0 -> :no_message_received
+      end
+
     case message do
       :no_message_received -> []
       message -> [message | all_replies()]
@@ -93,7 +101,7 @@ defmodule Alice.HandlersCase do
   Retrieves the first reply that Alice sent out since the test began.
 
   ## Examples
-  
+
       test "it only brings back the first message" do
         send_message("first")
         send_message("second")
@@ -102,8 +110,8 @@ defmodule Alice.HandlersCase do
   """
   def first_reply() do
     case all_replies() do
-      [first_message |  _] -> first_message
-      _                    -> nil
+      [first_message | _] -> first_message
+      _ -> nil
     end
   end
 
@@ -126,9 +134,10 @@ defmodule Alice.HandlersCase do
   end
 
   defmacro __using__(opts \\ []) do
-    handlers = opts
-               |> Keyword.get(:handlers, [])
-               |> List.wrap()
+    handlers =
+      opts
+      |> Keyword.get(:handlers, [])
+      |> List.wrap()
 
     quote do
       use ExUnit.Case
