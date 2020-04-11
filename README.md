@@ -215,7 +215,8 @@ First you'll need to invoke to add `use Alice.Handlers.Case, handlers:
 [YourHandler]` passing it the handler you're trying to test. Then you
 can use `message_received()` within your test, which will simulate a
 message coming in from the chat backend and route it through to the
-handlers appropriately. From there you can use either `first_reply()`
+handlers appropriately.  If you're wanting to invoke a command, you'll
+need to make sure your message includes `<@alice>` within the string. From there you can use either `first_reply()`
 to get the first reply sent out or `all_replies()` which will return a List of replies that have been
 received during your test. You can use either to use normal assertions
 on to ensure your handler behaves in the manner you expect.
