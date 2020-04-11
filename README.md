@@ -225,7 +225,6 @@ In `test/alice/handlers/google_images_test.exs`:
 
 ```elixir
 defmodule Alice.Handlers.GoogleImagesTest do
-  use ExUnit.Case
   use Alice.HandlersCase, handlers: Alice.Handlers.GoogleImages
 
   test "it fetches an image when asked" do
