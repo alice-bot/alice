@@ -3,10 +3,10 @@ defmodule Alice.Handlers.Case do
     message = receive do
       {:send_message, %{response: message}} -> message
     after
-      0 -> nil
+      0 -> :no_message_received
     end
     case message do
-      nil -> []
+      :no_message_received -> []
       message -> [message | all_replies()]
     end
   end
