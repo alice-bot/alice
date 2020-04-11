@@ -6,6 +6,7 @@ defmodule Alice.Mixfile do
       app: :alice,
       version: "0.4.1",
       elixir: "~> 1.7",
+      elixirc_paths: elixirc_paths(Mix.env()),
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
       description: "A Slack bot",
@@ -43,4 +44,6 @@ defmodule Alice.Mixfile do
       }
     ]
   end
+
+  defp elixirc_paths(_), do: ["test/support", "lib"]
 end

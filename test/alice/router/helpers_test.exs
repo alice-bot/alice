@@ -1,55 +1,63 @@
-defmodule FakeSlack do
-  def send_message(text, :channel, :slack) do
-    send(self(), {:msg, text})
-  end
-end
-
 defmodule Alice.Router.HelpersTest do
-  use ExUnit.Case, async: true
+  use ExUnit.Case
+  import Alice.HandlersCase
   import Alice.Router.Helpers
 
-  def conn do
-    %Alice.Conn{message: %{channel: :channel}, slack: :slack}
-  end
-
   test "reply returns the conn" do
-    assert reply("yo", conn()) == conn()
+    assert reply("yo", fake_conn()) == fake_conn()
   end
 
   test "reply sends a message with Slack.send_message" do
-    reply("yo", conn())
-    assert_received {:msg, "yo"}
+    reply("yo", fake_conn())
+
+    assert first_reply() == "yo"
+  end
+
+  test "multiple replies can be sent in the same handler" do
+    reply("first", fake_conn())
+    reply("second", fake_conn())
+
+    assert ["first", "second"] == all_replies()
   end
 
   test "reply calls random_reply when given a list" do
-    ["element"] |> reply(conn())
-    assert_received {:msg, "element"}
+    reply(["element"], fake_conn())
+
+    assert first_reply() == "element"
   end
 
   test "random_reply sends a message from a given list" do
-    ~w[rabbit hole] |> random_reply(conn())
-    assert_received {:msg, resp}
-    assert resp in ~w[rabbit hole]
+    ~w[rabbit hole] |> random_reply(fake_conn())
+
+    assert first_reply() in ~w[rabbit hole]
   end
 
   test "chance_reply, when chance passes, \
                       replies with the given message" do
-    chance_reply(conn(), 1, "always")
-    assert_received {:msg, "always"}
+    chance_reply(fake_conn(), 1, "always")
+
+    assert first_reply() == "always"
   end
 
   test "chance_reply, when chance does not pass, \
                       when not given negative message, \
                       does not reply" do
-    chance_reply(conn(), 0, "never")
-    refute_received {:msg, _}
+    chance_reply(fake_conn(), 0, "never")
+
+    assert first_reply() == nil
   end
 
   test "chance_reply, when chance does not pass, \
                       when given negative message, \
                       replies with negative" do
-    chance_reply(conn(), 0, "positive", "negative")
-    refute_received {:msg, "positive"}
-    assert_received {:msg, "negative"}
+    chance_reply(fake_conn(), 0, "positive", "negative")
+
+    assert all_replies() == ["negative"]
+  end
+
+  test "it should indicate typing when asked" do
+    indicate_typing(fake_conn())
+
+    assert typing?()
   end
 end
