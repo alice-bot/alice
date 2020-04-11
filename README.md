@@ -211,11 +211,12 @@ end
 ### Testing Handlers
 
 Alice provides several helpers to make it easy to test your handlers.
-First you'll need to generate a fake connection which will need to
-consist of an example message as well as the regex used to capture it.
-Then that will be fed to your actual method. From there you can use
-either `first_reply()` to get the first reply sent out or
-`replies_received()` which will return a List of replies that have been
+First you'll need to invoke to add `use Alice.Handlers.Case, handlers:
+[YourHandler]` passing it the handler you're trying to test. Then you
+can use `message_received()` within your test, which will simulate a
+message coming in from the chat backend and route it through to the
+handlers appropriately. From there you can use either `first_reply()`
+to get the first reply sent out or `all_replies()` which will return a List of replies that have been
 received during your test. You can use either to use normal assertions
 on to ensure your handler behaves in the manner you expect.
 
@@ -224,11 +225,10 @@ In `test/alice/handlers/google_images_test.exs`:
 ```elixir
 defmodule Alice.Handlers.GoogleImagesTest do
   use ExUnit.Case
-  import Alice.Handlers.Case
+  use Alice.Handlers.Case, handlers: Alice.Handlers.GoogleImages
 
   test "it fetches an image when asked" do
-    fake_conn_with_capture("img me example image", ~r/(image|img)\s+me (?<term>.+)/i)
-    |> Alice.Handlers.GoogleImages.fetch
+    receive_message("img me example image")
 
     assert first_reply() == "http://example.com/image_from_google.jpg"
   end
