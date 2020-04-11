@@ -37,8 +37,8 @@ defmodule Alice.ConnTest do
   end
 
   test "tz_offset returns the timezone offset of the user" do
-    user = %{tz_offset: "SOME_OFFSET"}
-    conn = Conn.make(%{user: "user_id"}, %{users: %{"user_id" => user}})
+    user = %{"id" => "user_id", "tz_offset" => "SOME_OFFSET"}
+    conn = Conn.make(%{user: "user_id"}, %{users: [user]})
     assert "SOME_OFFSET" = Conn.tz_offset(conn)
   end
 
