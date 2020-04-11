@@ -208,6 +208,33 @@ defmodule Alice.Handlers.GoogleImages do
 end
 ```
 
+### Testing Handlers
+
+Alice provides several helpers to make it easy to test your handlers.
+First you'll need to invoke to add `use Alice.HandlersCase, handlers:
+[YourHandler]` passing it the handler you're trying to test. Then you
+can use `message_received()` within your test, which will simulate a
+message coming in from the chat backend and route it through to the
+handlers appropriately.  If you're wanting to invoke a command, you'll
+need to make sure your message includes `<@alice>` within the string. From there you can use either `first_reply()`
+to get the first reply sent out or `all_replies()` which will return a List of replies that have been
+received during your test. You can use either to use normal assertions
+on to ensure your handler behaves in the manner you expect.
+
+In `test/alice/handlers/google_images_test.exs`:
+
+```elixir
+defmodule Alice.Handlers.GoogleImagesTest do
+  use Alice.HandlersCase, handlers: Alice.Handlers.GoogleImages
+
+  test "it fetches an image when asked" do
+    send_message("img me example image")
+
+    assert first_reply() == "http://example.com/image_from_google.jpg"
+  end
+end
+```
+
 ### Registering Handlers
 
 In the `mix.exs` file of your bot, add your handler to the list of handlers to
