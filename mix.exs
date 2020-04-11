@@ -34,7 +34,7 @@ defmodule Alice.Mixfile do
 
   defp package do
     [
-      files: ["lib", "config", "mix.exs", "README*"],
+      files: ["lib", "config", "mix.exs", "README*", ".formatter.exs"],
       maintainers: ["Adam Zaninovich"],
       licenses: ["MIT"],
       links: %{
