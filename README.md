@@ -221,6 +221,7 @@ the alice config in your `.formatter.exs`:
 
   import_deps: [:alice]
 ]
+```
 
 ### Testing Handlers
 
