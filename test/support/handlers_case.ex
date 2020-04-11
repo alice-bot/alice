@@ -29,7 +29,7 @@ defmodule Alice.HandlersCase do
     |> Alice.Conn.add_captures(capture_regex)
   end
 
-  def receive_message(message) do
+  def send_message(message) do
     conn = fake_conn(message)
     case Alice.Conn.command?(conn) do
       true  -> Alice.Router.match_commands(conn)

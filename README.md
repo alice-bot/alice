@@ -228,7 +228,7 @@ defmodule Alice.Handlers.GoogleImagesTest do
   use Alice.HandlersCase, handlers: Alice.Handlers.GoogleImages
 
   test "it fetches an image when asked" do
-    receive_message("img me example image")
+    send_message("img me example image")
 
     assert first_reply() == "http://example.com/image_from_google.jpg"
   end
