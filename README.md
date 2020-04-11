@@ -120,7 +120,7 @@ Create a new heroku app running Elixir.
 heroku create --buildpack "https://github.com/HashNuke/heroku-buildpack-elixir.git"
 ```
 
-Create a file called `heroku_buildpack.config` at the root of your project.
+Create a file called `elixir_buildpack.config` at the root of your project.
 ```sh
 erlang_version=18.2.1
 elixir_version=1.2.1
