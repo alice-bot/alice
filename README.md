@@ -1,4 +1,4 @@
-# Alice [![Hex Version](https://img.shields.io/hexpm/v/alice.svg)](https://hex.pm/packages/alice) [![Hex Downloads](https://img.shields.io/hexpm/dt/alice.svg)](https://hex.pm/packages/alice) [![License: MIT](https://img.shields.io/hexpm/l/alice.svg)](https://hex.pm/packages/alice)
+# Alice [![Hex Version](https://img.shields.io/hexpm/v/alice.svg)](https://hex.pm/packages/alice) [![Hex Downloads](https://img.shields.io/hexpm/dt/alice.svg)](https://hex.pm/packages/alice) [![License: MIT](https://img.shields.io/hexpm/l/alice.svg)](https://hex.pm/packages/alice) [![Coverage Status](https://coveralls.io/repos/github/alice-bot/alice/badge.svg)](https://coveralls.io/github/alice-bot/alice)
 
 #### A Lita-inspired Slack bot written in Elixir.
 
@@ -120,7 +120,7 @@ Create a new heroku app running Elixir.
 heroku create --buildpack "https://github.com/HashNuke/heroku-buildpack-elixir.git"
 ```
 
-Create a file called `heroku_buildpack.config` at the root of your project.
+Create a file called `elixir_buildpack.config` at the root of your project.
 ```sh
 erlang_version=18.2.1
 elixir_version=1.2.1
@@ -193,7 +193,7 @@ defmodule Alice.Handlers.GoogleImages do
   use Alice.Router
 
   command ~r/(image|img)\s+me (?<term>.+)/i, :fetch
-  route   ~r/(image|img)\s+me (?<term>.+)/i, :fetch
+  route ~r/(image|img)\s+me (?<term>.+)/i, :fetch
 
   @doc "`img me alice in wonderland` - gets a random image from Google Images"
   def fetch(conn) do
@@ -205,6 +205,47 @@ defmodule Alice.Handlers.GoogleImages do
   end
 
   #...
+end
+```
+
+### The Elixir Formatter and Alice
+
+If you want the Elixir formatter to omit the parens on `command/2` and
+`route/2`, simply [import](https://hexdocs.pm/mix/master/Mix.Tasks.Format.html#module-importing-dependencies-configuration)
+the alice config in your `.formatter.exs`:
+
+```elixir
+# my_handler/.formatter.exs
+[
+  # ...
+
+  import_deps: [:alice]
+]
+
+### Testing Handlers
+
+Alice provides several helpers to make it easy to test your handlers.
+First you'll need to invoke to add `use Alice.HandlersCase, handlers:
+[YourHandler]` passing it the handler you're trying to test. Then you
+can use `message_received()` within your test, which will simulate a
+message coming in from the chat backend and route it through to the
+handlers appropriately.  If you're wanting to invoke a command, you'll
+need to make sure your message includes `<@alice>` within the string. From there you can use either `first_reply()`
+to get the first reply sent out or `all_replies()` which will return a List of replies that have been
+received during your test. You can use either to use normal assertions
+on to ensure your handler behaves in the manner you expect.
+
+In `test/alice/handlers/google_images_test.exs`:
+
+```elixir
+defmodule Alice.Handlers.GoogleImagesTest do
+  use Alice.HandlersCase, handlers: Alice.Handlers.GoogleImages
+
+  test "it fetches an image when asked" do
+    send_message("img me example image")
+
+    assert first_reply() == "http://example.com/image_from_google.jpg"
+  end
 end
 ```
 

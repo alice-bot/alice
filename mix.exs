@@ -4,13 +4,16 @@ defmodule Alice.Mixfile do
   def project do
     [
       app: :alice,
-      version: "0.4.0",
+      version: "0.4.1",
       elixir: "~> 1.7",
+      elixirc_paths: elixirc_paths(Mix.env()),
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
       description: "A Slack bot",
       package: package(),
       deps: deps(),
+      test_coverage: [tool: ExCoveralls],
+      preferrred_cli_env: [coveralls: :test],
       docs: [logo: "resources/logo.png"]
     ]
   end
@@ -28,13 +31,14 @@ defmodule Alice.Mixfile do
       {:poolboy, "~> 1.5.0"},
       {:redix, "~> 0.6.0"},
       {:poison, "~> 3.0"},
-      {:dialyxir, "~> 1.0.0-rc.6", only: [:dev], runtime: false}
+      {:dialyxir, "~> 1.0.0-rc.6", only: [:dev], runtime: false},
+      {:excoveralls, "~> 0.12.3", only: :test}
     ]
   end
 
   defp package do
     [
-      files: ["lib", "config", "mix.exs", "README*"],
+      files: ["lib", "config", "mix.exs", "README*", ".formatter.exs"],
       maintainers: ["Adam Zaninovich"],
       licenses: ["MIT"],
       links: %{
@@ -43,4 +47,6 @@ defmodule Alice.Mixfile do
       }
     ]
   end
+
+  defp elixirc_paths(_), do: ["test/support", "lib"]
 end
