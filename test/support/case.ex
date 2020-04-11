@@ -24,7 +24,8 @@ defmodule Alice.Handlers.Case do
   end
 
   def fake_conn_with_capture(message, capture_regex) do
-    fake_conn(message)
+    message
+    |> fake_conn()
     |> Alice.Conn.add_captures(capture_regex)
   end
 
