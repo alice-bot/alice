@@ -211,7 +211,7 @@ end
 ### Testing Handlers
 
 Alice provides several helpers to make it easy to test your handlers.
-First you'll need to invoke to add `use Alice.Handlers.Case, handlers:
+First you'll need to invoke to add `use Alice.HandlersCase, handlers:
 [YourHandler]` passing it the handler you're trying to test. Then you
 can use `message_received()` within your test, which will simulate a
 message coming in from the chat backend and route it through to the
@@ -226,7 +226,7 @@ In `test/alice/handlers/google_images_test.exs`:
 ```elixir
 defmodule Alice.Handlers.GoogleImagesTest do
   use ExUnit.Case
-  use Alice.Handlers.Case, handlers: Alice.Handlers.GoogleImages
+  use Alice.HandlersCase, handlers: Alice.Handlers.GoogleImages
 
   test "it fetches an image when asked" do
     receive_message("img me example image")

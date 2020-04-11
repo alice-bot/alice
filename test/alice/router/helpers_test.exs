@@ -1,6 +1,6 @@
 defmodule Alice.Router.HelpersTest do
   use ExUnit.Case
-  import Alice.Handlers.Case
+  import Alice.HandlersCase
   import Alice.Router.Helpers
 
   test "reply returns the conn" do

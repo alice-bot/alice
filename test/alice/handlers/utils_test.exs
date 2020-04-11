@@ -1,6 +1,6 @@
 defmodule Alice.Handlers.UtilsTest do
   use ExUnit.Case
-  use Alice.Handlers.Case, handlers: Alice.Handlers.Utils
+  use Alice.HandlersCase, handlers: Alice.Handlers.Utils
 
   test "it should respond to a ping" do
     receive_message("ping")

@@ -1,4 +1,4 @@
-defmodule Alice.Handlers.Case do
+defmodule Alice.HandlersCase do
   def all_replies() do
     message = receive do
       {:send_message, %{response: message}} -> message
@@ -51,7 +51,7 @@ defmodule Alice.Handlers.Case do
                |> List.wrap()
 
     quote do
-      import Alice.Handlers.Case
+      import Alice.HandlersCase
 
       setup do
         Alice.Router.start_link(unquote(handlers))
