@@ -51,6 +51,7 @@ defmodule Alice.HandlersCase do
                |> List.wrap()
 
     quote do
+      use ExUnit.Case
       import Alice.HandlersCase
 
       setup do
