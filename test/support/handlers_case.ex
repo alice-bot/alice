@@ -29,12 +29,17 @@ defmodule Alice.HandlersCase do
     |> Alice.Conn.add_captures(capture_regex)
   end
 
-  def send_message(message) do
-    conn = fake_conn(message)
+
+  def send_message(conn = %Alice.Conn{}) do
     case Alice.Conn.command?(conn) do
       true  -> Alice.Router.match_commands(conn)
       false -> Alice.Router.match_routes(conn)
     end
+  end
+  def send_message(message) do
+    message
+    |> fake_conn()
+    |> send_message()
   end
 
   def typing?() do
