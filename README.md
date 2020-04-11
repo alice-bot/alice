@@ -120,7 +120,7 @@ Create a new heroku app running Elixir.
 heroku create --buildpack "https://github.com/HashNuke/heroku-buildpack-elixir.git"
 ```
 
-Create a file called `heroku_buildpack.config` at the root of your project.
+Create a file called `elixir_buildpack.config` at the root of your project.
 ```sh
 erlang_version=18.2.1
 elixir_version=1.2.1
@@ -193,7 +193,7 @@ defmodule Alice.Handlers.GoogleImages do
   use Alice.Router
 
   command ~r/(image|img)\s+me (?<term>.+)/i, :fetch
-  route   ~r/(image|img)\s+me (?<term>.+)/i, :fetch
+  route ~r/(image|img)\s+me (?<term>.+)/i, :fetch
 
   @doc "`img me alice in wonderland` - gets a random image from Google Images"
   def fetch(conn) do
@@ -207,6 +207,20 @@ defmodule Alice.Handlers.GoogleImages do
   #...
 end
 ```
+
+### The Elixir Formatter and Alice
+
+If you want the Elixir formatter to omit the parens on `command/2` and
+`route/2`, simply [import](https://hexdocs.pm/mix/master/Mix.Tasks.Format.html#module-importing-dependencies-configuration)
+the alice config in your `.formatter.exs`:
+
+```elixir
+# my_handler/.formatter.exs
+[
+  # ...
+
+  import_deps: [:alice]
+]
 
 ### Testing Handlers
 
