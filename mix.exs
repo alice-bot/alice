@@ -27,7 +27,7 @@ defmodule Alice.Mixfile do
       {:credo, "~> 1.2", only: [:dev, :test], runtime: false},
       {:earmark, ">= 0.0.0", only: :dev},
       {:ex_doc, ">= 0.0.0", only: :dev},
-      {:slack, "~> 0.23.0"},
+      {:slack, "~> 0.23.2"},
       {:poolboy, "~> 1.5.0"},
       {:redix, "~> 0.6.0"},
       {:poison, "~> 3.0"},
