@@ -1,5 +1,5 @@
 defmodule Alice.ConnTest do
-  use ExUnit.Case, async: true
+  use ExUnit.Case
 
   alias Alice.Conn
 
@@ -7,16 +7,33 @@ defmodule Alice.ConnTest do
     Conn.make(%{text: text}, %{})
   end
 
+  test "you can inspect a conn" do
+    conn = Conn.make(:message, :slack, :state)
+    assert inspect(conn) == "%Alice.Conn{message: :message, slack: %{...}, state: :state}"
+  end
+
   test "make makes a conn" do
-    assert Conn.make(:m, :sl, :st) == %Conn{message: :m, slack: :sl, state: :st}
+    assert Conn.make(:message, :slack, :state) == %Conn{
+             message: :message,
+             slack: :slack,
+             state: :state
+           }
   end
 
   test "make makes a conn with a default state" do
-    assert Conn.make(:m, :sl) == %Conn{message: :m, slack: :sl, state: %{}}
+    assert Conn.make(:message, :slack) == %Conn{
+             message: :message,
+             slack: :slack,
+             state: %{}
+           }
   end
 
   test "make makes a conn with a tuple" do
-    assert Conn.make({:m, :sl, :st}) == %Conn{message: :m, slack: :sl, state: :st}
+    assert Conn.make({:message, :slack, :state}) == %Conn{
+             message: :message,
+             slack: :slack,
+             state: :state
+           }
   end
 
   test "command? is true when the bot is @username'd" do
@@ -45,6 +62,12 @@ defmodule Alice.ConnTest do
     message = %{ts: "SOME_TIMESTAMP"}
     conn = Conn.make(message, :slack)
     assert "SOME_TIMESTAMP" = Conn.timestamp(conn)
+  end
+
+  test "at_reply_user formats an at reply that slack will recognize" do
+    user = %{id: "user_id"}
+    conn = Conn.make(%{user: "user_id"}, %{users: %{"user_id" => user}})
+    assert Conn.at_reply_user(conn) == "<@user_id>"
   end
 
   test "add_captures adds regex captures to the conn" do
@@ -87,6 +110,13 @@ defmodule Alice.ConnTest do
     conn = Conn.make(:msg, :slk, %{other: :other})
     conn = Conn.put_state_for(conn, :namespace, :value)
     assert {:msg, :slk, :other} = {conn.message, conn.slack, conn.state.other}
+  end
+
+  test "delete_state_for deletes the state for a given namespace" do
+    state = %{{:some, :namespace} => :value}
+    conn = Conn.make(:msg, :slk, state)
+    conn = Conn.delete_state_for(conn, {:some, :namespace})
+    assert Conn.get_state_for(conn, :namespace) == nil
   end
 
   test "sanitize_message removes smart quotes" do
