@@ -41,9 +41,7 @@ defmodule Alice.HandlersCase do
 
       test "you can set state" do
         conn = fake_conn("message", state: %{some: "state"})
-
         conn = send_message(conn)
-
         assert first_reply() == "hello world"
         assert conn.state.some == "state"
       end
