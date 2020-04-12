@@ -1,5 +1,12 @@
+## v0.4.2
+  * Vastly Improves Testability of Handlers (#111)
+  * Includes formatter config in the package so that it can be imported in handlers (#114)
+  * Add Test Coverage via CircleCI and Coveralls.io (#118)
+  * Increases Test Coverage (#120)
+  * Readme updates including formatting and a typo fix (#117)
+
 ## v0.4.1
-  * Adds `tz_offset/1` and `timestamp/1` functions to `Alice.Conn`
+  * Adds `tz_offset/1` and `timestamp/1` functions to `Alice.Conn` (#109)
 
 ## v0.4.0
   * Fixes help handler for recent versions of elixir (#98)
