@@ -19,11 +19,8 @@ For an example bot, see the [Active Alice] bot. For an example handler, see
 You'll need a Slack API token which can be retrieved from the [Web API page] or
 by creating a new [bot integration].
 
-[wiki page]: https://github.com/alice-bot/alice/wiki/Alice-0.2.0-Changes
-[0.3.7]: https://hex.pm/packages/alice/0.3.7
 [Active Alice]: https://github.com/adamzaninovich/active-alice
 [Google Images Handler]: https://github.com/alice-bot/alice_google_images
-
 [Web API page]: https://api.slack.com/web
 [bot integration]: https://my.slack.com/services/new/bot
 
@@ -45,7 +42,8 @@ handlers.
 * Alice XKCD: [hex](https://hex.pm/packages/alice_xkcd), [code](https://github.com/notdevinclark/alice_xkcd)
 * Alice Doge [hex](https://hex.pm/packages/alice_doge_me), [code](https://github.com/alice-bot/alice_doge_me/)
 
-If you write your own handler, please submit a pull request and update this list!
+If you write your own handler, please submit a pull request and update this
+list!
 
 ## Creating Your Own Bot With Alice
 
@@ -62,13 +60,15 @@ rm lib/my_bot.ex test/my_bot_test.exs
 
 In `mix.exs`, bring in alice and any other handlers you want. You also need to
 include the `websocket_client` dependency because it's not a [hex] package.
+
 [hex]: http://hex.pm
+
 ```elixir
 defp deps do
   [
-    {:alice,                  "~> 0.4.0"},
+    {:alice, "~> 0.4.2"},
     {:alice_against_humanity, "~> 0.1.0"},
-    {:alice_google_images,    "~> 0.1.0"}
+    {:alice_google_images, "~> 0.1.0"}
   ]
 end
 ```
@@ -122,11 +122,9 @@ heroku create --buildpack "https://github.com/HashNuke/heroku-buildpack-elixir.g
 
 Create a file called `elixir_buildpack.config` at the root of your project.
 ```sh
-erlang_version=18.2.1
-elixir_version=1.2.1
+erlang_version=22.0.3
+elixir_version=1.8.2
 always_rebuild=false
-
-post_compile="pwd"
 ```
 
 Create a `Procfile` at the root of your project. If you don't create the proc
@@ -179,7 +177,7 @@ end
 
 defp deps do
   [
-    {:alice, "~> 0.4.0"}
+    {:alice, "~> 0.4.2"}
   ]
 end
 ```
@@ -211,8 +209,9 @@ end
 ### The Elixir Formatter and Alice
 
 If you want the Elixir formatter to omit the parens on `command/2` and
-`route/2`, simply [import](https://hexdocs.pm/mix/master/Mix.Tasks.Format.html#module-importing-dependencies-configuration)
-the alice config in your `.formatter.exs`:
+`route/2`, simply [import] the alice config in your `.formatter.exs`:
+
+[import]: https://hexdocs.pm/mix/master/Mix.Tasks.Format.html#module-importing-dependencies-configuration
 
 ```elixir
 # my_handler/.formatter.exs
@@ -225,16 +224,17 @@ the alice config in your `.formatter.exs`:
 
 ### Testing Handlers
 
-Alice provides several helpers to make it easy to test your handlers.
-First you'll need to invoke to add `use Alice.HandlersCase, handlers:
-[YourHandler]` passing it the handler you're trying to test. Then you
-can use `message_received()` within your test, which will simulate a
-message coming in from the chat backend and route it through to the
-handlers appropriately.  If you're wanting to invoke a command, you'll
-need to make sure your message includes `<@alice>` within the string. From there you can use either `first_reply()`
-to get the first reply sent out or `all_replies()` which will return a List of replies that have been
-received during your test. You can use either to use normal assertions
-on to ensure your handler behaves in the manner you expect.
+Alice provides several helpers to make it easy to test your handlers.  First
+you'll need to invoke to add `use Alice.HandlersCase, handlers: [YourHandler]`
+passing it the handler you're trying to test. Then you can use
+`message_received()` within your test, which will simulate a message coming in
+from the chat backend and route it through to the handlers appropriately.  If
+you're wanting to invoke a command, you'll need to make sure your message
+includes `<@alice>` within the string. From there you can use either
+`first_reply()` to get the first reply sent out or `all_replies()` which will
+return a List of replies that have been received during your test. You can use
+either to use normal assertions on to ensure your handler behaves in the manner
+you expect.
 
 In `test/alice/handlers/google_images_test.exs`:
 
