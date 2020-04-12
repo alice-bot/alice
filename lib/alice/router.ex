@@ -89,7 +89,7 @@ defmodule Alice.Router do
 
   def match_pattern({pattern, name}, {mod, conn = %Conn{}}) do
     if Regex.match?(pattern, conn.message.text) do
-      unless Mix.env() == :test do
+      if Process.whereis(Logger) do
         Logger.info("#{mod}.#{name} responding to -> #{Conn.user(conn)}")
       end
 
