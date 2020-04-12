@@ -4,7 +4,7 @@ defmodule Alice.StateBackends.RedixPool do
   use Supervisor
 
   def start_link do
-    Supervisor.start_link(__MODULE__, [])
+    Supervisor.start_link(__MODULE__, [], name: __MODULE__)
   end
 
   def init([]) do
@@ -21,7 +21,7 @@ defmodule Alice.StateBackends.RedixPool do
       :poolboy.child_spec(:redix_poolboy, pool_opts, redis_connection_params)
     ]
 
-    supervise(children, strategy: :one_for_one, name: __MODULE__)
+    Supervisor.init(children, strategy: :one_for_one)
   end
 
   def command!(command) do
