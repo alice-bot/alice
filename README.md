@@ -1,4 +1,4 @@
-# Alice [![Hex Version](https://img.shields.io/hexpm/v/alice.svg)](https://hex.pm/packages/alice) [![Hex Downloads](https://img.shields.io/hexpm/dt/alice.svg)](https://hex.pm/packages/alice) [![License: MIT](https://img.shields.io/hexpm/l/alice.svg)](https://hex.pm/packages/alice) [![Coverage Status](https://coveralls.io/repos/github/alice-bot/alice/badge.svg)](https://coveralls.io/github/alice-bot/alice)
+# Alice [![Hex Version](https://img.shields.io/hexpm/v/alice.svg)](https://hex.pm/packages/alice) [![Hex Downloads](https://img.shields.io/hexpm/dt/alice.svg)](https://hex.pm/packages/alice) [![License: MIT](https://img.shields.io/hexpm/l/alice.svg)](https://hex.pm/packages/alice) [![Coverage Status](https://coveralls.io/repos/github/alice-bot/alice/badge.svg?branch=master)](https://coveralls.io/github/alice-bot/alice?branch=master)
 
 #### A Lita-inspired Slack bot written in Elixir.
 
