@@ -1,6 +1,5 @@
 defmodule Alice.Router.HelpersTest do
-  use ExUnit.Case
-  import Alice.HandlersCase
+  use Alice.HandlersCase
   import Alice.Router.Helpers
 
   test "reply returns the conn" do
@@ -55,7 +54,15 @@ defmodule Alice.Router.HelpersTest do
     assert all_replies() == ["negative"]
   end
 
-  test "it should indicate typing when asked" do
+  test "delayed_reply replies after a delay" do
+    task = delayed_reply("finally", 1, fake_conn())
+
+    assert %Alice.Conn{} = Task.await(task)
+    assert typing?()
+    assert first_reply() == "finally"
+  end
+
+  test "indicate_typing indicates typing" do
     indicate_typing(fake_conn())
 
     assert typing?()

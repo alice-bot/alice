@@ -22,14 +22,28 @@ defmodule Alice.HandlersCase do
   @doc """
   Generates a fake connection for testing purposes.
 
-  Can be called as `fake_conn/0` to generate a quick connection. Or it can be called as `fake_conn/1` to pass a message. Or finally can be called as `fake_conn/2` to set options with the message.
+  Can be called as `fake_conn/0` to generate a quick connection. Or it can be
+  called as `fake_conn/1` to pass a message. Or finally can be called as
+  `fake_conn/2` to set options with the message.
 
-  ## Example
+  ## Examples
+
+      fake_conn()
+      fake_conn("message")
+      fake_conn("message", state: %{some: "state"})
+      fake_conn("message", capture: ~r/pattern/)
 
       test "you can directly use the reply function" do
         conn = fake_conn()
-        reply("hello world", conn)
+        reply(conn, "hello world")
         assert first_reply() == "hello world"
+      end
+
+      test "you can set state" do
+        conn = fake_conn("message", state: %{some: "state"})
+        conn = send_message(conn)
+        assert first_reply() == "hello world"
+        assert conn.state.some == "state"
       end
   """
   def fake_conn(), do: fake_conn("")
@@ -37,12 +51,16 @@ defmodule Alice.HandlersCase do
   def fake_conn(text) do
     %Alice.Conn{
       message: %{text: text, channel: :channel, user: :fake_user},
-      slack: %{users: [fake_user: %{name: "fake_user"}], me: %{id: :alice}}
+      slack: %{users: %{fake_user: %{id: :fake_user, name: "fake_user"}}, me: %{id: :alice}}
     }
   end
 
-  def fake_conn(message, capture: capture_regex) do
-    message
+  def fake_conn(text, state: state) do
+    %{fake_conn(text) | state: state}
+  end
+
+  def fake_conn(text, capture: capture_regex) do
+    text
     |> fake_conn()
     |> Alice.Conn.add_captures(capture_regex)
   end

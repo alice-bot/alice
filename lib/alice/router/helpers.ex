@@ -91,11 +91,27 @@ defmodule Alice.Router.Helpers do
   def delayed_reply(msg, ms, conn = %Conn{}), do: delayed_reply(conn, msg, ms)
 
   def delayed_reply(conn = %Conn{}, message, milliseconds) do
+    parent = self()
+
     Task.async(fn ->
       conn = indicate_typing(conn)
+      forward_message(parent, :indicate_typing)
+
       :timer.sleep(milliseconds)
-      reply(message, conn)
+
+      conn = reply(conn, message)
+      forward_message(parent, :send_message)
+
+      conn
     end)
+  end
+
+  defp forward_message(pid, name) do
+    receive do
+      {^name, payload} -> send(pid, {name, payload})
+    after
+      0 -> nil
+    end
   end
 
   @doc """
