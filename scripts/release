@@ -35,5 +35,5 @@ echo "  * Bump the version to v${new_version} in mix.exs"
 echo "  * Update CHANGELOG.md"
 echo "  * Commit with message \"version bump to ${new_version}\""
 echo "  * Run mix hex.publish"
-echo "  * Update the Alice version in AliceNew
-echo "  * Publish AliceNew
+echo "  * Update the Alice version in AliceNew"
+echo "  * Publish AliceNew"
