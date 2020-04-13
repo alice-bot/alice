@@ -10,7 +10,7 @@ defmodule Alice.RouterTest.TestHandler do
 end
 
 defmodule Alice.RouterTest do
-  use Alice.HandlersCase, handlers: Alice.RouterTest.TestHandler
+  use Alice.HandlerCase, handlers: Alice.RouterTest.TestHandler
 
   alias Alice.RouterTest.TestHandler
   alias Alice.Router

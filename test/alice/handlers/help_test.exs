@@ -4,7 +4,7 @@ defmodule Alice.Handlers.HelpTest do
     TestHandler
   }
 
-  use Alice.HandlersCase, handlers: [Help, TestHandler]
+  use Alice.HandlerCase, handlers: [Help, TestHandler]
 
   test "general_help lists the handlers as well as some other info" do
     send_message("<@alice> help")

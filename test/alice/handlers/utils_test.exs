@@ -1,5 +1,5 @@
 defmodule Alice.Handlers.UtilsTest do
-  use Alice.HandlersCase, handlers: Alice.Handlers.Utils
+  use Alice.HandlerCase, handlers: Alice.Handlers.Utils
 
   test "it responds to a ping route" do
     send_message("ping")
