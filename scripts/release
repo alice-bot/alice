@@ -1,0 +1,39 @@
+#!/bin/bash
+
+set -e
+
+last_version=$(git fetch --tags && git tag -l "v*" | tail -n 1)
+current_master_head=$(git rev-parse origin/master)
+
+echo "Latest version tagged was ${last_version}. What is the new version?"
+
+read -p "format: 0.0.0 > " new_version
+
+header="Tag version: v${new_version}\nRelease Title: Alice v${new_version}"
+all_prs=$(git log --grep="Merge pull request #" ${current_master_head}...${last_version} | grep -A2 '#')
+
+printf "${header}\n\n## v${new_version}\n$(echo $all_prs)" |\
+  sed 's/[ ]\-\-[ ]/\'$'\n/g' |\
+  sed 's/[ ]*Merge pull request #\([0-9]*\) from [^ ]* \(.*\)[ ]*/  * \2 ([#\1](https:\/\/github.com\/alice-bot\/alice\/pull\/\1))/' |\
+  pbcopy
+
+echo
+echo "Release notes copied to clipboard"
+echo "Opening a new release on github..."
+
+open https://github.com/alice-bot/alice/releases/new
+
+echo
+echo Release notes:
+echo
+
+pbpaste
+
+echo
+echo "## Release checklist"
+echo "  * Bump the version to v${new_version} in mix.exs"
+echo "  * Update CHANGELOG.md"
+echo "  * Commit with message \"version bump to ${new_version}\""
+echo "  * Run mix hex.publish"
+echo "  * Update the Alice version in AliceNew
+echo "  * Publish AliceNew
