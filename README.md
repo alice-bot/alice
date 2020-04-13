@@ -225,7 +225,7 @@ If you want the Elixir formatter to omit the parens on `command/2` and
 ### Testing Handlers
 
 Alice provides several helpers to make it easy to test your handlers.  First
-you'll need to invoke to add `use Alice.HandlersCase, handlers: [YourHandler]`
+you'll need to invoke to add `use Alice.HandlerCase, handlers: [YourHandler]`
 passing it the handler you're trying to test. Then you can use
 `message_received()` within your test, which will simulate a message coming in
 from the chat backend and route it through to the handlers appropriately.  If
@@ -240,7 +240,7 @@ In `test/alice/handlers/google_images_test.exs`:
 
 ```elixir
 defmodule Alice.Handlers.GoogleImagesTest do
-  use Alice.HandlersCase, handlers: Alice.Handlers.GoogleImages
+  use Alice.HandlerCase, handlers: Alice.Handlers.GoogleImages
 
   test "it fetches an image when asked" do
     send_message("img me example image")

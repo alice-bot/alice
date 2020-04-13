@@ -1,4 +1,4 @@
-defmodule Alice.HandlersCaseTest.TestHandler do
+defmodule Alice.HandlerCaseTest.TestHandler do
   use Alice.Router
 
   route ~r/type/, :typing_route
@@ -14,8 +14,8 @@ defmodule Alice.HandlersCaseTest.TestHandler do
   end
 end
 
-defmodule Alice.HandlersCaseTest do
-  use Alice.HandlersCase, handlers: Alice.HandlersCaseTest.TestHandler
+defmodule Alice.HandlerCaseTest do
+  use Alice.HandlerCase, handlers: Alice.HandlerCaseTest.TestHandler
   alias Alice.Conn
 
   test "fake_conn makes a conn" do

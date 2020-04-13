@@ -1,4 +1,4 @@
-defmodule Alice.HandlersCase do
+defmodule Alice.HandlerCase do
   @moduledoc """
   Helpers for writing tests of Alice Handlers.
 
@@ -10,7 +10,7 @@ defmodule Alice.HandlersCase do
   ## Examples
 
       defmodule Alice.Handlers.ExampleHandlerTest do
-        use Alice.HandlersCase, handlers: Alice.Handlers.ExampleHandler
+        use Alice.HandlerCase, handlers: Alice.Handlers.ExampleHandler
 
         test "it replies" do
           send_message("hello")
@@ -159,7 +159,7 @@ defmodule Alice.HandlersCase do
 
     quote do
       use ExUnit.Case
-      import Alice.HandlersCase
+      import Alice.HandlerCase
 
       setup do
         Alice.Router.start_link(unquote(handlers))

@@ -1,5 +1,5 @@
 defmodule Alice.EarmuffsTest do
-  use Alice.HandlersCase, handlers: Alice.Earmuffs
+  use Alice.HandlerCase, handlers: Alice.Earmuffs
 
   alias Alice.Conn
   alias Alice.Earmuffs
