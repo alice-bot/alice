@@ -191,6 +191,7 @@ defmodule Alice.HandlerCase do
 
   defmacro __using__(opts \\ []) do
     Application.put_env(:alice, :outbound_client, Alice.ChatBackends.OutboundSpy)
+
     handlers =
       opts
       |> Keyword.get(:handlers, [])
