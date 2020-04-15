@@ -30,10 +30,7 @@ defmodule Alice.Router.Helpers do
   end
 
   defp outbound_api do
-    case Mix.env() do
-      :test -> Alice.ChatBackends.OutboundSpy
-      _else -> Application.get_env(:alice, :outbound_client, Alice.ChatBackends.SlackOutbound)
-    end
+    Application.get_env(:alice, :outbound_client, Alice.ChatBackends.SlackOutbound)
   end
 
   @doc """
