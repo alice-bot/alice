@@ -2,6 +2,7 @@ defmodule Alice.Console do
   @moduledoc """
   Starts up the Console to allow testing of Alice's responses
   """
+  @doc "Boots up the console and all associated constructs"
   def start() do
     setup_alice()
     IO.puts("Starting Alice Console")

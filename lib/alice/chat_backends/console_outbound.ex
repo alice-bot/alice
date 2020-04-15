@@ -4,10 +4,12 @@ defmodule Alice.ChatBackends.ConsoleOutbound do
   """
   @behaviour Alice.ChatBackends.OutboundClient
 
+  @doc "Sends the message to the the console"
   def send_message(response, _, _) do
     IO.puts(response)
   end
 
+  @doc "Sends a message to the console to indicate alice is typing"
   def indicate_typing(channel, _) do
     IO.puts("... Alice is typing in the #{channel} channel")
   end
