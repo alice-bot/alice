@@ -35,9 +35,7 @@ defmodule Alice do
   defp children(:test, _), do: []
 
   defp children(_env, extras) do
-    state_backend_children() ++
-      router(extras) ++
-      chat_backend()
+    state_backend_children() ++ router(extras) ++ chat_backend()
   end
 
   defp state_backend_children do
