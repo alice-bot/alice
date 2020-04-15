@@ -29,5 +29,6 @@ defmodule Alice.Console do
     Application.put_env(:alice, :outbound_client, Alice.ChatBackends.ConsoleOutbound)
     Alice.start(:normal, %{})
     Logger.configure(level: Application.get_env(:alice, :console_logger_level, :error))
+    Logger.configure_backend(:console, format: {Alice.Console.LogFormatter, :format})
   end
 end
