@@ -23,7 +23,7 @@ defmodule Alice.HandlerCaseTest do
              Conn.make(
                %{channel: :channel, text: "", user: :fake_user},
                %{me: %{id: :alice}, users: %{fake_user: %{id: :fake_user, name: "fake_user"}}},
-               nil
+               %{}
              )
   end
 
@@ -32,7 +32,7 @@ defmodule Alice.HandlerCaseTest do
              Conn.make(
                %{channel: :channel, text: "message", user: :fake_user},
                %{me: %{id: :alice}, users: %{fake_user: %{id: :fake_user, name: "fake_user"}}},
-               nil
+               %{}
              )
   end
 
@@ -55,7 +55,7 @@ defmodule Alice.HandlerCaseTest do
                  captures: ["find this capture", "capture"]
                },
                %{me: %{id: :alice}, users: %{fake_user: %{id: :fake_user, name: "fake_user"}}},
-               nil
+               %{}
              )
   end
 

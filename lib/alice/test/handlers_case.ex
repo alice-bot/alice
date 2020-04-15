@@ -54,7 +54,8 @@ defmodule Alice.HandlerCase do
   def fake_conn(text) do
     %Alice.Conn{
       message: %{text: text, channel: :channel, user: :fake_user},
-      slack: %{users: %{fake_user: %{id: :fake_user, name: "fake_user"}}, me: %{id: :alice}}
+      slack: %{users: %{fake_user: %{id: :fake_user, name: "fake_user"}}, me: %{id: :alice}},
+      state: %{}
     }
   end
 
