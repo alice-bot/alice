@@ -1,0 +1,13 @@
+defmodule <%= @handler_module %> do
+  use Alice.Router
+
+  command ~r/repeat after me:? (?<term>.+)/i, :repeat
+  route ~r/repeat after me:? (?<term>.+)/i, :repeat
+
+  @doc "`repeat after me: thing` - replies you said, 'thing'"
+  def repeat(conn) do
+    term = Alice.Conn.last_capture(conn)
+
+    reply(conn, "you said, '#{term}'")
+  end
+end

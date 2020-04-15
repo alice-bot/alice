@@ -1,49 +1,73 @@
 defmodule Alice.Mixfile do
   use Mix.Project
 
+  @version "0.4.3"
+
   def project do
     [
       app: :alice,
-      version: "0.4.3",
+      version: @version,
       elixir: "~> 1.7",
-      build_embedded: Mix.env() == :prod,
-      start_permanent: Mix.env() == :prod,
-      description: "A Slack bot",
-      package: package(),
       deps: deps(),
+      package: package(),
+      preferrred_cli_env: [
+        docs: :docs,
+        coveralls: :test
+      ],
+      consolidate_protocols: Mix.env() != :test,
+      elixirc_paths: elixirc_paths(Mix.env()),
+      name: "Alice",
+      docs: docs(),
       test_coverage: [tool: ExCoveralls],
-      preferrred_cli_env: [coveralls: :test],
-      docs: [logo: "resources/logo.png"]
+      source_url: "https://github.com/alice-bot/alice",
+      homepage_url: "https://www.alice-bot.org",
+      description: "A Slack bot"
     ]
   end
 
+  defp elixirc_paths(:docs), do: ~w(lib installer/lib)
+  defp elixirc_paths(_env), do: ~w(lib)
+
   def application do
-    [applications: [:logger, :slack, :mix]]
+    [
+      extra_applications: [:logger, :mix],
+      env: [logger: true]
+    ]
   end
 
   defp deps do
     [
-      {:credo, "~> 1.2", only: [:dev, :test], runtime: false},
-      {:earmark, ">= 0.0.0", only: :dev},
-      {:ex_doc, ">= 0.0.0", only: :dev},
       {:slack, "~> 0.12.0"},
+      {:poison, "~> 3.0"},
       {:poolboy, "~> 1.5.0"},
       {:redix, "~> 0.6.0"},
-      {:poison, "~> 3.0"},
-      {:dialyxir, "~> 1.0.0-rc.6", only: [:dev], runtime: false},
-      {:excoveralls, "~> 0.12.3", only: :test}
+
+      # Optional dependencies
+      {:dialyxir, "~> 1.0.0-rc.6", only: [:dev], runtime: false, optional: true},
+      {:credo, "~> 1.2", only: [:dev, :test], runtime: false, optional: true},
+
+      # Test dependencies
+      {:excoveralls, "~> 0.12.3", only: :test},
+
+      # Docs dependencies
+      {:ex_doc, "~> 0.21", only: :dev}
     ]
   end
 
   defp package do
     [
-      files: ["lib", "config", "mix.exs", "README*", ".formatter.exs"],
       maintainers: ["Adam Zaninovich"],
       licenses: ["MIT"],
-      links: %{
-        "GitHub" => "https://github.com/adamzaninovich/alice",
-        "Docs" => "http://hexdocs.pm/alice/readme.html"
-      }
+      links: %{github: "https://github.com/alice-bot/alice"},
+      files: ~w(lib CHANGELOG.md LICENSE config mix.exs README.md .formatter.exs)
+    ]
+  end
+
+  defp docs do
+    [
+      source_ref: "v#{@version}",
+      main: "README",
+      logo: "resources/logo.png"
     ]
   end
 end
