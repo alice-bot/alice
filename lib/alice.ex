@@ -11,6 +11,7 @@ defmodule Alice do
   List of Alice route handlers to register upon startup
   """
   def handlers(), do: default_handlers() ++ Application.get_env(:alice, :handlers, [])
+
   def handlers(extras) do
     case Map.fetch(extras, :handlers) do
       {:ok, additional_handlers} -> Application.put_env(:alice, :handlers, additional_handlers)
@@ -58,6 +59,6 @@ defmodule Alice do
   end
 
   defp router(extras) do
-    [ worker(Alice.Router, [handlers(extras)]) ]
+    [worker(Alice.Router, [handlers(extras)])]
   end
 end

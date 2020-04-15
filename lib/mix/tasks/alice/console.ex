@@ -5,6 +5,6 @@ defmodule Mix.Tasks.Alice.Console do
   @shortdoc "Starts an Alice REPL"
   def run(_) do
     Mix.Task.run("compile")
-    Alice.Console.start
+    Alice.Console.start()
   end
 end
