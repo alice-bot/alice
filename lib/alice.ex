@@ -35,7 +35,7 @@ defmodule Alice do
   defp children(:test, _), do: []
 
   defp children(_env, extras) do
-    state_backend_children() ++ router(extras) ++ chat_backend()
+    state_backend_children() ++ router_children(extras) ++ chat_backend_children()
   end
 
   defp state_backend_children do
@@ -49,14 +49,14 @@ defmodule Alice do
     [Alice.Earmuffs, Alice.Handlers.Help, Alice.Handlers.Utils]
   end
 
-  defp chat_backend do
+  defp chat_backend_children do
     case Application.get_env(:alice, :chat_backend, Alice.ChatBackends.Slack) do
       :console -> []
       chat_backend -> [worker(chat_backend, [])]
     end
   end
 
-  defp router(extras) do
+  defp router_children(extras) do
     [worker(Alice.Router, [handlers(extras)])]
   end
 end
