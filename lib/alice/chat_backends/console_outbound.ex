@@ -1,4 +1,7 @@
 defmodule Alice.ChatBackends.ConsoleOutbound do
+  @moduledoc """
+  Sends responses from Alice to the console rather than to an Outbound API
+  """
   @behaviour Alice.ChatBackends.OutboundClient
 
   def send_message(response, _, _) do
