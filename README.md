@@ -73,7 +73,17 @@ defp deps do
 end
 ```
 
-In the same file, configure the app, registering any handlers you want. You can
+In the same file, also configure the app:
+
+```elixir
+def application do
+  [ applications: [:alice],
+    mod: {Alice, %{}}
+  ]
+end
+```
+
+In `config/config.exs` add any configuration that your bot needs. This includes registering any handlers you want. You can
 add handlers through dependencies, or you can write them directly in your bot
 instance. (See [Writing Route Handlers] for information on how to write a
 handler. We recommend putting them in `lib/alice/handlers/`.)
@@ -81,29 +91,17 @@ handler. We recommend putting them in `lib/alice/handlers/`.)
 [Writing Route Handlers]: https://github.com/alice-bot/alice#writing-route-handlers
 
 ```elixir
-def application do
-  [ applications: [:alice],
-    mod: {
-      Alice, %{
-        handlers: [
-          Alice.Handlers.Random,
-          Alice.Handlers.AgainstHumanity,
-          Alice.Handlers.GoogleImages
-        ]
-      }
-    }
-  ]
-end
-```
-
-In `config/config.exs` add any configuration that your bot needs.
-```elixir
 use Mix.Config
 
 config :alice,
   api_key: System.get_env("SLACK_API_TOKEN"),
   state_backend: :redis,
-  redis: System.get_env("REDIS_URL")
+  redis: System.get_env("REDIS_URL"),
+  handlers: [
+    Alice.Handlers.Random,
+    Alice.Handlers.AgainstHumanity,
+    Alice.Handlers.GoogleImages
+  ]
 
 config :alice_google_images,
   cse_id: System.get_env("GOOGLE_CSE_ID"),
@@ -252,12 +250,15 @@ end
 
 ### Registering Handlers
 
-In the `mix.exs` file of your bot, add your handler to the list of handlers to
+In the `config.exs` file of your bot, add your handler to the list of handlers to
 register on start
 
 ```elixir
-def application do
-  [ applications: [:alice],
-    mod: {Alice, [Alice.Handlers.GoogleImages, ...] } ]
-end
+use Mix.Config
+
+config :alice,
+  handlers: [
+    Alice.Handlers.GoogleImages,
+    ...
+  ]
 ```
