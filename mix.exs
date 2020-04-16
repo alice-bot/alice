@@ -66,7 +66,6 @@ defmodule Alice.Mixfile do
   defp docs do
     [
       source_ref: "v#{@version}",
-      main: "README",
       logo: "resources/logo.png"
     ]
   end
