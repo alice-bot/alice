@@ -3,21 +3,27 @@ defmodule AliceNew.Utilities do
 
   def alice_version(), do: "0.4.3"
 
-  def elixir_version() do
-    {:ok, version} = Version.parse(System.version())
+  def elixir_version(), do: elixir_version(System.version())
+
+  def elixir_version(system_version) do
+    {:ok, version} = Version.parse(system_version)
 
     "#{version.major}.#{version.minor}" <>
       case version.pre do
-        [h | _] -> "-#{h}"
+        [pre_release_identifier | _] -> "-#{pre_release_identifier}"
         [] -> ""
       end
   end
 
-  def elixir_version_check! do
-    unless Version.match?(System.version(), "~> 1.7") do
+  def elixir_version_check!(), do: elixir_version_check!(System.version())
+
+  def elixir_version_check!(system_version) do
+    if Version.match?(system_version, "~> 1.7") do
+      :ok
+    else
       Mix.raise(
         "Alice v#{alice_version()} requires at least Elixir v1.7.\n " <>
-          "You have #{System.version()}. Please update accordingly"
+          "You have #{system_version}. Please update accordingly"
       )
     end
   end
