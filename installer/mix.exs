@@ -53,7 +53,7 @@ defmodule AliceNew.MixProject do
     [
       main: "Mix.Tasks.Alice.New.Handler",
       source_url_pattern:
-        "https://github.com/#{@github_path}/blob/v#{@version}/installer/%{path}#L%{line}"
+        "https://github.com/#{@github_path}/blob/v#{@alice_version}/installer/%{path}#L%{line}"
     ]
   end
 
