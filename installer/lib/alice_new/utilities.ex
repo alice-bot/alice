@@ -1,7 +1,8 @@
 defmodule AliceNew.Utilities do
   @moduledoc false
+  @alice_version Mix.Project.config()[:version]
 
-  def alice_version(), do: "0.4.3"
+  def alice_version(), do: @alice_version
 
   def elixir_version(), do: elixir_version(System.version())
 
