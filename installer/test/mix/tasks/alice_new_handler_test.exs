@@ -78,7 +78,7 @@ defmodule Mix.Tasks.Alice.New.HandlerTest do
       end
 
       assert_raise Mix.Error, ~r"Handler name must start with a lowercase ASCII letter, ", fn ->
-        Handler.run(["valid", "--name", "93invalid"])
+        Handler.run(["valid", "--app", "93invalid"])
       end
 
       assert_raise Mix.Error, ~r"Module name must be a valid Elixir alias", fn ->
