@@ -95,6 +95,14 @@ defmodule Mix.Tasks.Alice.New.HandlerTest do
     assert output =~ "Alice v#{@alice_version}"
   end
 
+  test "alice.new.handler with help" do
+    output = capture_io(fn -> Handler.run(["-h"]) end)
+    assert output =~ "Generates a new Alice handler."
+
+    output = capture_io(fn -> Handler.run(["--help"]) end)
+    assert output =~ "Generates a new Alice handler."
+  end
+
   test "alice.new.handler without args" do
     output = capture_io(fn -> Handler.run([]) end)
     assert output =~ "Generates a new Alice handler."
