@@ -16,10 +16,11 @@ use Mix.Config
 #
 #     Application.get_env(:<%= @app_name %>, :key)
 #
-# Or configure a 3rd-party app:
+# Or configure 3rd-party apps:
+
+config :alice, handlers: [<%= @handler_module %>]
 
 config :logger, level: :warn
-
 
 # It is also possible to import configuration files, relative to this
 # directory. For example, you can emulate configuration per environment

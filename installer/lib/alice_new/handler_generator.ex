@@ -49,6 +49,8 @@ defmodule AliceNew.HandlerGenerator do
 
         $ cd #{path}
         $ mix deps.get
+        $ mix test
+        $ mix alice.console
 
     Your handler code is in lib/alice/handlers/#{handler_name}.ex
     Your handler test is at test/alice/handlers/#{handler_name}_test.ex
