@@ -5,15 +5,20 @@ defmodule Alice do
   """
 
   use Application
+  import Supervisor.Spec, warn: false
 
   @doc """
   List of Alice route handlers to register upon startup
   """
+  def handlers(), do: default_handlers() ++ Application.get_env(:alice, :handlers, [])
+
   def handlers(extras) do
     case Map.fetch(extras, :handlers) do
-      {:ok, additional_handlers} -> default_handlers() ++ additional_handlers
-      _ -> default_handlers()
+      {:ok, additional_handlers} -> Application.put_env(:alice, :handlers, additional_handlers)
+      _ -> nil
     end
+
+    handlers()
   end
 
   @doc """
@@ -30,23 +35,28 @@ defmodule Alice do
   defp children(:test, _), do: []
 
   defp children(_env, extras) do
-    import Supervisor.Spec, warn: false
-
-    state_backend_children() ++
-      [
-        worker(Alice.Router, [handlers(extras)]),
-        worker(Alice.ChatBackends.Slack, [])
-      ]
+    state_backend_children() ++ router_children(extras) ++ chat_backend_children()
   end
 
   defp state_backend_children do
     case Application.get_env(:alice, :state_backend) do
-      :redis -> [Supervisor.Spec.supervisor(Alice.StateBackends.RedixPool, [])]
+      :redis -> [supervisor(Alice.StateBackends.RedixPool, [])]
       _other -> []
     end
   end
 
   defp default_handlers do
     [Alice.Earmuffs, Alice.Handlers.Help, Alice.Handlers.Utils]
+  end
+
+  defp chat_backend_children do
+    case Application.get_env(:alice, :chat_backend, Alice.ChatBackends.Slack) do
+      :console -> []
+      chat_backend -> [worker(chat_backend, [])]
+    end
+  end
+
+  defp router_children(extras) do
+    [worker(Alice.Router, [handlers(extras)])]
   end
 end
