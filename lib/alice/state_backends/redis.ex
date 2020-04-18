@@ -33,20 +33,24 @@ defmodule Alice.StateBackends.Redis do
   def get(_state, key, default \\ nil) do
     ["GET", encode_key(key)]
     |> RedixPool.command!()
-    |> case do
-      nil -> default
-      value -> value |> Poison.decode() |> handle_parse_output(value)
-    end
+    |> handle_get_result(default)
   end
+
+  defp handle_get_result(nil, default), do: default
 
   # NOTE: This handles migration of the data in redis from the old stringified
   #       elixir to use the new method of encoding in JSON. Please remove this
   #       after most people have moved to this version.
-  defp handle_parse_output({:ok, decoded}, _encoded), do: decoded
+  @dialyzer {:nowarn_function, handle_get_result: 2}
+  defp handle_get_result(encoded_value, _default) do
+    case Poison.decode(encoded_value) do
+      {:ok, decoded_value} ->
+        decoded_value
 
-  defp handle_parse_output({:error, _}, encoded) do
-    {decoded, _} = Code.eval_string(encoded)
-    decoded
+      _ ->
+        {decoded, _} = Code.eval_string(encoded_value)
+        decoded
+    end
   end
 
   def put(state, key, value) do

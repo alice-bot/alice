@@ -8,10 +8,10 @@ defmodule Alice.ChatBackends.OutboundClient do
               message :: String.t(),
               channel :: String.t(),
               service_state :: map()
-            ) :: String.t()
+            ) :: :ok | {:error, error_message :: String.t()}
 
   @callback indicate_typing(
               channel :: String.t(),
               service_state :: map()
-            ) :: String.t()
+            ) :: :ok | {:error, error_message :: String.t()}
 end

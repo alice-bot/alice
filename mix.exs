@@ -43,6 +43,7 @@ defmodule Alice.Mixfile do
       {:redix, "~> 0.6.0"},
 
       # Optional dependencies
+      {:dialyxir, "~> 1.0", only: [:dev], runtime: false, optional: true},
       {:credo, "~> 1.2", only: [:dev, :test], runtime: false, optional: true},
 
       # Test dependencies
