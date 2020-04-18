@@ -4,23 +4,25 @@
 version: 2
 jobs:
   build:
+    working_directory: ~/alice
     docker:
       - image: circleci/elixir:1.7
         environment:
           MIX_ENV: test
-
-    working_directory: ~/alice
     steps:
       - checkout
       - run:
           name: "Creating master branch cache key"
-          command: git log origin/master --pretty=format:'%H' -n 1 > lastest-master-sha
+          command: git log origin/master --pretty=format:'%H' -n 1 > latest-master-sha
       - run:
           name: "Creating build branch cache key"
           command: git log --pretty=format:'%H' -n 1 > build-branch-sha
-      - run: mix local.hex --force
-      - run: mix local.rebar --force
-      - restore_cache: # restores saved mix cache
+      - run:
+          name: "Setting up hex and rebar"
+          command: |
+            mix local.hex --force
+            mix local.rebar --force
+      - restore_cache:
           name: "Restore dependency cache"
           keys:
             - v1-alice-dependency-cache-{{ .Branch }}-{{ checksum "mix.lock" }}
@@ -28,31 +30,87 @@ jobs:
             - v1-alice-dependency-cache-master-{{ checksum "mix.lock" }}
             - v1-alice-dependency-cache-master
       - restore_cache:
-          name: "Restore Build & PLT cache"
+          name: "Restore build cache"
           keys:
-            - v1-alice-build-and-plt-cache-{{ .Branch }}-{{ checksum "build-branch-sha" }}
-            - v1-alice-build-and-plt-cache-{{ .Branch }}
-            - v1-alice-build-and-plt-cache-master-{{ checksum "lastest-master-sha" }}
-            - v1-alice-build-and-plt-cache-master
-      - run: mix do deps.get, compile  # get updated dependencies & compile them
-      - run: mix compile --force --warnings-as-errors # compile project and treat warnings as error
+            - v1-alice-build-cache-{{ .Branch }}-{{ checksum "build-branch-sha" }}
+            - v1-alice-build-cache-{{ .Branch }}
+            - v1-alice-build-cache-master-{{ checksum "latest-master-sha" }}
+            - v1-alice-build-cache-master
+      - run:
+          name: "Get & compile dependencies"
+          command: |
+            mix deps.get
+            mix compile
+      - run:
+          name: "Compile project treating warnings as errors"
+          command: mix compile --force --warnings-as-errors
       - save_cache:
           name: "Save dependency cache"
           key: v1-alice-dependency-cache-{{ .Branch }}-{{ checksum "mix.lock" }}
           paths:
             - deps
-      - run: mix format --check-formatted --dry-run
-      - run: mix credo
       - run:
-          name: "Building Dialyzer PLT"
-          command: echo skipping dialyzer # MIX_ENV=dev mix dialyzer --plt
-          no_output_timeout: 30m
+          name: "Check format"
+          command: mix format --check-formatted --dry-run
+      - run:
+          name: "Check Credo"
+          command: mix credo
       - save_cache:
-          name: "Save Build & PLT cache"
-          key: v1-alice-build-and-plt-cache-{{ .Branch }}-{{ checksum "build-branch-sha" }}
+          name: "Save build cache"
+          key: v1-alice-build-cache-{{ .Branch }}-{{ checksum "build-branch-sha" }}
           paths:
             - _build
             - ~/.mix
-      - run: echo skipping dialyzer # MIX_ENV=dev mix dialyzer --halt-exit-status
-      - run: mix test
-      - run: mix coveralls.circle
+      - run:
+          name: "Run tests"
+          command: mix test
+      - run:
+          name: "Run test coverage report"
+          command: mix coveralls.circle
+      - restore_cache:
+          name: "Restore Installer dependency cache"
+          keys:
+            - v1-alice-installer-dependency-cache-{{ .Branch }}-{{ checksum "installer/mix.lock" }}
+            - v1-alice-installer-dependency-cache-{{ .Branch }}
+            - v1-alice-installer-dependency-cache-master-{{ checksum "installer/mix.lock" }}
+            - v1-alice-installer-dependency-cache-master
+      - restore_cache:
+          name: "Restore Installer build cache"
+          keys:
+            - v1-alice-installer-build-cache-{{ .Branch }}-{{ checksum "build-branch-sha" }}
+            - v1-alice-installer-build-cache-{{ .Branch }}
+            - v1-alice-installer-build-cache-master-{{ checksum "latest-master-sha" }}
+            - v1-alice-installer-build-cache-master
+      - run:
+          working_directory: ~/alice/installer
+          name: "Get & compile Installer dependencies"
+          command: |
+            mix deps.get
+            mix compile
+      - run:
+          working_directory: ~/alice/installer
+          name: "Compile Installer treating warnings as errors"
+          command: mix compile --force --warnings-as-errors
+      - save_cache:
+          name: "Save Installer dependency cache"
+          key: v1-alice-installer-dependency-cache-{{ .Branch }}-{{ checksum "installer/mix.lock" }}
+          paths:
+            - ~/installer/deps
+      - run:
+          working_directory: ~/alice/installer
+          name: "Check Installer format"
+          command: mix format --check-formatted --dry-run
+      - run:
+          working_directory: ~/alice/installer
+          name: "Check Installer Credo"
+          command: mix credo
+      - save_cache:
+          name: "Save Installer build cache"
+          key: v1-alice-installer-build-cache-{{ .Branch }}-{{ checksum "build-branch-sha" }}
+          paths:
+            - ~/installer/_build
+            - ~/installer/.mix
+      - run:
+          working_directory: ~/alice/installer
+          name: "Run Installer tests & check coverage"
+          command: mix coveralls

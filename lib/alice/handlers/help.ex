@@ -11,14 +11,17 @@ defmodule Alice.Handlers.Help do
 
   @doc "`help` - lists all known handlers"
   def general_help(conn) do
-    [
-      "_Here are all the handlers I know about…_",
-      handler_list(),
-      "_Get info about a specific handler with_ `@alice help <handler name>`",
-      "_Get info about all handlers with_ `@alice help all`",
-      "_Feedback on Alice is appreciated. Please submit an issue at https://github.com/alice-bot/alice/issues _"
-    ]
-    |> Enum.join("\n\n")
+    """
+    _Here are all the handlers I know about…_
+
+    #{handler_list()}
+
+    _Get info about a specific handler with_ `@alice help <handler name>`
+
+    _Get info about all handlers with_ `@alice help all`
+
+    _Feedback on Alice is appreciated. Please submit an issue at https://github.com/alice-bot/alice/issues _
+    """
     |> reply(conn)
   end
 
@@ -137,10 +140,6 @@ defmodule Alice.Handlers.Help do
 
   defp parse_function_doc({{:function, name, _arity}, _anno, _sig, :hidden, _meta}, title) do
     {title, name, :hidden}
-  end
-
-  defp parse_function_doc({_function, _anno, _sig, _doc_content, _meta}, title) do
-    {title, nil, :hidden}
   end
 
   defp format_route({_, _, :hidden}), do: nil

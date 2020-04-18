@@ -1,4 +1,4 @@
-defmodule Alice.HandlersCase do
+defmodule Alice.HandlerCase do
   @moduledoc """
   Helpers for writing tests of Alice Handlers.
 
@@ -10,7 +10,7 @@ defmodule Alice.HandlersCase do
   ## Examples
 
       defmodule Alice.Handlers.ExampleHandlerTest do
-        use Alice.HandlersCase, handlers: Alice.Handlers.ExampleHandler
+        use Alice.HandlerCase, handlers: Alice.Handlers.ExampleHandler
 
         test "it replies" do
           send_message("hello")
@@ -19,30 +19,76 @@ defmodule Alice.HandlersCase do
       end
   """
 
+  @type conn() :: %Alice.Conn{}
+
   @doc """
   Generates a fake connection for testing purposes.
 
-  Can be called as `fake_conn/0` to generate a quick connection. Or it can be called as `fake_conn/1` to pass a message. Or finally can be called as `fake_conn/2` to set options with the message.
+  Can be called as `fake_conn/0` to generate a quick connection.
 
-  ## Example
+  ## Examples
 
       test "you can directly use the reply function" do
         conn = fake_conn()
-        reply("hello world", conn)
+        reply(conn, "hello world")
         assert first_reply() == "hello world"
       end
   """
+  @spec fake_conn() :: conn()
   def fake_conn(), do: fake_conn("")
 
+  @doc """
+  Generates a fake connection for testing purposes.
+
+  Can be called as `fake_conn/1` to pass a message.
+
+  ## Examples
+
+      test "you can set the message in the conn" do
+        conn = fake_conn("message")
+        send_message(conn)
+        assert first_reply() == "hello world"
+      end
+  """
+  @spec fake_conn(String.t()) :: conn()
   def fake_conn(text) do
     %Alice.Conn{
       message: %{text: text, channel: :channel, user: :fake_user},
-      slack: %{users: [fake_user: %{name: "fake_user"}], me: %{id: :alice}}
+      slack: %{users: %{fake_user: %{id: :fake_user, name: "fake_user"}}, me: %{id: :alice}},
+      state: %{}
     }
   end
 
-  def fake_conn(message, capture: capture_regex) do
-    message
+  @doc """
+  Generates a fake connection for testing purposes.
+
+  Can be called as `fake_conn/2` to set options. Options can either be `:state`
+  or `:capture`, but not both. Using `:capture` is helpful if you want to unit
+  test your handler functions.
+
+  ## Examples
+
+      test "you can set state" do
+        conn = fake_conn("message", state: %{some: "state"})
+        conn = send_message(conn)
+        assert first_reply() == "hello world"
+        assert conn.state.some == "state"
+      end
+
+      test "you can set the regix and call the handler directly" do
+        conn = fake_conn("message", ~r"^(.+)")
+        MyHandler.do_something(conn)
+        assert first_reply() == "hello world, you said 'message'"
+      end
+  """
+  @spec fake_conn(String.t(), opts :: [state: map()]) :: conn()
+  def fake_conn(text, state: state) do
+    %{fake_conn(text) | state: state}
+  end
+
+  @spec fake_conn(String.t(), opts :: [capture: Regex.t()]) :: conn()
+  def fake_conn(text, capture: capture_regex) do
+    text
     |> fake_conn()
     |> Alice.Conn.add_captures(capture_regex)
   end
@@ -50,7 +96,7 @@ defmodule Alice.HandlersCase do
   @doc """
     Sends a message through Alice that can be captured by the handlers.
 
-    Can either be called with a `String` or with an `Alice.Conn`
+    Can either be called with a message `String` or `Alice.Conn`
 
     ## Examples
 
@@ -58,7 +104,14 @@ defmodule Alice.HandlersCase do
           send_message("test message")
           assert first_reply() == "reply from handler"
         end
+
+        test "it sends a message with a conn" do
+          conn = fake_conn("test message")
+          send_message(conn)
+          assert first_reply() == "reply from handler"
+        end
   """
+  @spec send_message(String.t() | conn()) :: conn()
   def send_message(conn = %Alice.Conn{}) do
     case Alice.Conn.command?(conn) do
       true -> Alice.Router.match_commands(conn)
@@ -83,6 +136,7 @@ defmodule Alice.HandlersCase do
         assert all_replies() == ["first", "second"]
       end
   """
+  @spec all_replies() :: [String.t()]
   def all_replies() do
     message =
       receive do
@@ -108,6 +162,7 @@ defmodule Alice.HandlersCase do
         assert first_reply() == "first"
       end
   """
+  @spec first_reply() :: String.t()
   def first_reply() do
     case all_replies() do
       [first_message | _] -> first_message
@@ -125,6 +180,7 @@ defmodule Alice.HandlersCase do
         assert typing?
       end
   """
+  @spec typing?() :: boolean()
   def typing?() do
     receive do
       {:indicate_typing, _} -> true
@@ -134,6 +190,8 @@ defmodule Alice.HandlersCase do
   end
 
   defmacro __using__(opts \\ []) do
+    Application.put_env(:alice, :outbound_client, Alice.ChatBackends.OutboundSpy)
+
     handlers =
       opts
       |> Keyword.get(:handlers, [])
@@ -141,7 +199,7 @@ defmodule Alice.HandlersCase do
 
     quote do
       use ExUnit.Case
-      import Alice.HandlersCase
+      import Alice.HandlerCase
 
       setup do
         Alice.Router.start_link(unquote(handlers))
