@@ -10,15 +10,15 @@ use Mix.Config
 
 # You can configure for your application as:
 #
-#     config :<%= @app_name %>, key: :value
+#     config :<%= @otp_app %>, key: :value
 #
 # And access this configuration in your application as:
 #
-#     Application.get_env(:<%= @app_name %>, :key)
+#     Application.get_env(:<%= @otp_app %>, :key)
 #
 # Or configure 3rd-party apps:
 
-config :alice, handlers: [<%= @handler_module %>]
+config :alice, handlers: [<%= @module %>]
 
 config :logger, level: :warn
 

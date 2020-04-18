@@ -16,6 +16,43 @@ defmodule AliceNew.Utilities do
       end
   end
 
+  def create_directory!(path) do
+    unless path == "." do
+      check_directory_existence!(path)
+      File.mkdir_p!(path)
+    end
+  end
+
+  def handler_path(path) do
+    Path.join([Path.dirname(path), "alice_#{basename(path)}"])
+  end
+
+  def handler_name(path, opts) do
+    name = opts[:app] || basename(path)
+    check_handler_name!(name, !opts[:app])
+    name
+  end
+
+  def handler_otp_app(handler_name) do
+    "alice_#{handler_name}"
+  end
+
+  def handler_module(handler_name, opts) do
+    module_name = opts[:module] || Macro.camelize(handler_name)
+    check_module_name_validity!(module_name)
+    handler_module_name(module_name)
+  end
+
+  defp basename(path) do
+    path
+    |> Path.expand()
+    |> Path.basename()
+  end
+
+  defp handler_module_name(module_name) do
+    "Alice.Handlers.#{module_name}"
+  end
+
   def elixir_version_check!(), do: elixir_version_check!(System.version())
 
   def elixir_version_check!(system_version) do
@@ -51,16 +88,12 @@ defmodule AliceNew.Utilities do
     end
   end
 
-  def check_mod_name_validity!(name) do
+  def check_module_name_validity!(name) do
     unless name =~ Regex.recompile!(~r/^[A-Z]\w*(\.[A-Z]\w*)*$/) do
       Mix.raise(
         "Module name must be a valid Elixir alias (for example: MyHandler), got: #{inspect(name)}"
       )
     end
-  end
-
-  def handler_module(module_name) do
-    "Alice.Handlers.#{module_name}"
   end
 
   def check_directory_existence!(path) do

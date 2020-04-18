@@ -1,16 +1,16 @@
-defmodule <%= Macro.camelize(@app_name) %>.MixProject do
+defmodule <%= Macro.camelize(@otp_app) %>.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :<%= @app_name %>,
+      app: :<%= @otp_app %>,
       version: "0.1.0",
       elixir: "~> <%= @elixir_version %>",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       package: [
         licenses: ["MIT"],
-        links: %{"Docs" => "https://hexdocs.pm/<%= @app_name %>"},
+        links: %{"Docs" => "https://hexdocs.pm/<%= @otp_app %>"},
         files: ~w[lib mix.exs README.md]
       ],
       description: ""

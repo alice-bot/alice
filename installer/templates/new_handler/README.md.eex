@@ -1,29 +1,29 @@
-# <%= Macro.camelize(@app_name) %>
+# <%= Macro.camelize(@otp_app) %>
 
 A handler for [Alice](https://github.com/alice-bot/alice)
 
 ## Installation
 
-The package can be installed into an Alice bot by adding `<%= @app_name %>` to
+The package can be installed into an Alice bot by adding `<%= @otp_app %>` to
 your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
   [
     {:alice, "~> <%= @alice_version %>"},
-    {:<%= @app_name %>, "~> 0.1"}
+    {:<%= @otp_app %>, "~> 0.1"}
   ]
 end
 ```
 
-Then add `<%= @handler_module %>` to your list of registered handlers in `mix.exs`:
+Then add `<%= @module %>` to your list of registered handlers in `mix.exs`:
 
 ```elixir
   def application do
     [
       extra_applications: [:logger],
       mod: {
-        Alice, [<%= @handler_module %>]
+        Alice, [<%= @module %>]
       }
     ]
   end
@@ -31,4 +31,4 @@ Then add `<%= @handler_module %>` to your list of registered handlers in `mix.ex
 
 ## Usage
 
-Documentation can be found at [https://hexdocs.pm/<%= @app_name %>](https://hexdocs.pm/<%= @app_name %>).
+Documentation can be found at [https://hexdocs.pm/<%= @otp_app %>](https://hexdocs.pm/<%= @otp_app %>).

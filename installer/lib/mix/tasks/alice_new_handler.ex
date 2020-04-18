@@ -59,27 +59,18 @@ defmodule Mix.Tasks.Alice.New.Handler do
       {_opts, []} ->
         Mix.Tasks.Help.run(["alice.new.handler"])
 
-      {opts, [path | _]} ->
+      {opts, [given_path | _]} ->
         Utilities.elixir_version_check!()
 
-        basename = Path.basename(Path.expand(path))
-        path = Path.join([Path.dirname(path), "alice_#{basename}"])
+        path = Utilities.handler_path(given_path)
+        name = Utilities.handler_name(given_path, opts)
+        app = Utilities.handler_otp_app(name)
+        module = Utilities.handler_module(name, opts)
 
-        handler_name = opts[:app] || basename
-        app = "alice_#{handler_name}"
-        Utilities.check_handler_name!(handler_name, !opts[:app])
-
-        module_name = opts[:module] || Macro.camelize(handler_name)
-        Utilities.check_mod_name_validity!(module_name)
-        module = Utilities.handler_module(module_name)
-
-        unless path == "." do
-          Utilities.check_directory_existence!(path)
-          File.mkdir_p!(path)
-        end
+        Utilities.create_directory!(path)
 
         File.cd!(path, fn ->
-          HandlerGenerator.generate(app, handler_name, module, path)
+          HandlerGenerator.generate(path, name, app, module)
         end)
     end
   end

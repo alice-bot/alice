@@ -17,11 +17,12 @@ defmodule AliceNew.HandlerGenerator do
     Mix.Generator.embed_template(name, from_file: file)
   end)
 
-  def generate(app_name, handler_name, handler_module, path) do
+  def generate(path, name, otp_app, module) do
+    IO.inspect({path, name, otp_app, module})
+
     assigns = [
-      app_name: app_name,
-      handler_name: handler_name,
-      handler_module: handler_module,
+      otp_app: otp_app,
+      module: module,
       elixir_version: Utilities.elixir_version(),
       alice_version: Utilities.alice_version()
     ]
@@ -35,11 +36,11 @@ defmodule AliceNew.HandlerGenerator do
     create_file("config/config.exs", config_template(assigns))
 
     create_directory("lib/alice/handlers")
-    create_file("lib/alice/handlers/#{handler_name}.ex", handler_template(assigns))
+    create_file("lib/alice/handlers/#{name}.ex", handler_template(assigns))
 
     create_directory("test/alice/handlers")
     create_file("test/test_helper.exs", "ExUnit.start()\n")
-    create_file("test/alice/handlers/#{handler_name}_test.exs", handler_test_template(assigns))
+    create_file("test/alice/handlers/#{name}_test.exs", handler_test_template(assigns))
 
     """
 
@@ -52,8 +53,8 @@ defmodule AliceNew.HandlerGenerator do
         $ mix test
         $ mix alice.console
 
-    Your handler code is in lib/alice/handlers/#{handler_name}.ex
-    Your handler test is at test/alice/handlers/#{handler_name}_test.ex
+    Your handler code is in lib/alice/handlers/#{name}.ex
+    Your handler test is at test/alice/handlers/#{name}_test.ex
     """
     |> Mix.shell().info()
   end

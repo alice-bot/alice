@@ -1,5 +1,5 @@
-defmodule <%= @handler_module %>Test do
-  use Alice.HandlerCase, handlers: <%= @handler_module %>
+defmodule <%= @module %>Test do
+  use Alice.HandlerCase, handlers: <%= @module %>
 
   test "the repeat command repeats a term" do
     send_message("<@alice> repeat after me: this is a boring handler")

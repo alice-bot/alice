@@ -1,4 +1,4 @@
-defmodule <%= @handler_module %> do
+defmodule <%= @module %> do
   use Alice.Router
 
   command ~r/repeat after me:? (?<term>.+)/i, :repeat
