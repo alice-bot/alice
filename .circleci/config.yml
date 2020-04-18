@@ -17,11 +17,6 @@ jobs:
       - run:
           name: "Creating build branch cache key"
           command: git log --pretty=format:'%H' -n 1 > build-branch-sha
-      - run:
-          name: "Setting up hex and rebar"
-          command: |
-            mix local.hex --force
-            mix local.rebar --force
       - restore_cache:
           name: "Restore dependency cache"
           keys:
@@ -36,6 +31,11 @@ jobs:
             - v1-alice-build-and-plt-cache-{{ .Branch }}
             - v1-alice-build-and-plt-cache-master-{{ checksum "latest-master-sha" }}
             - v1-alice-build-and-plt-cache-master
+      - run:
+          name: "Setting up hex and rebar"
+          command: |
+            mix local.hex --force
+            mix local.rebar --force
       - run:
           name: "Get & compile dependencies"
           command: |
