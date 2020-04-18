@@ -4,7 +4,7 @@ defmodule AliceNew.MixHelper do
   """
   import ExUnit.Assertions
 
-  def tmp_path do
+  defp tmp_path do
     Path.expand("../tmp", __DIR__)
   end
 
