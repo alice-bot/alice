@@ -18,8 +18,6 @@ defmodule AliceNew.HandlerGenerator do
   end)
 
   def generate(path, name, otp_app, module) do
-    IO.inspect({path, name, otp_app, module})
-
     assigns = [
       otp_app: otp_app,
       module: module,
