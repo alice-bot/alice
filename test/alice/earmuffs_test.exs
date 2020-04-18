@@ -16,7 +16,7 @@ defmodule Alice.EarmuffsTest do
     conn =
       Conn.make(
         %{text: "<@alice> earmuffs", channel: @channel_id, user: @user_id},
-        %{users: %{@user_id => %{id: @user_id, name: "fake_user"}}, me: %{id: :alice}}
+        %{users: [%{"id" => @user_id, "name" => "fake_user"}], me: %{id: "alice"}}
       )
 
     conn = send_message(conn)
