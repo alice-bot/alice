@@ -10,7 +10,7 @@ defmodule Mix.Tasks.Alice.New.HandlerTest do
   @handler_name "super_awesome"
   @otp_app "alice_#{@handler_name}"
   @module_name "SuperAwesome"
-  @alice_version AliceNew.Utilities.alice_version()
+  @alice_version AliceNew.alice_version()
 
   test "alice.new.handler with defaults" do
     in_tmp("new handler with defaults", fn ->

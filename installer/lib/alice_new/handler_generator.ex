@@ -1,7 +1,6 @@
 defmodule AliceNew.HandlerGenerator do
   @moduledoc false
   import Mix.Generator
-  alias AliceNew.Utilities
 
   templates = [
     formatter: "templates/formatter.exs",
@@ -21,8 +20,8 @@ defmodule AliceNew.HandlerGenerator do
     assigns = [
       otp_app: otp_app,
       module: module,
-      elixir_version: Utilities.elixir_version(),
-      alice_version: Utilities.alice_version()
+      elixir_version: AliceNew.elixir_version(),
+      alice_version: AliceNew.alice_version()
     ]
 
     create_file(".formatter.exs", formatter_template(assigns))

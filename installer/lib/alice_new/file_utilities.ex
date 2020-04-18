@@ -1,20 +1,5 @@
-defmodule AliceNew.Utilities do
+defmodule AliceNew.FileUtilities do
   @moduledoc false
-  @alice_version Mix.Project.config()[:version]
-
-  def alice_version(), do: @alice_version
-
-  def elixir_version(), do: elixir_version(System.version())
-
-  def elixir_version(system_version) do
-    {:ok, version} = Version.parse(system_version)
-
-    "#{version.major}.#{version.minor}" <>
-      case version.pre do
-        [pre_release_identifier | _] -> "-#{pre_release_identifier}"
-        [] -> ""
-      end
-  end
 
   def create_directory!(path) do
     unless path == "." do
@@ -60,7 +45,7 @@ defmodule AliceNew.Utilities do
       :ok
     else
       Mix.raise(
-        "Alice v#{alice_version()} requires at least Elixir v1.7.\n " <>
+        "Alice v#{AliceNew.alice_version()} requires at least Elixir v1.7.\n " <>
           "You have #{system_version}. Please update accordingly"
       )
     end

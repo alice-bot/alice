@@ -42,15 +42,15 @@ options:
 
 ```bash
 mix alice.new.handler path/to/my_handler \
-  --name a_different_otp_name \
+  --app a_different_otp_name \
   --module DifferentHandlerModuleName
 ```
 
-This will set the OTP `app_name` to `a_different_otp_name` and set the
+This will set the OTP app name to `a_different_otp_name` and set the
 handler module name to `DifferentHandlerModuleName`
 
 ## Next Steps
 
-See the [docs](https://hexdocs.pm/alice) for more info on writing route
-handlers, testing your handler routes and commands, and registerring your
-handler in an Alice bot.
+See the [Alice readme](https://github.com/alice-bot/alice/blob/master/README.md)
+for more info on writing route handlers, testing your handler routes and
+commands, and registerring your handler in an Alice bot.

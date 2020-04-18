@@ -35,11 +35,11 @@ defmodule Mix.Tasks.Alice.New.Handler do
   use Mix.Task
 
   alias AliceNew.{
-    HandlerGenerator,
-    Utilities
+    FileUtilities,
+    HandlerGenerator
   }
 
-  @shortdoc "Creates a new Alice v#{Utilities.alice_version()} handler"
+  @shortdoc "Creates a new Alice v#{AliceNew.alice_version()} handler"
 
   @switches [
     app: :string,
@@ -47,7 +47,7 @@ defmodule Mix.Tasks.Alice.New.Handler do
   ]
 
   def run([version]) when version in ~w[-v --version] do
-    Mix.shell().info("Alice v#{Utilities.alice_version()}")
+    Mix.shell().info("Alice v#{AliceNew.alice_version()}")
   end
 
   def run([help]) when help in ~w[-h --help] do
@@ -60,14 +60,14 @@ defmodule Mix.Tasks.Alice.New.Handler do
         Mix.Tasks.Help.run(["alice.new.handler"])
 
       {opts, [given_path | _]} ->
-        Utilities.elixir_version_check!()
+        FileUtilities.elixir_version_check!()
 
-        path = Utilities.handler_path(given_path)
-        name = Utilities.handler_name(given_path, opts)
-        app = Utilities.handler_otp_app(name)
-        module = Utilities.handler_module(name, opts)
+        path = FileUtilities.handler_path(given_path)
+        name = FileUtilities.handler_name(given_path, opts)
+        app = FileUtilities.handler_otp_app(name)
+        module = FileUtilities.handler_module(name, opts)
 
-        Utilities.create_directory!(path)
+        FileUtilities.create_directory!(path)
 
         File.cd!(path, fn ->
           HandlerGenerator.generate(path, name, app, module)
