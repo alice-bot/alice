@@ -85,8 +85,8 @@ defmodule Alice.ConnTest do
   end
 
   test "tz_offset returns the timezone offset of the user" do
-    conn = make_conn("", %{tz_offset: -25200})
-    assert -25200 = Conn.tz_offset(conn)
+    conn = make_conn("", %{tz_offset: -25_200})
+    assert -25_200 = Conn.tz_offset(conn)
   end
 
   test "timestamp returns the timestamp of the message" do
