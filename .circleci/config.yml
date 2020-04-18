@@ -65,7 +65,7 @@ jobs:
           name: "Save build & PLT cache"
           key: v1-alice-build-and-plt-cache-{{ .Branch }}-{{ checksum "build-branch-sha" }}
           paths:
-            - ~/_build
+            - ~/alice/_build
             - ~/.mix
       - run:
           name: "Run dialyzer"
@@ -106,7 +106,7 @@ jobs:
           name: "Save Installer dependency cache"
           key: v1-alice-installer-dependency-cache-{{ .Branch }}-{{ checksum "installer/mix.lock" }}
           paths:
-            - ~/installer/deps
+            - ~/alice/installer/deps
       - run:
           working_directory: ~/alice/installer
           name: "Check Installer format"
@@ -119,8 +119,7 @@ jobs:
           name: "Save Installer build cache"
           key: v1-alice-installer-build-cache-{{ .Branch }}-{{ checksum "build-branch-sha" }}
           paths:
-            - ~/installer/_build
-            - ~/installer/.mix
+            - ~/alice/installer/_build
       - run:
           working_directory: ~/alice/installer
           name: "Run Installer tests & check coverage"
