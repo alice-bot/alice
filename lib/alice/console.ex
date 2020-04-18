@@ -51,7 +51,7 @@ defmodule Alice.Console do
   end
 
   defp make_conn(message, state) do
-    user = System.get_env("USER", "console_user")
+    user = System.get_env("USER") || "console_user"
 
     Conn.make(
       %{text: message, channel: :console, user: user},

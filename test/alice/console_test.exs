@@ -55,7 +55,7 @@ defmodule Alice.ConsoleTest do
   test "earmuffs works in the console (and state is persisted between messages)" do
     capture = capture_io("@alice earmuffs\nping\nexit", fn -> Console.start() end)
 
-    user = System.get_env("USER", "console_user")
+    user = System.get_env("USER") || "console_user"
 
     assert capture == """
            Starting Alice Console
