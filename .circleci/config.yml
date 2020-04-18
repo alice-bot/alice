@@ -20,17 +20,17 @@ jobs:
       - restore_cache:
           name: "Restore dependency cache"
           keys:
-            - v1-alice-dependency-cache-{{ .Branch }}-{{ checksum "mix.lock" }}
-            - v1-alice-dependency-cache-{{ .Branch }}
-            - v1-alice-dependency-cache-master-{{ checksum "mix.lock" }}
-            - v1-alice-dependency-cache-master
+            - v{{ .Environment.CACHE_VERSION }}-alice-dependency-cache-{{ .Branch }}-{{ checksum "mix.lock" }}
+            - v{{ .Environment.CACHE_VERSION }}-alice-dependency-cache-{{ .Branch }}
+            - v{{ .Environment.CACHE_VERSION }}-alice-dependency-cache-master-{{ checksum "mix.lock" }}
+            - v{{ .Environment.CACHE_VERSION }}-alice-dependency-cache-master
       - restore_cache:
           name: "Restore build & PLT cache"
           keys:
-            - v1-alice-build-and-plt-cache-{{ .Branch }}-{{ checksum "build-branch-sha" }}
-            - v1-alice-build-and-plt-cache-{{ .Branch }}
-            - v1-alice-build-and-plt-cache-master-{{ checksum "latest-master-sha" }}
-            - v1-alice-build-and-plt-cache-master
+            - v{{ .Environment.CACHE_VERSION }}-alice-build-and-plt-cache-{{ .Branch }}-{{ checksum "build-branch-sha" }}
+            - v{{ .Environment.CACHE_VERSION }}-alice-build-and-plt-cache-{{ .Branch }}
+            - v{{ .Environment.CACHE_VERSION }}-alice-build-and-plt-cache-master-{{ checksum "latest-master-sha" }}
+            - v{{ .Environment.CACHE_VERSION }}-alice-build-and-plt-cache-master
       - run:
           name: "Setting up hex and rebar"
           command: |
@@ -46,7 +46,7 @@ jobs:
           command: mix compile --force --warnings-as-errors
       - save_cache:
           name: "Save dependency cache"
-          key: v1-alice-dependency-cache-{{ .Branch }}-{{ checksum "mix.lock" }}
+          key: v{{ .Environment.CACHE_VERSION }}-alice-dependency-cache-{{ .Branch }}-{{ checksum "mix.lock" }}
           paths:
             - deps
       - run:
@@ -63,7 +63,7 @@ jobs:
           no_output_timeout: 30m
       - save_cache:
           name: "Save build & PLT cache"
-          key: v1-alice-build-and-plt-cache-{{ .Branch }}-{{ checksum "build-branch-sha" }}
+          key: v{{ .Environment.CACHE_VERSION }}-alice-build-and-plt-cache-{{ .Branch }}-{{ checksum "build-branch-sha" }}
           paths:
             - ~/alice/_build
             - ~/.mix
@@ -81,17 +81,17 @@ jobs:
       - restore_cache:
           name: "Restore Installer dependency cache"
           keys:
-            - v1-alice-installer-dependency-cache-{{ .Branch }}-{{ checksum "installer/mix.lock" }}
-            - v1-alice-installer-dependency-cache-{{ .Branch }}
-            - v1-alice-installer-dependency-cache-master-{{ checksum "installer/mix.lock" }}
-            - v1-alice-installer-dependency-cache-master
+            - v{{ .Environment.CACHE_VERSION }}-alice-installer-dependency-cache-{{ .Branch }}-{{ checksum "installer/mix.lock" }}
+            - v{{ .Environment.CACHE_VERSION }}-alice-installer-dependency-cache-{{ .Branch }}
+            - v{{ .Environment.CACHE_VERSION }}-alice-installer-dependency-cache-master-{{ checksum "installer/mix.lock" }}
+            - v{{ .Environment.CACHE_VERSION }}-alice-installer-dependency-cache-master
       - restore_cache:
           name: "Restore Installer build cache"
           keys:
-            - v1-alice-installer-build-cache-{{ .Branch }}-{{ checksum "build-branch-sha" }}
-            - v1-alice-installer-build-cache-{{ .Branch }}
-            - v1-alice-installer-build-cache-master-{{ checksum "latest-master-sha" }}
-            - v1-alice-installer-build-cache-master
+            - v{{ .Environment.CACHE_VERSION }}-alice-installer-build-cache-{{ .Branch }}-{{ checksum "build-branch-sha" }}
+            - v{{ .Environment.CACHE_VERSION }}-alice-installer-build-cache-{{ .Branch }}
+            - v{{ .Environment.CACHE_VERSION }}-alice-installer-build-cache-master-{{ checksum "latest-master-sha" }}
+            - v{{ .Environment.CACHE_VERSION }}-alice-installer-build-cache-master
       - run:
           working_directory: ~/alice/installer
           name: "Get & compile Installer dependencies"
@@ -104,7 +104,7 @@ jobs:
           command: mix compile --force --warnings-as-errors
       - save_cache:
           name: "Save Installer dependency cache"
-          key: v1-alice-installer-dependency-cache-{{ .Branch }}-{{ checksum "installer/mix.lock" }}
+          key: v{{ .Environment.CACHE_VERSION }}-alice-installer-dependency-cache-{{ .Branch }}-{{ checksum "installer/mix.lock" }}
           paths:
             - ~/alice/installer/deps
       - run:
@@ -117,7 +117,7 @@ jobs:
           command: mix credo
       - save_cache:
           name: "Save Installer build cache"
-          key: v1-alice-installer-build-cache-{{ .Branch }}-{{ checksum "build-branch-sha" }}
+          key: v{{ .Environment.CACHE_VERSION }}-alice-installer-build-cache-{{ .Branch }}-{{ checksum "build-branch-sha" }}
           paths:
             - ~/alice/installer/_build
       - run:
