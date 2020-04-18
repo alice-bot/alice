@@ -41,12 +41,16 @@ defmodule Alice.StateBackends.Redis do
   # NOTE: This handles migration of the data in redis from the old stringified
   #       elixir to use the new method of encoding in JSON. Please remove this
   #       after most people have moved to this version.
+  @dialyzer {:nowarn_function, handle_get_result: 2}
   defp handle_get_result(encoded_value, _default) do
-    Poison.decode!(encoded_value)
-  rescue
-    Poison.SyntaxError ->
-      {decoded, _} = Code.eval_string(encoded_value)
-      decoded
+    case Poison.decode(encoded_value) do
+      {:ok, decoded_value} ->
+        decoded_value
+
+      _ ->
+        {decoded, _} = Code.eval_string(encoded_value)
+        decoded
+    end
   end
 
   def put(state, key, value) do
