@@ -60,7 +60,7 @@ jobs:
           environment:
             MIX_ENV: dev
           command: mix dialyzer --plt
-          no_output_timeout: 1m
+          no_output_timeout: 30m
       - save_cache:
           name: "Save build & PLT cache"
           key: v1-alice-build-and-plt-cache-{{ .Branch }}-{{ checksum "build-branch-sha" }}
