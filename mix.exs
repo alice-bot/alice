@@ -37,7 +37,7 @@ defmodule Alice.Mixfile do
 
   defp deps do
     [
-      {:slack, "~> 0.12.0"},
+      {:slack, "~> 0.23.2"},
       {:poison, "~> 3.0"},
       {:poolboy, "~> 1.5.0"},
       {:redix, "~> 0.6.0"},
