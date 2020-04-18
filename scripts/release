@@ -23,6 +23,13 @@ echo "Opening a new release on github..."
 
 open https://github.com/alice-bot/alice/releases/new
 
+echo 'tell application "System Events"
+  tell process "finder"
+    activate
+    keystroke tab using {command down}
+  end tell
+end tell' | osascript
+
 echo
 echo Release notes:
 echo
@@ -35,5 +42,7 @@ echo "  * Bump the version to v${new_version} in mix.exs"
 echo "  * Update CHANGELOG.md"
 echo "  * Commit with message \"version bump to ${new_version}\""
 echo "  * Run mix hex.publish"
-echo "  * Update the Alice version in AliceNew"
-echo "  * Publish AliceNew"
+echo "  * Bump the version to v${new_version} in installer/mix.exs"
+echo "  * Run mix hex.publish in installer/"
+echo "  * Run mix build in installer/"
+echo "  * Attach alice_new-${new_version}.ez to github release and publish"
