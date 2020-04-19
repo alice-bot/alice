@@ -76,8 +76,9 @@ defmodule Alice.Console do
         String.trim(unix_timestamp)
 
       _ ->
-        {:ok, ts} = DateTime.now("Etc/UTC")
-        to_string(DateTime.to_unix(ts))
+        DateTime.utc_now()
+        |> DateTime.to_unix()
+        |> to_string()
     end
   end
 
