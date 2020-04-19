@@ -54,7 +54,7 @@ defmodule Alice.Console do
     user = System.get_env("USER") || "console_user"
 
     Conn.make(
-      %{text: message, channel: :console, user: user},
+      %{text: message, channel: :console, user: user, ts: get_timestamp()},
       console_data(user),
       state
     )
@@ -65,8 +65,30 @@ defmodule Alice.Console do
       me: %{id: "alice"},
       users: [
         %{"id" => "alice", "name" => "alice"},
-        %{"id" => user, "name" => user}
+        %{"id" => user, "name" => user, "tz_offset" => get_tz_offset()}
       ]
     }
+  end
+
+  defp get_timestamp() do
+    case System.cmd("date", ["+%s"]) do
+      {unix_timestamp, 0} ->
+        String.trim(unix_timestamp)
+
+      _ ->
+        {:ok, ts} = DateTime.now("Etc/UTC")
+        to_string(DateTime.to_unix(ts))
+    end
+  end
+
+  defp get_tz_offset() do
+    case System.cmd("date", ["+%z"]) do
+      {offset, 0} ->
+        {parsed, _} = Integer.parse(offset)
+        div(parsed, 100) * 60 * 60
+
+      _ ->
+        0
+    end
   end
 end
