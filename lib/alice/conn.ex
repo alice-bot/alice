@@ -142,7 +142,7 @@ defmodule Alice.Conn do
   defp state_backend do
     case Application.get_env(:alice, :state_backend) do
       :redis -> Alice.StateBackends.Redis
-      _other -> Map
+      _other -> Alice.StateBackends.Memory
     end
   end
 end
