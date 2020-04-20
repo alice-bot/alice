@@ -10,14 +10,16 @@ defmodule Alice.Mixfile do
       elixir: "~> 1.7",
       deps: deps(),
       package: package(),
-      preferrred_cli_env: [
-        docs: :docs,
-        coveralls: :test
-      ],
       consolidate_protocols: Mix.env() != :test,
       elixirc_paths: elixirc_paths(Mix.env()),
       name: "Alice",
       docs: docs(),
+      preferred_cli_env: [
+        docs: :docs,
+        coveralls: :test,
+        "coveralls.html": :test,
+        "coveralls.json": :test
+      ],
       test_coverage: [tool: ExCoveralls],
       source_url: "https://github.com/alice-bot/alice",
       homepage_url: "https://www.alice-bot.org",
@@ -37,8 +39,8 @@ defmodule Alice.Mixfile do
 
   defp deps do
     [
-      {:slack, "~> 0.12.0"},
-      {:poison, "~> 3.0"},
+      {:slack, "~> 0.23.2"},
+      {:poison, "~> 4.0"},
       {:poolboy, "~> 1.5.0"},
       {:redix, "~> 0.6.0"},
 

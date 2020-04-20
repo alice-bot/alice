@@ -18,43 +18,55 @@ defmodule Alice.HandlerCaseTest do
   use Alice.HandlerCase, handlers: Alice.HandlerCaseTest.TestHandler
   alias Alice.Conn
 
-  test "fake_conn makes a conn" do
+  setup do
+    slack = %{
+      me: %{id: "alice"},
+      users: [
+        %{"id" => "alice", "name" => "alice"},
+        %{"id" => "fake_user", "name" => "fake_user"}
+      ]
+    }
+
+    {:ok, %{slack: slack}}
+  end
+
+  test "fake_conn makes a conn", %{slack: slack} do
     assert fake_conn() ==
              Conn.make(
-               %{channel: :channel, text: "", user: :fake_user},
-               %{me: %{id: :alice}, users: %{fake_user: %{id: :fake_user, name: "fake_user"}}},
+               %{channel: :channel, text: "", user: "fake_user_id"},
+               slack,
                %{}
              )
   end
 
-  test "fake_conn makes a conn with a message" do
+  test "fake_conn makes a conn with a message", %{slack: slack} do
     assert fake_conn("message") ==
              Conn.make(
-               %{channel: :channel, text: "message", user: :fake_user},
-               %{me: %{id: :alice}, users: %{fake_user: %{id: :fake_user, name: "fake_user"}}},
+               %{channel: :channel, text: "message", user: "fake_user_id"},
+               slack,
                %{}
              )
   end
 
-  test "fake_conn makes a conn with state" do
+  test "fake_conn makes a conn with state", %{slack: slack} do
     assert fake_conn("message", state: %{some: "state"}) ==
              Conn.make(
-               %{channel: :channel, text: "message", user: :fake_user},
-               %{me: %{id: :alice}, users: %{fake_user: %{id: :fake_user, name: "fake_user"}}},
+               %{channel: :channel, text: "message", user: "fake_user_id"},
+               slack,
                %{some: "state"}
              )
   end
 
-  test "fake_conn makes a conn with captures" do
+  test "fake_conn makes a conn with captures", %{slack: slack} do
     assert fake_conn("find this capture", capture: ~r/\Afind this (capture)\z/) ==
              Conn.make(
                %{
                  channel: :channel,
                  text: "find this capture",
-                 user: :fake_user,
+                 user: "fake_user_id",
                  captures: ["find this capture", "capture"]
                },
-               %{me: %{id: :alice}, users: %{fake_user: %{id: :fake_user, name: "fake_user"}}},
+               slack,
                %{}
              )
   end

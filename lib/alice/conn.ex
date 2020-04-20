@@ -40,14 +40,14 @@ defmodule Alice.Conn do
   Returns the name of the user for the incoming message
   """
   def user(conn = %Conn{}) do
-    user_data(conn).name
+    user_data(conn)["name"]
   end
 
   @doc """
   Returns the timezone offset for the user
   """
   def tz_offset(conn = %Conn{}) do
-    user_data(conn).tz_offset
+    user_data(conn)["tz_offset"]
   end
 
   @doc """
@@ -61,11 +61,11 @@ defmodule Alice.Conn do
   Builds a string to use as an @reply back to the user who sent the message
   """
   def at_reply_user(conn = %Conn{}) do
-    "<@#{user_data(conn).id}>"
+    "<@#{user_data(conn)["id"]}>"
   end
 
   defp user_data(%Conn{message: %{user: id}, slack: %{users: users}}) do
-    users[id]
+    Enum.find(users, &(&1["id"] == id))
   end
 
   @doc """
@@ -142,7 +142,7 @@ defmodule Alice.Conn do
   defp state_backend do
     case Application.get_env(:alice, :state_backend) do
       :redis -> Alice.StateBackends.Redis
-      _other -> Map
+      _other -> Alice.StateBackends.Memory
     end
   end
 end
