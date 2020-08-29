@@ -21,6 +21,14 @@ defmodule Alice.Router.Helpers do
   def reply(resp, conn = %Conn{}), do: reply(conn, resp)
   def reply(conn = %Conn{}, resp) when is_list(resp), do: random_reply(conn, resp)
 
+  def reply(conn = %Conn{message: %{channel: channel, thread_ts: thread}, slack: slack}, resp) do
+    resp
+    |> Alice.Images.uncache()
+    |> outbound_api().send_message(channel, slack, thread)
+
+    conn
+  end
+
   def reply(conn = %Conn{message: %{channel: channel}, slack: slack}, resp) do
     resp
     |> Alice.Images.uncache()
