@@ -51,7 +51,12 @@ defmodule Alice.HandlerCaseTest do
   test "fake_conn_with_thread makes a conn with a thread", %{slack: slack} do
     assert fake_conn_with_thread("fake thread", "message") ==
              Conn.make(
-               %{channel: :channel, text: "message", user: "fake_user_id", thread_ts: "fake thread"},
+               %{
+                 channel: :channel,
+                 text: "message",
+                 user: "fake_user_id",
+                 thread_ts: "fake thread"
+               },
                slack,
                %{}
              )

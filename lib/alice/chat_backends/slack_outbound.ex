@@ -9,7 +9,12 @@ defmodule Alice.ChatBackends.SlackOutbound do
     :ok
   end
 
-  @spec send_message(message :: String.t(), channel :: String.t(), slack :: map(), thread :: String.t()) :: :ok
+  @spec send_message(
+          message :: String.t(),
+          channel :: String.t(),
+          slack :: map(),
+          thread :: String.t()
+        ) :: :ok
   def send_message(message, channel, slack, thread) do
     Slack.Sends.send_message(message, channel, slack, thread)
     :ok
