@@ -6,10 +6,17 @@ defmodule Alice.Router.HelpersTest do
     assert reply("yo", fake_conn()) == fake_conn()
   end
 
-  test "reply sends a message with Slack.send_message" do
+  test "reply sends a message with Slack.send_message/3" do
     reply("yo", fake_conn())
 
     assert first_reply() == "yo"
+  end
+
+  test "reply sends a message to a thread with Slack.send_message/4" do
+    fake_conn = fake_conn_with_thread("fake thread")
+
+    conn = reply("yo", fake_conn)
+    assert conn.message.thread_ts == "fake thread"
   end
 
   test "multiple replies can be sent in the same handler" do
