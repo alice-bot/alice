@@ -59,6 +59,13 @@ defmodule Alice.HandlerCase do
     }
   end
 
+  @spec fake_conn_with_thread(String.t(), String.t()) :: conn()
+  def fake_conn_with_thread(thread \\ "fake thread", text \\ "") do
+    conn = %{message: message} = fake_conn(text)
+    message = Map.put(message, :thread_ts, thread)
+    Map.put(conn, :message, message)
+  end
+
   @doc """
   Generates a fake connection for testing purposes.
 
