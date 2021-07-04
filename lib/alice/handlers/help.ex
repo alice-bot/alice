@@ -138,6 +138,10 @@ defmodule Alice.Handlers.Help do
     {title, name, :none}
   end
 
+  defp parse_function_doc({{:function, name, _arity}, _anno, _sig, :none, _meta}, title) do
+    {title, name, :none}
+  end
+
   defp parse_function_doc({{:function, name, _arity}, _anno, _sig, :hidden, _meta}, title) do
     {title, name, :hidden}
   end
